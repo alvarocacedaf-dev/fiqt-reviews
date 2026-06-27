@@ -1,0 +1,2 @@
+import Link from 'next/link'; import { AuthForm } from '@/components/AuthForm';
+export default function Login() { return <section className="mx-auto max-w-md panel"><h1 className="text-2xl font-black text-ink">Bienvenido de vuelta</h1><p className="mb-6 mt-1 text-sm text-slate-600">Ingresa para verificar cursos y compartir tu experiencia.</p><AuthForm mode="login" /><p className="mt-5 text-center text-sm">¿No tienes cuenta? <Link className="font-bold text-royal" href="/registro">Regístrate</Link></p></section> }

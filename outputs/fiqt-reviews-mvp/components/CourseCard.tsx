@@ -1,0 +1,2 @@
+import Link from 'next/link'; import type { Course } from '@/lib/types';
+export function CourseCard({ course }: { course: Course }) { return <Link href={`/cursos/${course.id}`} className="block rounded-2xl border border-white/20 bg-white/95 p-5 shadow transition hover:-translate-y-1"><p className="text-xs font-bold text-royal">{course.code ?? 'CURSO'}</p><h3 className="mt-1 font-bold text-ink">{course.name}</h3><p className="mt-2 text-sm text-slate-500">{course.credits ? `${course.credits} créditos` : 'Créditos por confirmar'}</p></Link> }

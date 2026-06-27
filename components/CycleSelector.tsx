@@ -1,0 +1,2 @@
+import Link from 'next/link'; import type { Cycle } from '@/lib/types';
+export function CycleSelector({ cycles }: { cycles: Cycle[] }) { return <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">{cycles.map(c => <Link key={c.id} href={`/ciclos/${c.id}`} className="rounded-2xl border border-blue-100 bg-white p-5 text-center font-bold text-royal shadow transition hover:-translate-y-1 hover:border-gold">Ciclo {c.number}</Link>)}</div>; }
