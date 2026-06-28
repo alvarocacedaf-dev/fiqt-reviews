@@ -12,6 +12,11 @@ export default function Login() {
       <p className="mt-5 text-center text-sm">
         ¿No tienes cuenta? <Link className="font-bold text-royal" href="/registro">Regístrate</Link>
       </p>
+      <p className="mt-3 text-center text-sm">
+        <Link className="font-bold text-royal" href="/recuperar-contrasena">
+          Me olvidé mi contraseña
+        </Link>
+      </p>
     </section>
   );
 }
