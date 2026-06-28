@@ -62,6 +62,7 @@ export async function Header() {
         <div className="flex items-center gap-4 text-sm font-semibold">
           {isLoggedIn ? (
             <>
+              <a href="/ciclos">Ruta académica</a>
               <a href="/verificacion">Verificación</a>
               <form action={signOut}>
                 <button className="font-semibold text-white transition hover:text-gold">
