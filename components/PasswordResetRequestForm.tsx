@@ -25,7 +25,7 @@ export function PasswordResetRequestForm() {
 
     const db = createClient();
     const { error: resetError } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/callback?next=/recuperar-contrasena/nueva`
+      redirectTo: `${window.location.origin}/recuperar-contrasena/nueva`
     });
 
     setLoading(false);
