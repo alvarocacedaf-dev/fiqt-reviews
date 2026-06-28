@@ -15,4 +15,17 @@
   .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-royal px-4 py-2.5 font-semibold text-white transition hover:bg-[#0d2f6c] disabled:cursor-not-allowed disabled:opacity-50; }
   .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 font-semibold text-royal transition hover:bg-sky; }
   .input { @apply w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none ring-royal transition focus:ring-2; }
+  header nav a[href="/ciclos"],
+  header nav a[href="/verificacion"],
+  header nav form button {
+    @apply inline-flex items-center gap-1.5;
+  }
+  header nav a[href="/ciclos"]::before,
+  header nav a[href="/verificacion"]::before,
+  header nav form button::before {
+    @apply text-base leading-none;
+  }
+  header nav a[href="/ciclos"]::before { content: "🎓"; }
+  header nav a[href="/verificacion"]::before { content: "🛡️"; }
+  header nav form button::before { content: "↪"; }
 }
