@@ -7,7 +7,7 @@ create table public.profiles (
   verification_status text not null default 'unverified' check (verification_status in ('unverified','pending','verified','rejected')),
   created_at timestamptz not null default now()
 );
-create table public.cycles (id serial primary key, number int unique not null check (number between 1 and 10), name text not null);
+create table public.cycles (id serial primary key, number int unique not null check (number between 1 and 12), name text not null);
 create table public.courses (id uuid primary key default gen_random_uuid(), cycle_id int references public.cycles(id), code text, name text not null, credits int, created_at timestamptz not null default now());
 create table public.professors (id uuid primary key default gen_random_uuid(), full_name text not null, photo_url text, source_name text not null default 'DIRCE UNI', source_url text, is_active boolean not null default true, created_at timestamptz not null default now());
 create table public.course_professors (id uuid primary key default gen_random_uuid(), course_id uuid not null references public.courses(id) on delete cascade, professor_id uuid not null references public.professors(id) on delete cascade, academic_term text, section text, unique(course_id, professor_id, academic_term, section));
