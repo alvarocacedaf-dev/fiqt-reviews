@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 const UNI_EMAIL_DOMAIN = '@uni.pe';
@@ -9,7 +8,6 @@ const UNI_EMAIL_DOMAIN = '@uni.pe';
 export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function submit(form: FormData) {
     setLoading(true);
@@ -39,8 +37,13 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     setLoading(false);
 
     if (result.error) return setError(result.error.message);
-    if (mode === 'register') setError('Revisa tu correo UNI para confirmar la cuenta.');
-    else router.push('/ciclos');
+
+    if (mode === 'register' && !result.data.session) {
+      setError('Revisa tu correo UNI para confirmar la cuenta.');
+      return;
+    }
+
+    window.location.assign('/ciclos');
   }
 
   return (
