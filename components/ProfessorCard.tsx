@@ -27,12 +27,12 @@ export function ProfessorCard({
   const total = reviews.length;
 
   return (
-    <article className="group relative min-h-[25rem] overflow-hidden rounded-[2rem] border-4 border-white bg-gradient-to-br from-white via-blue-50 to-blue-100 p-5 shadow-card transition hover:-translate-y-1 hover:shadow-2xl">
+    <article className="group relative min-h-[29rem] overflow-hidden rounded-[2.25rem] border-4 border-white bg-gradient-to-br from-white via-blue-50 to-blue-100 p-6 pb-12 shadow-card transition hover:-translate-y-1 hover:shadow-2xl">
       <div className="absolute left-4 top-3 text-center font-black leading-none text-royal">
         <div className="text-lg">FIQT</div>
         <div className="text-2xl text-gold">◆</div>
       </div>
-      <div className="absolute bottom-3 right-4 rotate-180 text-center font-black leading-none text-royal">
+      <div className="absolute bottom-4 right-5 rotate-180 text-center font-black leading-none text-royal">
         <div className="text-lg">FIQT</div>
         <div className="text-2xl text-gold">◆</div>
       </div>
@@ -62,7 +62,7 @@ export function ProfessorCard({
           <RatingSummary reviews={reviews} />
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="relative z-10 grid grid-cols-2 gap-3">
           <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}`}>
             Ver perfil
           </Link>
