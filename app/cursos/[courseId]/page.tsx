@@ -6,9 +6,17 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BDI01-dibujo-en-ingenieria-i.pdf'
   },
+  BDI02: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BDI02-dibujo-en-ingenieria-ii.pdf'
+  },
   BFI01: {
     label: 'Ver sílabo del curso',
     href: '/silabos/BFI01-fisica-i.pdf'
+  },
+  BFI02: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BFI02-fisica-ii.pdf'
   },
   BMA01: {
     label: 'Ver sílabo del curso',
@@ -22,9 +30,17 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BMA03-algebra-lineal.pdf'
   },
+  BMA04: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BMA04-matematicas-basicas.pdf'
+  },
   BQU01: {
     label: 'Ver sílabo del curso',
     href: '/silabos/BQU01-quimica-i.pdf'
+  },
+  BQU02: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BQU02-quimica-ii.pdf'
   },
   BRC01: {
     label: 'Ver sílabo del curso',
