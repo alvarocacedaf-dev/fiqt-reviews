@@ -2,9 +2,33 @@ import { ProfessorCard } from '@/components/ProfessorCard';
 import { getCourse, getCourseProfessors, getProfessorReviews } from '@/lib/data';
 
 const courseSyllabi: Record<string, { label: string; href: string }> = {
+  BDI01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BDI01-dibujo-en-ingenieria-i.pdf'
+  },
+  BFI01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BFI01-fisica-i.pdf'
+  },
+  BMA01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BMA01-calculo-diferencial.pdf'
+  },
   BMA02: {
     label: 'Ver sílabo del curso',
     href: '/silabos/BMA02-calculo-integral.pdf'
+  },
+  BMA03: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BMA03-algebra-lineal.pdf'
+  },
+  BQU01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BQU01-quimica-i.pdf'
+  },
+  BRC01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BRC01-redaccion-y-comunicacion.pdf'
   }
 };
 
