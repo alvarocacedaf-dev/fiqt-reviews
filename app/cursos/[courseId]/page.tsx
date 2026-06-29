@@ -30,6 +30,10 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BFI03-fisica-iii.pdf'
   },
+  BFI04: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BFI04-topicos-especiales-en-fisica.pdf'
+  },
   BIC01: {
     label: 'Ver sílabo del curso',
     href: '/silabos/BIC01-introduccion-a-la-computacion.pdf'
@@ -54,6 +58,10 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BMA05-matematica-superior-i.pdf'
   },
+  BMA06: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BMA06-matematica-superior-ii.pdf'
+  },
   BQU01: {
     label: 'Ver sílabo del curso',
     href: '/silabos/BQU01-quimica-i.pdf'
@@ -66,9 +74,25 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BRC01-redaccion-y-comunicacion.pdf'
   },
+  EP308: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/EP308-economia-y-organizacion-de-la-empresa.pdf'
+  },
+  MA613: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/MA613-estadistica-aplicada.pdf'
+  },
+  MA713: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/MA713-programacion-digital.pdf'
+  },
   QU216: {
     label: 'Ver sílabo del curso',
     href: '/silabos/QU216-quimica-inorganica.pdf'
+  },
+  QU427: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/QU427-fisico-quimica-i.pdf'
   }
 };
 
