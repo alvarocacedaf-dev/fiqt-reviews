@@ -69,10 +69,16 @@ function NavIcon({ type }: { type: 'academic' | 'verification' | 'logout' }) {
   );
 }
 
-function firstDisplayName(name?: string | null, email?: string | null) {
-  const cleanName = name?.trim();
-  if (cleanName) return cleanName.split(/\s+/).slice(0, 2).join(' ');
-  return email?.split('@')[0] ?? 'Usuario';
+function displayNameFromUniEmail(email?: string | null) {
+  const localPart = email?.split('@')[0]?.trim().toLowerCase();
+  if (!localPart) return 'USUARIO UNI';
+
+  const [firstName, firstLastName] = localPart.split('.');
+  if (firstName && firstLastName) {
+    return `${firstName} ${firstLastName}`.toUpperCase();
+  }
+
+  return localPart.replaceAll('.', ' ').toUpperCase();
 }
 
 function LoggedInLinks({
@@ -133,10 +139,7 @@ export async function Header() {
     const user = data.user;
     isLoggedIn = Boolean(user);
 
-    if (user) {
-      const { data: profile } = await db.from('profiles').select('full_name').eq('id', user.id).maybeSingle();
-      userName = firstDisplayName(profile?.full_name ?? user.user_metadata?.full_name, user.email);
-    }
+    if (user) userName = displayNameFromUniEmail(user.email);
   }
 
   async function signOut() {
