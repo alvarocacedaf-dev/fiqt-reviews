@@ -1,7 +1,6 @@
 import './globals.css';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
-import { SignatureMark } from '@/components/SignatureMark';
 
 export const metadata = { title: 'FIQT Reviews', description: 'Reseñas académicas independientes para FIQT.' };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -12,7 +11,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Header />
           <main className="mx-auto min-h-[78vh] max-w-6xl px-4 py-8 sm:px-6">{children}</main>
           <Footer />
-          <SignatureMark />
         </div>
       </body>
     </html>
