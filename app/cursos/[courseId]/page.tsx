@@ -86,6 +86,10 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/EP308-economia-y-organizacion-de-la-empresa.pdf'
   },
+  EP818: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/EP818-costos-y-presupuestos.pdf'
+  },
   MA613: {
     label: 'Ver sílabo del curso',
     href: '/silabos/MA613-estadistica-aplicada.pdf'
@@ -106,13 +110,25 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI111-balance-de-materia-y-energia.pdf'
   },
-  PI524: {
-    label: 'Ver sílabo del curso',
-    href: '/silabos/PI524-metodos-numericos-para-ingenieria-quimica.pdf'
-  },
   PI140: {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI140-fenomenos-de-transporte.pdf'
+  },
+  PI142: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI142-transferencia-de-cantidad-de-movimiento.pdf'
+  },
+  PI143: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI143-transferencia-de-calor.pdf'
+  },
+  PI144: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI144-transferencia-de-masa.pdf'
+  },
+  PI146: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI146-operaciones-en-ingenieria-quimica-i.pdf'
   },
   PI216: {
     label: 'Ver sílabo del curso',
@@ -133,6 +149,14 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
   PI520: {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI520-recursos-quimicos-en-la-biodiversidad.pdf'
+  },
+  PI521: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI521-introduccion-a-la-bioingenieria.pdf'
+  },
+  PI524: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI524-metodos-numericos-para-ingenieria-quimica.pdf'
   },
   QU216: {
     label: 'Ver sílabo del curso',
