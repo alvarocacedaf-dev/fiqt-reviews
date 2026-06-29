@@ -86,13 +86,33 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/MA713-programacion-digital.pdf'
   },
+  PI111: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI111-balance-de-materia-y-energia.pdf'
+  },
+  PI524: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI524-metodos-numericos-para-ingenieria-quimica.pdf'
+  },
   QU216: {
     label: 'Ver sílabo del curso',
     href: '/silabos/QU216-quimica-inorganica.pdf'
   },
+  QU328: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/QU328-quimica-organica-i.pdf'
+  },
   QU427: {
     label: 'Ver sílabo del curso',
     href: '/silabos/QU427-fisico-quimica-i.pdf'
+  },
+  QU428: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/QU428-fisico-quimica-ii.pdf'
+  },
+  QU518: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/QU518-analisis-quimico.pdf'
   }
 };
 
