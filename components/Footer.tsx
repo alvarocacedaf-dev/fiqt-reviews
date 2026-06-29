@@ -8,7 +8,11 @@ export function Footer() {
           moderación. No se permiten insultos, acusaciones personales ni contenido discriminatorio.
         </p>
 
-        <img src="/arc-farfan-signature.png" alt="Firma ARC Farfan" className="h-auto w-28 shrink-0 select-none sm:w-36" />
+        <img
+          src="/arc-farfan-signature.png"
+          alt="Firma ARC Farfan"
+          className="h-auto w-24 shrink-0 select-none sm:-mr-8 sm:w-32"
+        />
       </div>
     </footer>
   );
