@@ -94,6 +94,14 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/MA713-programacion-digital.pdf'
   },
+  PA113: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PA113-ingenieria-de-metodos-i.pdf'
+  },
+  PA714: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PA714-investigacion-de-operaciones-i.pdf'
+  },
   PI111: {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI111-balance-de-materia-y-energia.pdf'
@@ -109,6 +117,22 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
   PI216: {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI216-termodinamica-para-ingenieria-quimica-i.pdf'
+  },
+  PI217: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI217-termodinamica-para-ingenieria-quimica-ii.pdf'
+  },
+  PI318: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI318-industria-de-los-procesos-quimicos.pdf'
+  },
+  PI514: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI514-ciencia-de-los-materiales.pdf'
+  },
+  PI520: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI520-recursos-quimicos-en-la-biodiversidad.pdf'
   },
   QU216: {
     label: 'Ver sílabo del curso',
