@@ -74,6 +74,14 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/BRC01-redaccion-y-comunicacion.pdf'
   },
+  BRN01: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/BRN01-realidad-nacional.pdf'
+  },
+  EC618: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/EC618-mecanica-y-resistencia-de-materiales.pdf'
+  },
   EP308: {
     label: 'Ver sílabo del curso',
     href: '/silabos/EP308-economia-y-organizacion-de-la-empresa.pdf'
@@ -94,6 +102,14 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
     label: 'Ver sílabo del curso',
     href: '/silabos/PI524-metodos-numericos-para-ingenieria-quimica.pdf'
   },
+  PI140: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI140-fenomenos-de-transporte.pdf'
+  },
+  PI216: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/PI216-termodinamica-para-ingenieria-quimica-i.pdf'
+  },
   QU216: {
     label: 'Ver sílabo del curso',
     href: '/silabos/QU216-quimica-inorganica.pdf'
@@ -101,6 +117,10 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
   QU328: {
     label: 'Ver sílabo del curso',
     href: '/silabos/QU328-quimica-organica-i.pdf'
+  },
+  QU338: {
+    label: 'Ver sílabo del curso',
+    href: '/silabos/QU338-quimica-organica-ii.pdf'
   },
   QU427: {
     label: 'Ver sílabo del curso',
