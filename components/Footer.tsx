@@ -11,7 +11,7 @@ export function Footer() {
         <img
           src="/arc-farfan-signature.png"
           alt="Firma ARC Farfan"
-          className="h-auto w-24 shrink-0 select-none sm:-mr-24 sm:w-32"
+          className="h-auto w-24 shrink-0 select-none sm:-mr-32 sm:w-32"
         />
       </div>
     </footer>
