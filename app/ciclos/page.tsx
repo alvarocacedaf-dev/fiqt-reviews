@@ -52,12 +52,6 @@ function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
         </p>
       </div>
 
-      <a
-        href="/ciclos"
-        className="mt-4 inline-flex w-full items-center justify-center rounded-xl border border-white/15 bg-white px-4 py-2.5 text-sm font-black text-royal transition hover:bg-gold hover:text-ink"
-      >
-        Buscar cursos para reseñar
-      </a>
     </aside>
   );
 }
