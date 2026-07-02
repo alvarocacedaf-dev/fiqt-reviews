@@ -81,6 +81,59 @@ function displayNameFromUniEmail(email?: string | null) {
   return localPart.replaceAll('.', ' ').toUpperCase();
 }
 
+function reviewLevel(approvedReviews: number) {
+  if (approvedReviews >= 40) {
+    return {
+      name: 'Oro',
+      nextGoal: 40,
+      badgeClass: 'border-yellow-300/70 bg-yellow-300 text-yellow-950',
+      barClass: 'bg-gradient-to-r from-yellow-300 to-amber-500',
+    };
+  }
+
+  if (approvedReviews >= 30) {
+    return {
+      name: 'Bronce',
+      nextGoal: 40,
+      badgeClass: 'border-orange-300/70 bg-orange-300 text-orange-950',
+      barClass: 'bg-gradient-to-r from-orange-300 to-orange-600',
+    };
+  }
+
+  if (approvedReviews >= 15) {
+    return {
+      name: 'Plata',
+      nextGoal: 30,
+      badgeClass: 'border-slate-200/80 bg-slate-100 text-slate-800',
+      barClass: 'bg-gradient-to-r from-slate-100 to-slate-400',
+    };
+  }
+
+  return {
+    name: 'Nuevo',
+    nextGoal: 15,
+    badgeClass: 'border-white/20 bg-white/10 text-white',
+    barClass: 'bg-gradient-to-r from-sky-300 to-blue-500',
+  };
+}
+
+function UserReviewProgress({ approvedReviews }: { approvedReviews: number }) {
+  const level = reviewLevel(approvedReviews);
+  const progress = Math.min(100, Math.round((approvedReviews / level.nextGoal) * 100));
+
+  return (
+    <div className="hidden min-w-28 flex-col gap-1 sm:flex">
+      <div className="flex items-center justify-between gap-2 text-[10px] font-black leading-none">
+        <span className="text-blue-100">{approvedReviews}/{level.nextGoal}</span>
+        <span className={`rounded-full border px-2 py-0.5 ${level.badgeClass}`}>{level.name}</span>
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-white/15">
+        <div className={`h-full rounded-full ${level.barClass}`} style={{ width: `${progress}%` }} />
+      </div>
+    </div>
+  );
+}
+
 function LoggedInLinks({
   signOut,
   variant = 'desktop',
@@ -132,6 +185,7 @@ function LoggedInLinks({
 export async function Header() {
   let userName = '';
   let isLoggedIn = false;
+  let approvedReviews = 0;
 
   if (isSupabaseConfigured) {
     const db = await createClient();
@@ -139,7 +193,16 @@ export async function Header() {
     const user = data.user;
     isLoggedIn = Boolean(user);
 
-    if (user) userName = displayNameFromUniEmail(user.email);
+    if (user) {
+      userName = displayNameFromUniEmail(user.email);
+      const { count } = await db
+        .from('reviews')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+        .eq('status', 'approved');
+
+      approvedReviews = count ?? 0;
+    }
   }
 
   async function signOut() {
@@ -162,6 +225,7 @@ export async function Header() {
             <div className="flex min-w-0 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2 py-1.5 sm:px-3">
               <UserIcon />
               <span className="max-w-24 truncate text-xs font-bold sm:max-w-40 sm:text-sm">{userName}</span>
+              <UserReviewProgress approvedReviews={approvedReviews} />
             </div>
           )}
         </div>
