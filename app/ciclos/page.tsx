@@ -30,9 +30,9 @@ function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
   return (
     <aside className="rounded-3xl border border-white/15 bg-[#071a3d]/85 p-5 text-white shadow-card backdrop-blur lg:sticky lg:top-24">
       <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">Meta inicial</p>
-      <h2 className="mt-2 text-2xl font-black">Ayuda a construir FIQT Reviews</h2>
+      <h2 className="mt-2 text-2xl font-black">Comparte lo que aprendiste viviendo el curso</h2>
       <p className="mt-3 text-sm leading-6 text-blue-100">
-        Para que la plataforma sea útil, necesitamos reseñas reales y respetuosas.
+        Cada reseña responsable ayuda a que otros alumnos tomen mejores decisiones.
       </p>
 
       <div className="mt-5 rounded-2xl bg-white/10 p-4">
@@ -47,8 +47,8 @@ function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
         </div>
         <p className="mt-3 text-xs leading-5 text-blue-100">
           {completed
-            ? 'Ya desbloqueaste tu insignia de colaborador inicial. Gracias por aportar a la comunidad.'
-            : 'Deja 4 reseñas aprobadas de cursos que hayas llevado para desbloquear tu insignia de colaborador inicial.'}
+            ? 'Meta inicial completada. Tus reseñas responsables ayudan a otros alumnos a tomar mejores decisiones.'
+            : 'Completa 4 reseñas aprobadas para desbloquear tu insignia de colaborador inicial. Solo cuentan experiencias académicas reales y respetuosas.'}
         </p>
       </div>
 
