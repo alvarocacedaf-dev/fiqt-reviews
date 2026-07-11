@@ -17,13 +17,13 @@ const featureCards = [
 
 export default function Home() {
   return (
-    <section className="relative left-1/2 -mx-0 -my-8 w-screen -translate-x-1/2 overflow-hidden border-t border-white/10 text-white">
-      <div className="relative min-h-[460px] overflow-hidden sm:min-h-[500px] lg:min-h-[520px]">
+    <section className="relative left-1/2 -mx-0 -my-8 flex w-screen flex-1 -translate-x-1/2 flex-col overflow-hidden border-t border-white/10 text-white">
+      <div className="relative min-h-[460px] flex-1 overflow-hidden sm:min-h-[500px] lg:min-h-[520px]">
         <div className="absolute inset-0 bg-[url('/home-campus-bg.png')] bg-cover bg-center" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#03142f]/98 via-[#061b3e]/78 to-[#061b3e]/8" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#020617]/45" />
 
-        <div className="relative z-10 flex min-h-[460px] w-full items-center px-8 py-14 sm:min-h-[500px] sm:px-14 lg:min-h-[520px] lg:px-24">
+        <div className="relative z-10 flex h-full min-h-[460px] w-full items-center px-8 py-14 sm:min-h-[500px] sm:px-14 lg:min-h-[520px] lg:px-24">
           <div className="max-w-2xl text-left">
             <p className="mb-5 text-xs font-black uppercase tracking-[.35em] text-gold sm:text-sm">
               Proyecto estudiantil independiente
