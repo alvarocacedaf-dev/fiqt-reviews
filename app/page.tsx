@@ -3,46 +3,17 @@ import Link from 'next/link';
 const featureCards = [
   {
     title: 'Acceso UNI',
-    text: 'Solo cuentas registradas con correo institucional pueden explorar la página.',
-    icon: 'lock',
+    text: 'Solo cuentas registradas con correo institucional pueden explorar la p?gina.',
   },
   {
     title: 'Moderado',
-    text: 'Las reseñas pasan por revisión antes de publicarse.',
-    icon: 'shield',
+    text: 'Las rese?as pasan por revisi?n antes de publicarse.',
   },
   {
     title: 'Referencial',
-    text: 'Información pública con fuente visible, nunca datos privados.',
-    icon: 'eye',
+    text: 'Informaci?n p?blica con fuente visible, nunca datos privados.',
   },
 ];
-
-function FeatureIcon({ type }: { type: string }) {
-  if (type === 'lock') {
-    return (
-      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <path d="M7 11V8a5 5 0 0 1 10 0v3" />
-        <rect x="5" y="11" width="14" height="10" rx="2" />
-      </svg>
-    );
-  }
-
-  if (type === 'shield') {
-    return (
-      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <path d="M12 3 19 6v5c0 5-3.1 8.5-7 10-3.9-1.5-7-5-7-10V6l7-3Z" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
 
 export default function Home() {
   return (
@@ -81,16 +52,11 @@ export default function Home() {
       </div>
 
       <div className="bg-[#03142f] px-6 py-7 sm:px-10 lg:px-16">
-        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-3">
+        <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-3">
           {featureCards.map((card) => (
-            <article key={card.title} className="flex items-center gap-5 rounded-xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary/35 text-blue-100">
-                <FeatureIcon type={card.icon} />
-              </div>
-              <div>
-                <h2 className="text-lg font-black">{card.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-blue-100">{card.text}</p>
-              </div>
+            <article key={card.title} className="rounded-xl bg-white/10 p-5 text-left shadow-2xl backdrop-blur">
+              <h2 className="text-base font-black text-white">{card.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-blue-100">{card.text}</p>
             </article>
           ))}
         </div>
