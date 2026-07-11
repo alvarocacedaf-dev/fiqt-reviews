@@ -1,16 +1,9 @@
-import { redirect } from 'next/navigation';
+﻿import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/demo';
 
 function UserIcon() {
-  return (
-    <span className="relative inline-flex h-9 w-11 shrink-0 items-end" aria-hidden="true">
-      <span className="absolute bottom-1 left-0 h-6 w-6 rounded-full border-2 border-white/80 bg-gradient-to-br from-lime-300 to-green-500 shadow-sm" />
-      <span className="absolute bottom-0 left-1 h-4 w-6 rounded-t-full border-2 border-white/80 bg-gradient-to-br from-lime-300 to-green-500 shadow-sm" />
-      <span className="absolute bottom-1 right-0 h-7 w-7 rounded-full border-2 border-white bg-gradient-to-br from-cyan-200 via-sky-400 to-blue-600 shadow" />
-      <span className="absolute bottom-0 right-0 h-5 w-8 rounded-t-full border-2 border-white bg-gradient-to-br from-cyan-200 via-sky-400 to-blue-600 shadow" />
-    </span>
-  );
+  return <img src="/user-group-logo.png" alt="Usuario" className="h-9 w-11 shrink-0 object-contain" />;
 }
 
 function NavIcon({ type }: { type: 'academic' | 'verification' | 'logout' }) {
@@ -93,16 +86,16 @@ function LoggedInLinks({
       <div className="absolute right-4 top-[calc(100%+0.75rem)] z-50 w-64 rounded-3xl border border-white/15 bg-[#071a3d] p-3 text-sm font-bold text-white shadow-2xl">
         <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/ciclos">
           <NavIcon type="academic" />
-          Ruta académica
+          Ruta acadÃ©mica
         </a>
         <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/verificacion">
           <NavIcon type="verification" />
-          Verificación
+          VerificaciÃ³n
         </a>
         <form action={signOut}>
           <button className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left font-bold text-white transition hover:bg-white/10 hover:text-gold">
             <NavIcon type="logout" />
-            Cerrar sesión
+            Cerrar sesiÃ³n
           </button>
         </form>
       </div>
@@ -113,16 +106,16 @@ function LoggedInLinks({
     <>
       <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/ciclos">
         <NavIcon type="academic" />
-        Ruta académica
+        Ruta acadÃ©mica
       </a>
       <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/verificacion">
         <NavIcon type="verification" />
-        Verificación
+        VerificaciÃ³n
       </a>
       <form action={signOut}>
         <button className="inline-flex items-center gap-2 font-semibold text-white transition hover:text-gold">
           <NavIcon type="logout" />
-          Cerrar sesión
+          Cerrar sesiÃ³n
         </button>
       </form>
     </>
@@ -187,7 +180,7 @@ export async function Header() {
           {isLoggedIn ? (
             <details className="group">
               <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-white/15 bg-white text-ink shadow-lg transition hover:bg-gold [&::-webkit-details-marker]:hidden">
-                <span className="sr-only">Abrir menú</span>
+                <span className="sr-only">Abrir menÃº</span>
                 <span className="flex flex-col gap-1.5">
                   <span className="block h-0.5 w-5 rounded-full bg-current" />
                   <span className="block h-0.5 w-5 rounded-full bg-current" />
@@ -211,3 +204,4 @@ export async function Header() {
     </header>
   );
 }
+
