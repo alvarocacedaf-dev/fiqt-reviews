@@ -2,18 +2,18 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <section className="relative -mx-4 -my-8 min-h-[calc(100vh-8rem)] overflow-hidden border-y border-white/10 text-white sm:-mx-6 lg:-mx-8">
-      <div className="absolute inset-0 bg-[url('/home-campus-bg.png')] bg-cover bg-center md:bg-[position:center_right]" />
-      <div className="absolute inset-0 bg-gradient-to-r from-[#03142f] via-[#061b3e]/90 to-[#061b3e]/10" />
+    <section className="relative left-1/2 -mx-0 -my-8 min-h-[calc(100vh-8rem)] w-screen -translate-x-1/2 overflow-hidden border-y border-white/10 text-white">
+      <div className="absolute inset-0 bg-[url('/home-campus-bg.png')] bg-cover bg-center" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#03142f]/95 via-[#061b3e]/72 to-[#061b3e]/5" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#020617]/35" />
 
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-8rem)] max-w-7xl items-center px-6 py-16 sm:px-10 lg:px-16">
+      <div className="relative z-10 flex min-h-[calc(100vh-8rem)] w-full items-center px-8 py-16 sm:px-14 lg:px-24">
         <div className="max-w-2xl text-left">
           <p className="mb-5 text-xs font-black uppercase tracking-[.35em] text-gold sm:text-sm">
             Proyecto estudiantil independiente
           </p>
           <h1 className="text-4xl font-black leading-[0.98] tracking-tight drop-shadow-xl sm:text-6xl lg:text-7xl">
-            Tu experiencia académica también puede orientar.
+            Tu experiencia acad?mica tambi?n puede orientar.
           </h1>
           <p className="mt-7 max-w-xl text-base leading-8 text-blue-50 sm:text-lg">
             Plataforma de acceso para estudiantes UNI. Crea una cuenta con tu correo institucional para explorar ciclos, cursos y profesores.
