@@ -7,9 +7,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="es">
       <body>
-        <div className="page-shell">
+        <div className="page-shell flex min-h-screen flex-col">
           <Header />
-          <main className="mx-auto min-h-[78vh] max-w-6xl px-4 py-8 sm:px-6">{children}</main>
+          <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">{children}</main>
           <Footer />
         </div>
       </body>
