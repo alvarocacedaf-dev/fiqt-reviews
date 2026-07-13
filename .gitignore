@@ -12,3 +12,11 @@ pnpm-debug.log*
 
 .DS_Store
 Thumbs.db
+
+# OCR local: entorno y modelos descargados
+.ocr-venv/
+.ocr-python/
+.cache/
+.paddlex/
+work/ocr_test_result.json
+work/__pycache__/

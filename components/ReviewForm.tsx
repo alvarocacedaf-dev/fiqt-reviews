@@ -46,8 +46,14 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
 
     if (!user) return setMessage('Inicia sesión para poder reseñar.');
 
-    const { data: verified } = await db.from('verified_courses').select('id').eq('user_id', user.id).eq('course_id', courseId).limit(1);
-    if (!verified?.length) return setMessage('Para reseñar este curso, primero debes verificar que lo llevaste');
+    const { data: verified } = await db
+      .from('verified_course_professors')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('course_id', courseId)
+      .eq('professor_id', professorId)
+      .limit(1);
+    if (!verified?.length) return setMessage('Este profesor y curso todavía no fueron verificados para tu cuenta.');
 
     const payload = Object.fromEntries(ratings.map(([key]) => [key, Number(form.get(key))]));
     const { error } = await db.from('reviews').insert({

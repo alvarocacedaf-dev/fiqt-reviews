@@ -6,7 +6,7 @@ function UserIcon() {
   return <img src="/user-group-logo.png" alt="Usuario" className="h-9 w-11 shrink-0 object-contain" />;
 }
 
-function NavIcon({ type }: { type: 'academic' | 'verification' | 'logout' }) {
+function NavIcon({ type }: { type: 'academic' | 'verification' | 'verified' | 'logout' }) {
   if (type === 'academic') {
     return (
       <svg
@@ -44,6 +44,16 @@ function NavIcon({ type }: { type: 'academic' | 'verification' | 'logout' }) {
     );
   }
 
+  if (type === 'verified') {
+    return (
+      <svg className="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+        <path d="m9 10 2 2 4-4" />
+      </svg>
+    );
+  }
+
   return (
     <svg
       className="h-5 w-5 shrink-0"
@@ -76,9 +86,11 @@ function displayNameFromUniEmail(email?: string | null) {
 
 function LoggedInLinks({
   signOut,
+  isAdmin,
   variant = 'desktop',
 }: {
   signOut: () => Promise<void>;
+  isAdmin: boolean;
   variant?: 'desktop' | 'mobile';
 }) {
   if (variant === 'mobile') {
@@ -92,6 +104,15 @@ function LoggedInLinks({
           <NavIcon type="verification" />
           Verificación
         </a>
+        <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/cursos-verificados">
+          <NavIcon type="verified" />
+          Cursos verificados
+        </a>
+        {isAdmin && (
+          <a className="flex items-center gap-3 rounded-2xl bg-gold px-4 py-3 font-black text-ink" href="/admin/verificaciones">
+            Panel de administración
+          </a>
+        )}
         <form action={signOut}>
           <button className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left font-bold text-white transition hover:bg-white/10 hover:text-gold">
             <NavIcon type="logout" />
@@ -112,6 +133,15 @@ function LoggedInLinks({
         <NavIcon type="verification" />
         Verificación
       </a>
+      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
+        <NavIcon type="verified" />
+        Cursos verificados
+      </a>
+      {isAdmin && (
+        <a className="rounded-xl bg-gold px-3 py-2 font-black text-ink transition hover:bg-yellow-300" href="/admin/verificaciones">
+          Administrar
+        </a>
+      )}
       <form action={signOut}>
         <button className="inline-flex items-center gap-2 font-semibold text-white transition hover:text-gold">
           <NavIcon type="logout" />
@@ -125,6 +155,7 @@ function LoggedInLinks({
 export async function Header() {
   let userName = '';
   let isLoggedIn = false;
+  let isAdmin = false;
 
   if (isSupabaseConfigured) {
     const db = await createClient();
@@ -134,6 +165,8 @@ export async function Header() {
 
     if (user) {
       userName = displayNameFromUniEmail(user.email);
+      const { data: profile } = await db.from('profiles').select('role').eq('id', user.id).single();
+      isAdmin = profile?.role === 'admin';
     }
   }
 
@@ -163,7 +196,7 @@ export async function Header() {
 
         <div className="hidden items-center gap-5 text-sm font-semibold md:flex">
           {isLoggedIn ? (
-            <LoggedInLinks signOut={signOut} />
+            <LoggedInLinks signOut={signOut} isAdmin={isAdmin} />
           ) : (
             <>
               <a className="transition hover:text-gold" href="/registro">
@@ -187,7 +220,7 @@ export async function Header() {
                   <span className="block h-0.5 w-5 rounded-full bg-current" />
                 </span>
               </summary>
-              <LoggedInLinks signOut={signOut} variant="mobile" />
+              <LoggedInLinks signOut={signOut} isAdmin={isAdmin} variant="mobile" />
             </details>
           ) : (
             <div className="flex items-center gap-3 text-sm font-semibold">
