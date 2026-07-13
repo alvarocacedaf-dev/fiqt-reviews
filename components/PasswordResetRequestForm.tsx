@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-const UNI_EMAIL_DOMAIN = '@uni.pe';
-
 export function PasswordResetRequestForm() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -16,12 +14,6 @@ export function PasswordResetRequestForm() {
     setError('');
 
     const email = String(form.get('email')).trim().toLowerCase();
-
-    if (!email.endsWith(UNI_EMAIL_DOMAIN)) {
-      setLoading(false);
-      setError('Usa tu correo institucional UNI que termine en @uni.pe.');
-      return;
-    }
 
     const db = createClient();
     const { error: resetError } = await db.auth.resetPasswordForEmail(email, {
@@ -41,16 +33,14 @@ export function PasswordResetRequestForm() {
   return (
     <form action={submit} className="space-y-4">
       <label className="block text-sm font-semibold">
-        Correo institucional UNI
+        Correo electrónico de la cuenta
         <input
           required
           type="email"
           name="email"
           className="input mt-1"
           autoComplete="email"
-          placeholder="tu_usuario@uni.pe"
-          pattern="^[^@\s]+@uni\.pe$"
-          title="Usa un correo institucional que termine en @uni.pe"
+          placeholder="tu correo registrado"
         />
       </label>
 

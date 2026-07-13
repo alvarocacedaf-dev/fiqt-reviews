@@ -17,9 +17,9 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     const email = String(form.get('email')).trim().toLowerCase();
     const password = String(form.get('password'));
 
-    if (!email.endsWith(UNI_EMAIL_DOMAIN)) {
+    if (mode === 'register' && !email.endsWith(UNI_EMAIL_DOMAIN)) {
       setLoading(false);
-      setError('Para crear o ingresar a FIQT Reviews debes usar un correo institucional que termine en @uni.pe.');
+      setError('Para crear una cuenta de estudiante debes usar un correo institucional que termine en @uni.pe.');
       return;
     }
 
@@ -56,16 +56,16 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       )}
 
       <label className="block text-sm font-semibold">
-        Correo institucional UNI
+        {mode === 'register' ? 'Correo institucional UNI' : 'Correo electrónico'}
         <input
           required
           type="email"
           name="email"
           className="input mt-1"
           autoComplete="email"
-          placeholder="tu_usuario@uni.pe"
-          pattern="^[^@\s]+@uni\.pe$"
-          title="Usa un correo institucional que termine en @uni.pe"
+          placeholder={mode === 'register' ? 'tu_usuario@uni.pe' : 'tu correo registrado'}
+          pattern={mode === 'register' ? '^[^@\\s]+@uni\\.pe$' : undefined}
+          title={mode === 'register' ? 'Usa un correo institucional que termine en @uni.pe' : 'Ingresa el correo de tu cuenta'}
         />
       </label>
 
