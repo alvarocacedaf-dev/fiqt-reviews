@@ -8,7 +8,7 @@ export async function moderateVerification(
   form: FormData,
 ): Promise<VerificationActionState> {
   const { db, user } = await requireAdmin();
-  const status = String(form.get('status'));
+  const status = String(form.get('status') || '').trim();
   const id = String(form.get('id'));
   const selections = form.getAll('professor_course_ids').map(String).filter(Boolean);
   const pairs = selections.flatMap(value => {
@@ -17,7 +17,7 @@ export async function moderateVerification(
   });
   const courseIds = [...new Set(pairs.map(pair => pair.courseId))];
 
-  if (!['approved', 'rejected'].includes(status)) return { ok: false, message: 'Acción no válida.' };
+  if (!['approved', 'rejected'].includes(status)) return { ok: false, message: 'No se recibió si deseas aprobar o rechazar. Intenta nuevamente.' };
   if (status === 'approved' && !pairs.length) {
     return { ok: false, message: 'Selecciona al menos un curso y profesor antes de aprobar.' };
   }

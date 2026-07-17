@@ -1,5 +1,5 @@
 'use client';
-import { useActionState, useMemo, useState } from 'react';
+import { useActionState, useMemo, useRef, useState } from 'react';
 import { moderateVerification } from '@/app/admin/actions';
 
 type Option = { value: string; courseCode: string; courseName: string; professorName: string; cycleNumber: number };
@@ -7,6 +7,7 @@ type Match = { value: string; confidence: number };
 
 export function VerificationApprovalForm({ submissionId, options, ocrEnabled = true }: { submissionId: string; options: Option[]; ocrEnabled?: boolean }) {
   const [approvalState, approvalAction, approvalPending] = useActionState(moderateVerification, { ok: false, message: '' });
+  const statusInputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [scores, setScores] = useState<Record<string, number>>({});
   const [query, setQuery] = useState('');
@@ -31,8 +32,13 @@ export function VerificationApprovalForm({ submissionId, options, ocrEnabled = t
 
   function toggle(value: string) { setSelected(current => { const next = new Set(current); next.has(value) ? next.delete(value) : next.add(value); return next; }); }
 
+  function setModerationStatus(status: 'approved' | 'rejected') {
+    if (statusInputRef.current) statusInputRef.current.value = status;
+  }
+
   return <form action={approvalAction} className="space-y-5">
     <input type="hidden" name="id" value={submissionId} />
+    <input ref={statusInputRef} type="hidden" name="status" defaultValue="" />
     {ocrEnabled ? <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
       <p className="font-black text-royal">Asistente OCR local</p>
       <p className="mt-1 text-sm text-slate-600">Premarca coincidencias, pero nunca aprueba automáticamente.</p>
@@ -85,6 +91,23 @@ export function VerificationApprovalForm({ submissionId, options, ocrEnabled = t
         {approvalState.message}
       </p>
     )}
-    <div className="flex flex-wrap gap-3"><button disabled={approvalPending} name="status" value="approved" className="btn-primary disabled:cursor-wait disabled:opacity-60">{approvalPending ? 'Guardando…' : 'Aprobar profesores seleccionados'}</button><button disabled={approvalPending} name="status" value="rejected" className="btn-secondary border-red-200 text-red-700 hover:bg-red-50 disabled:cursor-wait disabled:opacity-60">Rechazar evidencia</button></div>
+    <div className="flex flex-wrap gap-3">
+      <button
+        type="submit"
+        disabled={approvalPending}
+        onClick={() => setModerationStatus('approved')}
+        className="btn-primary disabled:cursor-wait disabled:opacity-60"
+      >
+        {approvalPending ? 'Guardando…' : 'Aprobar profesores seleccionados'}
+      </button>
+      <button
+        type="submit"
+        disabled={approvalPending}
+        onClick={() => setModerationStatus('rejected')}
+        className="btn-secondary border-red-200 text-red-700 hover:bg-red-50 disabled:cursor-wait disabled:opacity-60"
+      >
+        Rechazar evidencia
+      </button>
+    </div>
   </form>;
 }
