@@ -96,23 +96,29 @@ export default async function VerifiedAccountsPage() {
       {Object.entries(submissionsByUser).map(([userId, accountSubmissions]) => {
         const profile = profiles[userId];
         return (
-          <section key={userId} className="overflow-hidden rounded-3xl bg-white shadow-card">
-            <header className="border-b border-slate-200 bg-slate-50 px-6 py-5">
+          <details key={userId} className="group overflow-hidden rounded-3xl bg-white shadow-card">
+            <summary className="cursor-pointer list-none bg-slate-50 px-6 py-5">
               <p className="text-xs font-black uppercase tracking-wider text-royal">Cuenta</p>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 className="text-2xl font-black text-ink">{profile?.full_name || 'Estudiante sin nombre'}</h2>
-                <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-black text-royal">
-                  {accountStatusText[profile?.verification_status ?? 'unverified'] ?? profile?.verification_status}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-black text-royal">
+                    {accountStatusText[profile?.verification_status ?? 'unverified'] ?? profile?.verification_status}
+                  </span>
+                  <span className="text-sm font-black text-royal">
+                    <span className="group-open:hidden">Ver evidencias ↓</span>
+                    <span className="hidden group-open:inline">Ocultar evidencias ↑</span>
+                  </span>
+                </div>
               </div>
               <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
                 {profile?.student_code && <span>Código: {profile.student_code}</span>}
                 <span>ID: {userId}</span>
                 <span>{accountSubmissions.length} evidencia{accountSubmissions.length === 1 ? '' : 's'}</span>
               </div>
-            </header>
+            </summary>
 
-            <div className="grid gap-5 p-6 xl:grid-cols-2">
+            <div className="grid gap-5 border-t border-slate-200 p-6 xl:grid-cols-2">
               {accountSubmissions.map(submission => {
                 const url = signedUrls[submission.id];
                 const isPdf = submission.file_url.toLowerCase().endsWith('.pdf');
@@ -171,7 +177,7 @@ export default async function VerifiedAccountsPage() {
                 );
               })}
             </div>
-          </section>
+          </details>
         );
       })}
 
