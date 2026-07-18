@@ -26,6 +26,12 @@ function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
   const goal = 4;
   const completed = approvedReviews >= goal;
   const progress = Math.min(100, Math.round((approvedReviews / goal) * 100));
+  const rewards = [
+    { goal: 4, title: 'Acceso completo a la página', description: 'Desbloquea el acceso completo a las funciones de FIQT Reviews.' },
+    { goal: 10, title: 'Planchas de 1 curso', description: 'Podrás solicitar planchas del curso que elijas.' },
+    { goal: 18, title: 'Planchas de hasta 2 cursos', description: 'Podrás solicitar planchas de dos cursos diferentes.' },
+    { goal: 25, title: 'Visita técnica gratuita', description: 'Podrás acceder a una visita técnica gratuita en la FIQT.' },
+  ];
 
   return (
     <aside className="rounded-3xl border border-white/15 bg-[#071a3d]/85 p-5 text-white shadow-card backdrop-blur lg:sticky lg:top-24">
@@ -50,6 +56,33 @@ function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
             ? 'Meta inicial completada. Tus reseñas responsables ayudan a otros alumnos a tomar mejores decisiones.'
             : 'Completa 4 reseñas aprobadas para desbloquear tu insignia de colaborador inicial. Solo cuentan experiencias académicas reales y respetuosas.'}
         </p>
+      </div>
+
+      <div className="mt-5">
+        <h3 className="text-sm font-black uppercase tracking-wider text-gold">Beneficios por colaborar</h3>
+        <p className="mt-2 text-xs leading-5 text-blue-100">Solo cuentan las reseñas aprobadas, responsables y basadas en experiencias académicas reales.</p>
+        <div className="mt-3 space-y-3">
+          {rewards.map(reward => {
+            const unlocked = approvedReviews >= reward.goal;
+            return (
+              <div key={reward.goal} className={`rounded-2xl border p-4 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : 'border-white/10 bg-white/5'}`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-black text-white">{reward.title}</p>
+                    <p className="mt-1 text-xs leading-5 text-blue-100">{reward.description}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-gold text-ink'}`}>
+                    {unlocked ? 'Desbloqueado' : `${reward.goal} reseñas`}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-4 rounded-2xl bg-gold/10 p-3 text-xs font-semibold leading-5 text-yellow-100">
+          A mayor cantidad de reseñas aprobadas, buscaremos ofrecer mayores recompensas para reconocer tu aporte a la comunidad.
+        </p>
+        <p className="mt-3 text-[11px] leading-4 text-blue-200">Los beneficios están sujetos a disponibilidad y a las condiciones comunicadas por FIQT Reviews.</p>
       </div>
 
     </aside>
