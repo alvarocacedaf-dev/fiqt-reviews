@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <section className="relative left-1/2 -mx-0 -my-8 flex w-screen flex-1 -translate-x-1/2 flex-col overflow-hidden border-t border-white/10 text-white">
       <div className="relative min-h-[460px] flex-1 overflow-hidden sm:min-h-[500px] lg:min-h-[520px]">
-        <div className="absolute inset-0 bg-[url('/home-campus-bg.png')] bg-cover bg-center" />
+        <div className="absolute inset-0 translate-x-[4%] scale-110 bg-[url('/home-campus-bg.png')] bg-cover bg-center" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.98)_0%,rgba(3,20,47,0.96)_28%,rgba(3,20,47,0.74)_43%,rgba(3,20,47,0.28)_58%,rgba(3,20,47,0.06)_74%,rgba(3,20,47,0)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(2,6,23,0.05)_0%,rgba(2,6,23,0.08)_58%,rgba(2,6,23,0.42)_100%)]" />
 
