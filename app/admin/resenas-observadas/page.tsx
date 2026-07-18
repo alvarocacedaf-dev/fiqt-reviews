@@ -6,6 +6,7 @@ type ObservedReview = {
   status: 'approved' | 'rejected';
   comment: string;
   moderation_reason: string | null;
+  moderated_by_label: string | null;
   recommendation: 'like' | 'dislike';
   selected_tags: string[] | null;
   clarity_rating: number;
@@ -33,7 +34,7 @@ export default async function ObservedReviewsPage() {
   const { data: rawReviews, error } = await db
     .from('reviews')
     .select(`
-      id,user_id,status,comment,moderation_reason,recommendation,selected_tags,
+      id,user_id,status,comment,moderation_reason,moderated_by_label,recommendation,selected_tags,
       clarity_rating,difficulty_rating,fairness_rating,treatment_rating,workload_rating,created_at,
       courses(code,name),professors(full_name)
     `)
@@ -99,6 +100,7 @@ export default async function ObservedReviewsPage() {
                         <p className="font-black text-royal">{course?.code || 'Sin código'} — {course?.name || 'Curso no encontrado'}</p>
                         <h3 className="font-bold text-ink">Profesor: {professor?.full_name || 'No encontrado'}</h3>
                         <p className="mt-1 text-xs text-slate-500">Enviada: {new Date(review.created_at).toLocaleString('es-PE')}</p>
+                        <p className="mt-1 text-xs font-bold text-slate-600">Observada por: {review.moderated_by_label || 'Sin código registrado'}</p>
                       </div>
                       <span className={`rounded-full px-3 py-1 text-sm font-black ${review.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}`}>
                         {review.status === 'approved' ? 'Aprobada' : 'Rechazada'}

@@ -8,6 +8,7 @@ type Submission = {
   admin_notes: string | null;
   created_at: string;
   reviewed_at: string | null;
+  reviewed_by_label: string | null;
 };
 
 type Profile = {
@@ -52,7 +53,7 @@ export default async function VerifiedAccountsPage() {
   const { db } = await requireAdmin();
   const [{ data: rawSubmissions }, { data: rawApprovals }] = await Promise.all([
     db.from('verification_submissions')
-      .select('id,user_id,file_url,status,admin_notes,created_at,reviewed_at')
+      .select('id,user_id,file_url,status,admin_notes,created_at,reviewed_at,reviewed_by_label')
       .order('created_at', { ascending: false }),
     db.from('verification_submission_approvals')
       .select('submission_id,academic_term,section,courses(code,name),professors(full_name)'),
@@ -129,6 +130,7 @@ export default async function VerifiedAccountsPage() {
                       <div>
                         <p className="text-sm font-bold text-ink">Enviada: {new Date(submission.created_at).toLocaleString('es-PE')}</p>
                         {submission.reviewed_at && <p className="text-xs text-slate-500">Revisada: {new Date(submission.reviewed_at).toLocaleString('es-PE')}</p>}
+                        <p className="mt-1 text-xs font-bold text-slate-600">Observada por: {submission.status === 'pending' ? 'Todavía no observada' : submission.reviewed_by_label || 'Sin código registrado'}</p>
                       </div>
                       <span className={`rounded-full px-3 py-1 text-sm font-black ${statusStyle[submission.status]}`}>
                         {statusText[submission.status]}

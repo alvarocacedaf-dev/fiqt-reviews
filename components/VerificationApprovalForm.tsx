@@ -85,6 +85,9 @@ export function VerificationApprovalForm({ submissionId, options, ocrEnabled = t
     </div>
     <div className="grid gap-3 sm:grid-cols-2"><label className="text-sm font-semibold">Ciclo académico<input name="academic_term" className="input mt-1" placeholder="Ejemplo: 2026-I" /></label><label className="text-sm font-semibold">Sección<input name="section" className="input mt-1" placeholder="Ejemplo: A" /></label></div>
     <label className="block text-sm font-semibold">Nota para el estudiante<textarea name="notes" className="input mt-1 min-h-24" placeholder="Opcional al aprobar; explica el motivo si rechazas." /></label>
+    <label className="block text-sm font-semibold">Código del asistente
+      <input required type="password" autoComplete="off" name="action_code" className="input mt-1" placeholder="Código requerido para aprobar o rechazar" />
+    </label>
     <div className="rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-950"><strong>Aprobar:</strong> habilita reseñas únicamente para lo marcado.</div>
     {approvalState.message && (
       <p className={`rounded-2xl border p-4 text-sm font-bold ${approvalState.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-red-200 bg-red-50 text-red-800'}`}>

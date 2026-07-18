@@ -17,6 +17,7 @@ export function ReviewModerationForm({ reviewId, professorId }: { reviewId: stri
       <input type="hidden" name="professor_id" value={professorId} />
       <input ref={statusInputRef} type="hidden" name="status" defaultValue="" />
       <input className="input max-w-xs" name="reason" placeholder="Motivo si se rechaza" />
+      <input required type="password" autoComplete="off" className="input max-w-xs" name="action_code" placeholder="Código del asistente" />
       <button type="submit" disabled={pending} onClick={() => setModerationStatus('approved')} className="btn-primary disabled:cursor-wait disabled:opacity-60">
         {pending ? 'Guardando…' : 'Aprobar'}
       </button>

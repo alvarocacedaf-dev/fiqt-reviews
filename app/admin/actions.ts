@@ -1,5 +1,24 @@
 'use server';
 import { revalidatePath } from 'next/cache'; import { requireAdmin } from '@/lib/admin';
+import { redirect } from 'next/navigation';
+
+type AdminDb = Awaited<ReturnType<typeof requireAdmin>>['db'];
+type CodeScope = 'moderation' | 'catalog';
+
+async function verifyActionCode(db: AdminDb, form: FormData, scope: CodeScope) {
+  const code = String(form.get('action_code') || '').trim();
+  if (!code) return { ok: false as const, message: 'Ingresa el código requerido.' };
+
+  const { data, error } = await db.rpc('verify_admin_action_code', { p_code: code, p_scope: scope });
+  const actor = Array.isArray(data) ? data[0] as { code_id: string; actor_label: string } | undefined : undefined;
+  if (error) return { ok: false as const, message: `No se pudo validar el código: ${error.message}` };
+  if (!actor) return { ok: false as const, message: 'El código es incorrecto o está desactivado.' };
+  return { ok: true as const, label: actor.actor_label };
+}
+
+function catalogRedirect(path: string, type: 'error' | 'success', message: string): never {
+  redirect(`${path}?${type}=${encodeURIComponent(message)}`);
+}
 export type ReviewActionState = { ok: boolean; message: string };
 
 export async function moderateReview(
@@ -15,11 +34,15 @@ export async function moderateReview(
     return { ok: false, message: 'No se recibió una acción válida para la reseña.' };
   }
 
+  const actor = await verifyActionCode(db, form, 'moderation');
+  if (!actor.ok) return actor;
+
   const { data, error } = await db
     .from('reviews')
     .update({
       status,
       moderation_reason: status === 'rejected' ? reason || 'No cumple las reglas de moderación.' : null,
+      moderated_by_label: actor.label,
     })
     .eq('id', id)
     .select('id')
@@ -54,6 +77,10 @@ export async function moderateVerification(
   if (status === 'approved' && !pairs.length) {
     return { ok: false, message: 'Selecciona al menos un curso y profesor antes de aprobar.' };
   }
+
+
+  const actor = await verifyActionCode(db, form, 'moderation');
+  if (!actor.ok) return actor;
 
   const submission = await db.from('verification_submissions').select('user_id').eq('id', id).single();
   if (submission.error || !submission.data) {
@@ -111,6 +138,7 @@ export async function moderateVerification(
     admin_notes: String(form.get('notes') || ''),
     reviewed_at: new Date().toISOString(),
     reviewed_by: user.id,
+    reviewed_by_label: actor.label,
   }).eq('id', id);
   if (updateError) return { ok: false, message: `No se cerró la solicitud: ${updateError.message}` };
 
@@ -119,7 +147,48 @@ export async function moderateVerification(
   revalidatePath('/cursos-verificados');
   return { ok: true, message: status === 'approved' ? 'Cursos y profesores aprobados correctamente.' : 'Evidencia rechazada.' };
 }
-export async function saveProfessor(form: FormData) { const { db } = await requireAdmin(); const id = String(form.get('id') || ''); const values = { full_name: String(form.get('full_name')), source_name: 'DIRCE UNI', is_active: true }; if (id) await db.from('professors').update(values).eq('id', id); else await db.from('professors').insert(values); revalidatePath('/admin/profesores'); }
-export async function saveCourse(form: FormData) { const { db } = await requireAdmin(); const id = String(form.get('id') || ''); const values = { name: String(form.get('name')), code: String(form.get('code') || '') || null, cycle_id: Number(form.get('cycle_id')), credits: Number(form.get('credits') || 0) || null }; if (id) await db.from('courses').update(values).eq('id', id); else await db.from('courses').insert(values); revalidatePath('/admin/cursos'); }
-export async function saveCycle(form: FormData) { const { db } = await requireAdmin(); const id = String(form.get('id') || ''); const values = { number: Number(form.get('number')), name: String(form.get('name')) }; if (id) await db.from('cycles').update(values).eq('id', id); else await db.from('cycles').insert(values); revalidatePath('/admin/ciclos'); }
-export async function associateProfessor(form: FormData) { const { db } = await requireAdmin(); await db.from('course_professors').insert({ professor_id: String(form.get('professor_id')), course_id: String(form.get('course_id')), academic_term: String(form.get('academic_term') || '') || null, section: String(form.get('section') || '') || null }); revalidatePath('/admin/profesores'); }
+export async function saveProfessor(form: FormData) {
+  const { db } = await requireAdmin();
+  const actor = await verifyActionCode(db, form, 'catalog');
+  if (!actor.ok) catalogRedirect('/admin/profesores', 'error', actor.message);
+  const id = String(form.get('id') || '');
+  const values = { full_name: String(form.get('full_name')), source_name: 'DIRCE UNI', is_active: true };
+  const result = id ? await db.from('professors').update(values).eq('id', id) : await db.from('professors').insert(values);
+  if (result.error) catalogRedirect('/admin/profesores', 'error', result.error.message);
+  revalidatePath('/admin/profesores');
+  catalogRedirect('/admin/profesores', 'success', `Cambio guardado por ${actor.label}.`);
+}
+
+export async function saveCourse(form: FormData) {
+  const { db } = await requireAdmin();
+  const actor = await verifyActionCode(db, form, 'catalog');
+  if (!actor.ok) catalogRedirect('/admin/cursos', 'error', actor.message);
+  const id = String(form.get('id') || '');
+  const values = { name: String(form.get('name')), code: String(form.get('code') || '') || null, cycle_id: Number(form.get('cycle_id')), credits: Number(form.get('credits') || 0) || null };
+  const result = id ? await db.from('courses').update(values).eq('id', id) : await db.from('courses').insert(values);
+  if (result.error) catalogRedirect('/admin/cursos', 'error', result.error.message);
+  revalidatePath('/admin/cursos');
+  catalogRedirect('/admin/cursos', 'success', `Cambio guardado por ${actor.label}.`);
+}
+
+export async function saveCycle(form: FormData) {
+  const { db } = await requireAdmin();
+  const actor = await verifyActionCode(db, form, 'catalog');
+  if (!actor.ok) catalogRedirect('/admin/ciclos', 'error', actor.message);
+  const id = String(form.get('id') || '');
+  const values = { number: Number(form.get('number')), name: String(form.get('name')) };
+  const result = id ? await db.from('cycles').update(values).eq('id', id) : await db.from('cycles').insert(values);
+  if (result.error) catalogRedirect('/admin/ciclos', 'error', result.error.message);
+  revalidatePath('/admin/ciclos');
+  catalogRedirect('/admin/ciclos', 'success', `Cambio guardado por ${actor.label}.`);
+}
+
+export async function associateProfessor(form: FormData) {
+  const { db } = await requireAdmin();
+  const actor = await verifyActionCode(db, form, 'catalog');
+  if (!actor.ok) catalogRedirect('/admin/profesores', 'error', actor.message);
+  const { error } = await db.from('course_professors').insert({ professor_id: String(form.get('professor_id')), course_id: String(form.get('course_id')), academic_term: String(form.get('academic_term') || '') || null, section: String(form.get('section') || '') || null });
+  if (error) catalogRedirect('/admin/profesores', 'error', error.message);
+  revalidatePath('/admin/profesores');
+  catalogRedirect('/admin/profesores', 'success', `Asociación guardada por ${actor.label}.`);
+}
