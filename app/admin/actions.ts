@@ -192,3 +192,40 @@ export async function associateProfessor(form: FormData) {
   revalidatePath('/admin/profesores');
   catalogRedirect('/admin/profesores', 'success', `Asociación guardada por ${actor.label}.`);
 }
+
+export async function removeVerifiedCourseAccess(form: FormData) {
+  const { db } = await requireAdmin();
+  const actor = await verifyActionCode(db, form, 'catalog');
+  if (!actor.ok) catalogRedirect('/admin/cursos-cuentas', 'error', actor.message);
+
+  const userId = String(form.get('user_id') || '');
+  const courseId = String(form.get('course_id') || '');
+  if (!userId || !courseId) catalogRedirect('/admin/cursos-cuentas', 'error', 'No se recibió la cuenta o el curso.');
+
+  const { error: professorsError } = await db
+    .from('verified_course_professors')
+    .delete()
+    .eq('user_id', userId)
+    .eq('course_id', courseId);
+  if (professorsError) catalogRedirect('/admin/cursos-cuentas', 'error', `No se quitaron los profesores: ${professorsError.message}`);
+
+  const { error: coursesError } = await db
+    .from('verified_courses')
+    .delete()
+    .eq('user_id', userId)
+    .eq('course_id', courseId);
+  if (coursesError) catalogRedirect('/admin/cursos-cuentas', 'error', `No se quitó el curso: ${coursesError.message}`);
+
+  const { count, error: countError } = await db
+    .from('verified_course_professors')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId);
+  if (!countError && count === 0) {
+    await db.from('profiles').update({ verification_status: 'unverified' }).eq('id', userId);
+  }
+
+  revalidatePath('/admin/cursos-cuentas');
+  revalidatePath('/cursos-verificados');
+  revalidatePath('/ciclos');
+  catalogRedirect('/admin/cursos-cuentas', 'success', `Acceso al curso retirado por ${actor.label}.`);
+}
