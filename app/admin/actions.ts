@@ -1,6 +1,6 @@
 'use server';
 import { revalidatePath } from 'next/cache'; import { requireAdmin } from '@/lib/admin';
-export async function moderateReview(form: FormData) { const { db } = await requireAdmin(); await db.from('reviews').update({ status: form.get('status'), moderation_reason: String(form.get('reason') || '') }).eq('id', String(form.get('id'))); revalidatePath('/admin/reseñas'); revalidatePath(`/profesores/${form.get('professor_id')}`); }
+export async function moderateReview(form: FormData) { const { db } = await requireAdmin(); await db.from('reviews').update({ status: form.get('status'), moderation_reason: String(form.get('reason') || '') }).eq('id', String(form.get('id'))); revalidatePath('/admin/reseñas'); revalidatePath('/admin/resenas-observadas'); revalidatePath(`/profesores/${form.get('professor_id')}`); }
 export type VerificationActionState = { ok: boolean; message: string };
 
 export async function moderateVerification(
