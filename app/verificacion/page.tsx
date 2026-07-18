@@ -28,7 +28,7 @@ const steps = [
   },
   {
     title: 'Recorta la evidencia',
-    description: 'Deja visibles tu nombre, el curso y el profesor correspondiente. Oculta el código de estudiante y cualquier dato que no sea necesario.',
+    description: 'Deja visibles tu código universitario, tu nombre, el curso y el profesor correspondiente. Oculta únicamente los datos que no sean necesarios.',
     image: '/verification-guide/04-boleta-recortada.jpeg',
     width: 900,
     height: 689,
@@ -71,7 +71,7 @@ export default function VerificationPage() {
       </div>
 
       <div className="mt-6 rounded-2xl bg-blue-50 p-5 text-sm leading-6 text-blue-950">
-        <strong>Antes de enviarla:</strong> comprueba que se lean tu nombre, el curso y el profesor. Oculta notas, promedios, código universitario y cualquier otro dato personal que no sea necesario. La evidencia será privada y solo se utilizará para la verificación.
+        <strong>Antes de enviarla:</strong> comprueba que se lean tu código universitario, tu nombre, el curso y el profesor. Oculta notas, promedios y cualquier otro dato personal que no sea necesario. La evidencia será privada y solo se utilizará para la verificación.
       </div>
 
       <div className="mt-8 border-t border-slate-200 pt-6">
