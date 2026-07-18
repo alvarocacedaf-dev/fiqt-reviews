@@ -53,6 +53,19 @@ export async function moderateVerification(
     );
     if (pairsError) return { ok: false, message: `No se guardaron los profesores: ${pairsError.message}` };
 
+    const { error: historyError } = await db.from('verification_submission_approvals').upsert(
+      pairs.map(pair => ({
+        submission_id: id,
+        course_id: pair.courseId,
+        professor_id: pair.professorId,
+        academic_term: academicTerm,
+        section,
+        approved_by: user.id,
+      })),
+      { onConflict: 'submission_id,course_id,professor_id' },
+    );
+    if (historyError) return { ok: false, message: `No se guardó el detalle de la evidencia: ${historyError.message}` };
+
     const { error: profileError } = await db.from('profiles').update({ verification_status: 'verified' }).eq('id', submission.data.user_id);
     if (profileError) return { ok: false, message: `No se actualizó la cuenta: ${profileError.message}` };
   } else {
@@ -69,6 +82,7 @@ export async function moderateVerification(
   if (updateError) return { ok: false, message: `No se cerró la solicitud: ${updateError.message}` };
 
   revalidatePath('/admin/verificaciones');
+  revalidatePath('/admin/cuentas-verificadas');
   revalidatePath('/cursos-verificados');
   return { ok: true, message: status === 'approved' ? 'Cursos y profesores aprobados correctamente.' : 'Evidencia rechazada.' };
 }
