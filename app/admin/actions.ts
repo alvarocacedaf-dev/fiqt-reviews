@@ -1,6 +1,39 @@
 'use server';
 import { revalidatePath } from 'next/cache'; import { requireAdmin } from '@/lib/admin';
-export async function moderateReview(form: FormData) { const { db } = await requireAdmin(); await db.from('reviews').update({ status: form.get('status'), moderation_reason: String(form.get('reason') || '') }).eq('id', String(form.get('id'))); revalidatePath('/admin/reseñas'); revalidatePath('/admin/resenas-observadas'); revalidatePath(`/profesores/${form.get('professor_id')}`); }
+export type ReviewActionState = { ok: boolean; message: string };
+
+export async function moderateReview(
+  _previousState: ReviewActionState,
+  form: FormData,
+): Promise<ReviewActionState> {
+  const { db } = await requireAdmin();
+  const id = String(form.get('id') || '');
+  const status = String(form.get('status') || '');
+  const reason = String(form.get('reason') || '').trim();
+
+  if (!id || !['approved', 'rejected'].includes(status)) {
+    return { ok: false, message: 'No se recibió una acción válida para la reseña.' };
+  }
+
+  const { data, error } = await db
+    .from('reviews')
+    .update({
+      status,
+      moderation_reason: status === 'rejected' ? reason || 'No cumple las reglas de moderación.' : null,
+    })
+    .eq('id', id)
+    .select('id')
+    .single();
+
+  if (error || !data) {
+    return { ok: false, message: `No se pudo actualizar la reseña: ${error?.message ?? 'sin respuesta de la base de datos'}` };
+  }
+
+  revalidatePath('/admin/resenas');
+  revalidatePath('/admin/resenas-observadas');
+  revalidatePath(`/profesores/${form.get('professor_id')}`);
+  return { ok: true, message: status === 'approved' ? 'Reseña aprobada.' : 'Reseña rechazada.' };
+}
 export type VerificationActionState = { ok: boolean; message: string };
 
 export async function moderateVerification(
