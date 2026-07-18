@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
@@ -22,63 +23,65 @@ async function getApprovedReviewCount() {
   return count ?? 0;
 }
 
-function InitialMissionCard({ approvedReviews }: { approvedReviews: number }) {
-  const goal = 4;
-  const completed = approvedReviews >= goal;
-  const progress = Math.min(100, Math.round((approvedReviews / goal) * 100));
+function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
   const rewards = [
-    { goal: 4, title: 'Acceso completo a la página', description: 'Desbloquea el acceso completo a las funciones de FIQT Reviews.' },
-    { goal: 10, title: 'Planchas de 1 curso', description: 'Podrás solicitar planchas del curso que elijas.' },
-    { goal: 18, title: 'Planchas de hasta 2 cursos', description: 'Podrás solicitar planchas de dos cursos diferentes.' },
-    { goal: 25, title: 'Visita técnica gratuita', description: 'Podrás acceder a una visita técnica gratuita en la FIQT.' },
+    { goal: 4, title: 'Acceso completo a la página' },
+    { goal: 10, title: 'Planchas de 1 curso' },
+    { goal: 18, title: 'Planchas de hasta 2 cursos' },
+    { goal: 25, title: 'Visita técnica gratuita' },
   ];
+  const nextReward = rewards.find(reward => approvedReviews < reward.goal);
+  const progress = nextReward ? Math.min(100, Math.round((approvedReviews / nextReward.goal) * 100)) : 100;
+  const remaining = nextReward ? nextReward.goal - approvedReviews : 0;
 
   return (
     <aside className="rounded-3xl border border-white/15 bg-[#071a3d]/85 p-5 text-white shadow-card backdrop-blur lg:sticky lg:top-24">
-      <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">Meta inicial</p>
-      <h2 className="mt-2 text-2xl font-black">Comparte lo que aprendiste viviendo el curso</h2>
+      <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">Programa de beneficios</p>
+      <h2 className="mt-2 text-2xl font-black">Comparte tu experiencia y desbloquea beneficios</h2>
       <p className="mt-3 text-sm leading-6 text-blue-100">
-        Cada reseña responsable ayuda a que otros alumnos tomen mejores decisiones.
+        Cada reseña aprobada ayuda a otros alumnos y te acerca a una nueva recompensa.
       </p>
 
       <div className="mt-5 rounded-2xl bg-white/10 p-4">
         <div className="flex items-center justify-between gap-3 text-sm font-bold">
-          <span>{completed ? 'Meta completada' : 'Tu avance'}</span>
+          <span>{nextReward ? 'Próxima recompensa' : 'Ruta completada'}</span>
           <span className="rounded-full bg-gold px-3 py-1 text-xs font-black text-ink">
-            {Math.min(approvedReviews, goal)} / {goal}
+            {approvedReviews} aprobada{approvedReviews === 1 ? '' : 's'}
           </span>
         </div>
+        <p className="mt-3 font-black text-white">{nextReward?.title ?? 'Todas las recompensas desbloqueadas'}</p>
         <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/15">
           <div className="h-full rounded-full bg-gradient-to-r from-gold to-yellow-300" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-3 text-xs leading-5 text-blue-100">
-          {completed
-            ? 'Meta inicial completada. Tus reseñas responsables ayudan a otros alumnos a tomar mejores decisiones.'
-            : 'Completa 4 reseñas aprobadas para desbloquear tu insignia de colaborador inicial. Solo cuentan experiencias académicas reales y respetuosas.'}
+          {nextReward
+            ? `Te faltan ${remaining} reseña${remaining === 1 ? '' : 's'} aprobada${remaining === 1 ? '' : 's'} para alcanzar esta recompensa.`
+            : 'Completaste todas las metas actuales. Seguiremos buscando nuevas recompensas para reconocer tu aporte.'}
         </p>
       </div>
 
       <div className="mt-5">
-        <h3 className="text-sm font-black uppercase tracking-wider text-gold">Beneficios por colaborar</h3>
+        <h3 className="text-sm font-black uppercase tracking-wider text-gold">Tu ruta de recompensas</h3>
         <p className="mt-2 text-xs leading-5 text-blue-100">Solo cuentan las reseñas aprobadas, responsables y basadas en experiencias académicas reales.</p>
-        <div className="mt-3 space-y-3">
+        <div className="mt-3 space-y-2">
           {rewards.map(reward => {
             const unlocked = approvedReviews >= reward.goal;
+            const isNext = nextReward?.goal === reward.goal;
             return (
-              <div key={reward.goal} className={`rounded-2xl border p-4 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : 'border-white/10 bg-white/5'}`}>
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-black text-white">{reward.title}</p>
-                    <p className="mt-1 text-xs leading-5 text-blue-100">{reward.description}</p>
-                  </div>
-                  <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-gold text-ink'}`}>
-                    {unlocked ? 'Desbloqueado' : `${reward.goal} reseñas`}
-                  </span>
+              <div key={reward.goal} className={`flex items-center gap-3 rounded-xl border p-3 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : isNext ? 'border-gold/50 bg-gold/10' : 'border-white/10 bg-white/5'}`}>
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
+                  {reward.goal}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-black text-white">{reward.title}</p>
+                  <p className="mt-0.5 text-[11px] font-bold text-blue-200">{unlocked ? 'Desbloqueado' : isNext ? 'Próximo objetivo' : 'Bloqueado'}</p>
                 </div>
+                <span className="text-sm" aria-hidden="true">{unlocked ? '✓' : '🔒'}</span>
               </div>
             );
           })}
         </div>
+        <Link href="/cursos-verificados" className="btn-primary mt-4 w-full text-center">Ir a mis cursos verificados</Link>
         <p className="mt-4 rounded-2xl bg-gold/10 p-3 text-xs font-semibold leading-5 text-yellow-100">
           A mayor cantidad de reseñas aprobadas, buscaremos ofrecer mayores recompensas para reconocer tu aporte a la comunidad.
         </p>
@@ -107,7 +110,7 @@ export default async function CyclesPage() {
         </p>
       )}
     </section>
-    {approvedReviewCount !== null && <InitialMissionCard approvedReviews={approvedReviewCount} />}
+    {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} />}
     </div>
   );
 }
