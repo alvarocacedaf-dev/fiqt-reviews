@@ -164,7 +164,9 @@ export async function Header() {
     isLoggedIn = Boolean(user);
 
     if (user) {
-      userName = displayNameFromUniEmail(user.email);
+      userName = user.email?.toLowerCase() === 'jenifer.chaponan.o@uni.pe'
+        ? 'Mechita'
+        : displayNameFromUniEmail(user.email);
       const { data: profile } = await db.from('profiles').select('role').eq('id', user.id).single();
       isAdmin = profile?.role === 'admin';
     }
