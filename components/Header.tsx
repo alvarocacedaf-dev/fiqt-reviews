@@ -87,10 +87,12 @@ function displayNameFromUniEmail(email?: string | null) {
 function LoggedInLinks({
   signOut,
   isAdmin,
+  hasWorksheetAccess,
   variant = 'desktop',
 }: {
   signOut: () => Promise<void>;
   isAdmin: boolean;
+  hasWorksheetAccess: boolean;
   variant?: 'desktop' | 'mobile';
 }) {
   if (variant === 'mobile') {
@@ -108,6 +110,17 @@ function LoggedInLinks({
           <NavIcon type="verified" />
           Cursos verificados
         </a>
+        {hasWorksheetAccess ? (
+          <a className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/planchas">
+            <span>Planchas</span>
+            <span aria-hidden="true">🔓</span>
+          </a>
+        ) : (
+          <span className="flex cursor-not-allowed items-center justify-between gap-3 rounded-2xl px-4 py-3 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
+            <span>Planchas</span>
+            <span aria-hidden="true">🔒</span>
+          </span>
+        )}
         {isAdmin && (
           <a className="flex items-center gap-3 rounded-2xl bg-gold px-4 py-3 font-black text-ink" href="/admin/verificaciones">
             Panel de administración
@@ -137,6 +150,15 @@ function LoggedInLinks({
         <NavIcon type="verified" />
         Cursos verificados
       </a>
+      {hasWorksheetAccess ? (
+        <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/planchas">
+          Planchas <span aria-hidden="true">🔓</span>
+        </a>
+      ) : (
+        <span className="inline-flex cursor-not-allowed items-center gap-2 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
+          Planchas <span aria-hidden="true">🔒</span>
+        </span>
+      )}
       {isAdmin && (
         <a className="rounded-xl bg-gold px-3 py-2 font-black text-ink transition hover:bg-yellow-300" href="/admin/verificaciones">
           Administrar
@@ -156,6 +178,7 @@ export async function Header() {
   let userName = '';
   let isLoggedIn = false;
   let isAdmin = false;
+  let hasWorksheetAccess = false;
 
   if (isSupabaseConfigured) {
     const db = await createClient();
@@ -167,8 +190,16 @@ export async function Header() {
       userName = user.email?.toLowerCase() === 'jenifer.chaponan.o@uni.pe'
         ? 'Mechita'
         : displayNameFromUniEmail(user.email);
-      const { data: profile } = await db.from('profiles').select('role').eq('id', user.id).single();
+      const [{ data: profile }, { count: approvedReviewCount }] = await Promise.all([
+        db.from('profiles').select('role').eq('id', user.id).single(),
+        db
+          .from('reviews')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('status', 'approved'),
+      ]);
       isAdmin = profile?.role === 'admin';
+      hasWorksheetAccess = (approvedReviewCount ?? 0) >= 18;
     }
   }
 
@@ -198,7 +229,7 @@ export async function Header() {
 
         <div className="hidden items-center gap-5 text-sm font-semibold md:flex">
           {isLoggedIn ? (
-            <LoggedInLinks signOut={signOut} isAdmin={isAdmin} />
+            <LoggedInLinks signOut={signOut} isAdmin={isAdmin} hasWorksheetAccess={hasWorksheetAccess} />
           ) : (
             <>
               <a className="transition hover:text-gold" href="/registro">
@@ -222,7 +253,7 @@ export async function Header() {
                   <span className="block h-0.5 w-5 rounded-full bg-current" />
                 </span>
               </summary>
-              <LoggedInLinks signOut={signOut} isAdmin={isAdmin} variant="mobile" />
+              <LoggedInLinks signOut={signOut} isAdmin={isAdmin} hasWorksheetAccess={hasWorksheetAccess} variant="mobile" />
             </details>
           ) : (
             <div className="flex items-center gap-3 text-sm font-semibold">

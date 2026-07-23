@@ -26,8 +26,7 @@ async function getApprovedReviewCount() {
 function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
   const rewards = [
     { goal: 4, title: 'Acceso completo a la página' },
-    { goal: 10, title: 'Planchas de 1 curso' },
-    { goal: 18, title: 'Planchas de hasta 2 cursos' },
+    { goal: 18, title: 'Acceso a Planchas' },
     { goal: 25, title: 'Visita técnica gratuita' },
   ];
   const nextReward = rewards.find(reward => approvedReviews < reward.goal);
