@@ -78,7 +78,7 @@ function displayNameFromUniEmail(email?: string | null) {
 
   const [firstName, firstLastName] = localPart.split('.');
   if (firstName && firstLastName) {
-    return `${firstName} ${firstLastName}`.toUpperCase();
+    return `${firstName}.${firstLastName.charAt(0)}`.toUpperCase();
   }
 
   return localPart.replaceAll('.', ' ').toUpperCase();
