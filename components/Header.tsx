@@ -187,9 +187,15 @@ export async function Header() {
     isLoggedIn = Boolean(user);
 
     if (user) {
-      userName = user.email?.toLowerCase() === 'jenifer.chaponan.o@uni.pe'
-        ? 'Mechita'
-        : displayNameFromUniEmail(user.email);
+      const email = user.email?.toLowerCase();
+
+if (email === 'alvaro.caceda.f@uni.pe') {
+  userName = 'JEFE';
+} else if (email === 'jenifer.chaponan.o@uni.pe') {
+  userName = 'Mechita';
+} else {
+  userName = displayNameFromUniEmail(user.email);
+}
       const [{ data: profile }, { count: approvedReviewCount }] = await Promise.all([
         db.from('profiles').select('role').eq('id', user.id).single(),
         db
