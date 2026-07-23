@@ -35,15 +35,22 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
 
   if (!user) redirect('/login?next=/planchas');
 
-  const { count, error: countError } = await db
-    .from('reviews')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('status', 'approved');
+  const [
+    { data: profile, error: profileError },
+    { count, error: countError },
+  ] = await Promise.all([
+    db.from('profiles').select('role').eq('id', user.id).single(),
+    db
+      .from('reviews')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('status', 'approved'),
+  ]);
 
   const approvedReviews = count ?? 0;
+  const isAdmin = profile?.role === 'admin';
 
-  if (countError) {
+  if (profileError || (!isAdmin && countError)) {
     return (
       <section className="panel">
         <h1 className="text-3xl font-black text-ink">Planchas 🔒</h1>
@@ -54,7 +61,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
     );
   }
 
-  if (approvedReviews < MINIMUM_APPROVED_REVIEWS) {
+  if (!isAdmin && approvedReviews < MINIMUM_APPROVED_REVIEWS) {
     const remaining = MINIMUM_APPROVED_REVIEWS - approvedReviews;
     const progress = Math.round((approvedReviews / MINIMUM_APPROVED_REVIEWS) * 100);
 
@@ -120,7 +127,9 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
         <h1 className="mt-2 text-3xl font-black text-ink">Planchas 🔓</h1>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
           Organiza los cursos de los que ya tienes planchas y aquellos de los que deseas conseguir material.
-          Esta opción está disponible porque alcanzaste {approvedReviews} reseñas aprobadas.
+          {isAdmin
+            ? ' Esta opción está disponible por tu rol de administrador.'
+            : ` Esta opción está disponible porque alcanzaste ${approvedReviews} reseñas aprobadas.`}
         </p>
       </section>
 
@@ -147,4 +156,3 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
     </div>
   );
 }
-

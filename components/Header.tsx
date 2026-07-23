@@ -205,7 +205,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           .eq('status', 'approved'),
       ]);
       isAdmin = profile?.role === 'admin';
-      hasWorksheetAccess = (approvedReviewCount ?? 0) >= 18;
+      hasWorksheetAccess = isAdmin || (approvedReviewCount ?? 0) >= 18;
     }
   }
 
@@ -276,5 +276,4 @@ if (email === 'alvaro.caceda.f@uni.pe') {
     </header>
   );
 }
-
 

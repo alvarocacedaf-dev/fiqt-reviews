@@ -20,11 +20,14 @@ as $$
   select
     p_user_id = auth.uid()
     and (
-      select count(*)
-      from public.reviews
-      where user_id = p_user_id
-        and status = 'approved'
-    ) >= 18
+      public.is_admin()
+      or (
+        select count(*)
+        from public.reviews
+        where user_id = p_user_id
+          and status = 'approved'
+      ) >= 18
+    )
 $$;
 
 revoke all on function public.has_worksheet_access(uuid) from public;
@@ -89,4 +92,3 @@ $$;
 
 revoke all on function public.save_worksheet_preferences(uuid[], uuid[]) from public;
 grant execute on function public.save_worksheet_preferences(uuid[], uuid[]) to authenticated;
-
