@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { saveWorksheetPreferences } from '@/app/planchas/actions';
 
@@ -12,34 +12,28 @@ type CourseOption = {
 };
 
 type ColumnProps = {
+  blocked: Set<string>;
   courses: CourseOption[];
   description: string;
   emptyText: string;
-  onToggle: (courseId: string) => void;
-  query: string;
+  onAdd: (courseId: string) => void;
+  onRemove: (courseId: string) => void;
   selected: Set<string>;
-  setQuery: (value: string) => void;
   title: string;
 };
 
 function CourseColumn({
+  blocked,
   courses,
   description,
   emptyText,
-  onToggle,
-  query,
+  onAdd,
+  onRemove,
   selected,
-  setQuery,
   title,
 }: ColumnProps) {
-  const visibleCourses = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    if (!normalizedQuery) return courses;
-
-    return courses.filter(course =>
-      `${course.code ?? ''} ${course.name} ${course.cycleLabel}`.toLowerCase().includes(normalizedQuery),
-    );
-  }, [courses, query]);
+  const selectedCourses = courses.filter(course => selected.has(course.id));
+  const availableCourses = courses.filter(course => !selected.has(course.id) && !blocked.has(course.id));
 
   return (
     <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -53,46 +47,66 @@ function CourseColumn({
         </span>
       </div>
 
-      <input
-        className="input mt-5 w-full"
-        onChange={event => setQuery(event.target.value)}
-        placeholder="Buscar por código, curso o ciclo"
-        type="search"
-        value={query}
-      />
+      <label className="mt-5 block text-sm font-black text-ink">
+        Seleccionar curso
+        <select
+          className="input mt-2 w-full"
+          defaultValue=""
+          onChange={event => {
+            if (!event.target.value) return;
+            onAdd(event.target.value);
+            event.target.value = '';
+          }}
+        >
+          <option value="">Abre el desplegable para elegir un curso</option>
+          {availableCourses.map(course => (
+            <option key={course.id} value={course.id}>
+              {course.code || 'Sin código'} — {course.name} · {course.cycleLabel}
+            </option>
+          ))}
+        </select>
+      </label>
 
-      <div className="mt-4 max-h-[520px] space-y-2 overflow-y-auto pr-1">
-        {visibleCourses.map(course => {
-          const checked = selected.has(course.id);
-          return (
-            <label
-              className={`flex cursor-pointer items-start gap-3 rounded-2xl border p-3 transition ${
-                checked
-                  ? 'border-royal bg-blue-50 shadow-sm'
-                  : 'border-slate-200 bg-slate-50 hover:border-blue-300 hover:bg-white'
-              }`}
+      <div className="mt-5 border-t border-slate-200 pt-4">
+        <h3 className="text-sm font-black uppercase tracking-wider text-royal">Cursos seleccionados</h3>
+        <div className="mt-3 space-y-2">
+          {selectedCourses.map(course => (
+            <article
+              className="flex items-start justify-between gap-4 rounded-2xl border border-blue-100 bg-blue-50 p-4"
               key={course.id}
             >
-              <input
-                checked={checked}
-                className="mt-1 h-4 w-4 shrink-0 accent-[#123c88]"
-                onChange={() => onToggle(course.id)}
-                type="checkbox"
-              />
-              <span className="min-w-0">
-                <span className="block font-black text-ink">
+              <div className="min-w-0">
+                <p className="font-black text-ink">
                   {course.code || 'Sin código'} — {course.name}
-                </span>
-                <span className="mt-1 block text-xs font-semibold text-slate-500">{course.cycleLabel}</span>
-              </span>
-            </label>
-          );
-        })}
+                </p>
+                <p className="mt-1 text-xs font-semibold text-slate-500">{course.cycleLabel}</p>
+              </div>
+              <button
+                className="shrink-0 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-700 transition hover:bg-red-50"
+                onClick={() => onRemove(course.id)}
+                type="button"
+              >
+                Quitar
+              </button>
+            </article>
+          ))}
 
-        {!visibleCourses.length && (
-          <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">{emptyText}</p>
-        )}
+          {!selectedCourses.length && (
+            <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">{emptyText}</p>
+          )}
+        </div>
       </div>
+
+      {!availableCourses.length && courses.length > 0 && (
+        <p className="mt-4 text-xs font-semibold text-slate-500">
+          Todos los cursos disponibles ya están seleccionados en una de las columnas.
+        </p>
+      )}
+      {!courses.length && (
+        <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-900">
+          Todavía no hay cursos disponibles.
+        </p>
+      )}
     </section>
   );
 }
@@ -118,37 +132,39 @@ export function WorksheetPreferencesForm({
 }) {
   const [have, setHave] = useState(() => new Set(initialHave));
   const [want, setWant] = useState(() => new Set(initialWant));
-  const [haveQuery, setHaveQuery] = useState('');
-  const [wantQuery, setWantQuery] = useState('');
 
-  function toggleHave(courseId: string) {
-    const next = new Set(have);
-    if (next.has(courseId)) {
+  function addHave(courseId: string) {
+    setWant(current => {
+      const next = new Set(current);
       next.delete(courseId);
-    } else {
-      next.add(courseId);
-      setWant(current => {
-        const withoutCourse = new Set(current);
-        withoutCourse.delete(courseId);
-        return withoutCourse;
-      });
-    }
-    setHave(next);
+      return next;
+    });
+    setHave(current => new Set(current).add(courseId));
   }
 
-  function toggleWant(courseId: string) {
-    const next = new Set(want);
-    if (next.has(courseId)) {
+  function addWant(courseId: string) {
+    setHave(current => {
+      const next = new Set(current);
       next.delete(courseId);
-    } else {
-      next.add(courseId);
-      setHave(current => {
-        const withoutCourse = new Set(current);
-        withoutCourse.delete(courseId);
-        return withoutCourse;
-      });
-    }
-    setWant(next);
+      return next;
+    });
+    setWant(current => new Set(current).add(courseId));
+  }
+
+  function removeHave(courseId: string) {
+    setHave(current => {
+      const next = new Set(current);
+      next.delete(courseId);
+      return next;
+    });
+  }
+
+  function removeWant(courseId: string) {
+    setWant(current => {
+      const next = new Set(current);
+      next.delete(courseId);
+      return next;
+    });
   }
 
   return (
@@ -162,34 +178,33 @@ export function WorksheetPreferencesForm({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <CourseColumn
+          blocked={want}
           courses={courses}
-          description="Marca los cursos de los que puedes compartir planchas."
-          emptyText="No encontramos cursos con esa búsqueda."
-          onToggle={toggleHave}
-          query={haveQuery}
+          description="Elige en el desplegable los cursos de los que puedes compartir planchas."
+          emptyText="Aún no seleccionaste cursos en esta columna."
+          onAdd={addHave}
+          onRemove={removeHave}
           selected={have}
-          setQuery={setHaveQuery}
           title="Planchas que tengo"
         />
         <CourseColumn
+          blocked={have}
           courses={courses}
-          description="Marca los cursos cuyas planchas te gustaría conseguir."
-          emptyText="No encontramos cursos con esa búsqueda."
-          onToggle={toggleWant}
-          query={wantQuery}
+          description="Elige en el desplegable los cursos cuyas planchas te gustaría conseguir."
+          emptyText="Aún no seleccionaste cursos en esta columna."
+          onAdd={addWant}
+          onRemove={removeWant}
           selected={want}
-          setQuery={setWantQuery}
           title="Planchas que quiero"
         />
       </div>
 
       <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:flex-row">
         <p className="text-sm leading-6 text-slate-700">
-          Un mismo curso solo puede estar en una de las dos columnas. Puedes regresar y modificar tus selecciones cuando quieras.
+          Usa <strong>Quitar</strong> para retirar un curso y luego guarda los cambios. Un mismo curso solo puede estar en una columna.
         </p>
         <SaveButton />
       </div>
     </form>
   );
 }
-
