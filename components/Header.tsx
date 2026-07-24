@@ -239,7 +239,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
   }
 
   return (
-    <header className="border-b border-white/15 bg-[#071a3d]/70 text-white backdrop-blur">
+    <header className="relative z-50 border-b border-white/15 bg-[#071a3d]/70 text-white backdrop-blur">
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <div className="shrink-0 text-lg font-black tracking-tight">
