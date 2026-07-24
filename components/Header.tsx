@@ -111,10 +111,20 @@ function LoggedInLinks({
           Cursos verificados
         </a>
         {hasWorksheetAccess ? (
-          <a className="flex items-center justify-between gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/planchas">
-            <span>Planchas</span>
-            <span aria-hidden="true">🔓</span>
-          </a>
+          <details>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold [&::-webkit-details-marker]:hidden">
+              <span>Planchas</span>
+              <span className="inline-flex items-center gap-2" aria-hidden="true">🔓 ▾</span>
+            </summary>
+            <div className="ml-4 border-l border-white/15 pl-3">
+              <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/planchas">
+                Planchas
+              </a>
+              <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
+                Mis matches
+              </a>
+            </div>
+          </details>
         ) : (
           <span className="flex cursor-not-allowed items-center justify-between gap-3 rounded-2xl px-4 py-3 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
             <span>Planchas</span>
@@ -151,9 +161,20 @@ function LoggedInLinks({
         Cursos verificados
       </a>
       {hasWorksheetAccess ? (
-        <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/planchas">
-          Planchas <span aria-hidden="true">🔓</span>
-        </a>
+        <details className="group relative">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-2 transition hover:text-gold [&::-webkit-details-marker]:hidden">
+            Planchas <span aria-hidden="true">🔓</span>
+            <span className="text-[10px] transition group-open:rotate-180" aria-hidden="true">▼</span>
+          </summary>
+          <div className="absolute left-1/2 top-[calc(100%+0.75rem)] z-50 min-w-44 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/15 bg-[#071a3d] p-2 text-sm font-bold text-white shadow-2xl">
+            <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/planchas">
+              Planchas
+            </a>
+            <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
+              Mis matches
+            </a>
+          </div>
+        </details>
       ) : (
         <span className="inline-flex cursor-not-allowed items-center gap-2 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
           Planchas <span aria-hidden="true">🔒</span>
@@ -276,4 +297,3 @@ if (email === 'alvaro.caceda.f@uni.pe') {
     </header>
   );
 }
-
