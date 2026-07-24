@@ -2,6 +2,20 @@
 
 import { useFormStatus } from 'react-dom';
 
+export function OpenChatButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      className="btn-primary"
+      disabled={pending}
+      type="submit"
+    >
+      {pending ? 'Abriendo…' : 'Abrir este chat'}
+    </button>
+  );
+}
+
 export function FinishChatButton() {
   const { pending } = useFormStatus();
 

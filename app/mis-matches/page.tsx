@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import { ChatAutoRefresh } from '@/components/ChatAutoRefresh';
 import { ChatComposer } from '@/components/ChatComposer';
-import { FinishChatButton } from '@/components/FinishChatButton';
+import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
 import { createClient } from '@/lib/supabase/server';
-import { finishChat } from './actions';
+import { finishChat, openChat } from './actions';
 
 type PageProps = {
   searchParams: Promise<{ chat?: string; error?: string; success?: string }>;
@@ -15,7 +15,9 @@ type ChatThread = {
   support_user_id: string | null;
   user_a_id: string | null;
   user_b_id: string | null;
-  status: 'active' | 'ended';
+  status: 'available' | 'active' | 'ended';
+  opened_by: string | null;
+  opened_at: string | null;
   ended_by: string | null;
   created_at: string;
   last_message_at: string;
@@ -138,7 +140,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
   ] = await Promise.all([
     db
       .from('chat_threads')
-      .select('id,kind,support_user_id,user_a_id,user_b_id,status,ended_by,created_at,last_message_at,ended_at')
+      .select('id,kind,support_user_id,user_a_id,user_b_id,status,opened_by,opened_at,ended_by,created_at,last_message_at,ended_at')
       .order('last_message_at', { ascending: false }),
     db.rpc('get_chat_participant_profiles'),
     db.rpc('get_chat_thread_previews'),
@@ -155,8 +157,9 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     ((rawPreviews ?? []) as ChatPreview[]).map(preview => [preview.thread_id, preview]),
   );
 
+  const activeThread = isAdmin ? null : threads.find(thread => thread.status === 'active') ?? null;
   const requestedThread = threads.find(thread => thread.id === query.chat);
-  const selectedThread = requestedThread ?? threads[0] ?? null;
+  const selectedThread = activeThread ?? requestedThread ?? threads[0] ?? null;
   const { data: rawSelectedMessages, error: selectedMessagesError } = selectedThread
     ? await db
       .from('chat_messages')
@@ -265,18 +268,19 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               const personId = threadPersonId(thread);
               const lastMessage = lastMessageByThread.get(thread.id);
               const isSelected = selectedThread?.id === thread.id;
+              const isBlockedByActiveChat = Boolean(activeThread && activeThread.id !== thread.id);
               const preview = lastMessage?.body
                 || (lastMessage?.attachment_name ? `📎 ${lastMessage.attachment_name}` : 'Conversación disponible');
 
-              return (
-                <a
+              const content = (
+                <span
                   className={`block rounded-2xl p-3 transition ${
                     isSelected
                       ? 'bg-blue-100 ring-1 ring-blue-200'
-                      : 'hover:bg-white'
+                      : isBlockedByActiveChat
+                        ? 'cursor-not-allowed opacity-45'
+                        : 'hover:bg-white'
                   }`}
-                  href={`/mis-matches?chat=${encodeURIComponent(thread.id)}`}
-                  key={thread.id}
                 >
                   <div className="flex gap-3">
                     <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full font-black ${
@@ -298,13 +302,37 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                       <span className="mt-1 block truncate text-xs text-slate-500">
                         {lastMessage?.sender_id === user.id ? 'Tú: ' : ''}{preview}
                       </span>
-                      {thread.status === 'ended' && (
-                        <span className="mt-1 inline-block rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-black text-slate-600">
-                          Finalizado
-                        </span>
-                      )}
+                      <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-black ${
+                        thread.status === 'active'
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : thread.status === 'ended'
+                            ? 'bg-slate-200 text-slate-600'
+                            : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {thread.status === 'active'
+                          ? 'Activo'
+                          : thread.status === 'ended'
+                            ? 'Finalizado'
+                            : 'Disponible'}
+                      </span>
                     </span>
                   </div>
+                </span>
+              );
+
+              return isBlockedByActiveChat ? (
+                <div
+                  key={thread.id}
+                  title="Finaliza el chat activo antes de abrir otra conversación."
+                >
+                  {content}
+                </div>
+              ) : (
+                <a
+                  href={`/mis-matches?chat=${encodeURIComponent(thread.id)}`}
+                  key={thread.id}
+                >
+                  {content}
                 </a>
               );
             })}
@@ -332,7 +360,11 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                   <div className="min-w-0">
                     <h2 className="truncate font-black text-ink">{selectedTitle}</h2>
                     <p className="text-xs font-semibold text-slate-500">
-                      {selectedThread.status === 'active' ? 'Chat activo' : 'Chat finalizado'}
+                      {selectedThread.status === 'active'
+                        ? 'Chat activo'
+                        : selectedThread.status === 'ended'
+                          ? 'Chat finalizado'
+                          : 'Disponible para abrir'}
                     </p>
                   </div>
                 </div>
@@ -424,12 +456,31 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
 
               {selectedThread.status === 'active' ? (
                 <ChatComposer threadId={selectedThread.id} userId={user.id} />
-              ) : (
+              ) : selectedThread.status === 'ended' ? (
                 <div className="border-t border-slate-200 bg-slate-100 p-4 text-center">
                   <p className="text-sm font-black text-slate-600">Este chat fue finalizado.</p>
                   <p className="mt-1 text-xs text-slate-500">
                     Los mensajes y archivos permanecen guardados, pero ya no se pueden realizar nuevos envíos.
                   </p>
+                </div>
+              ) : isAdmin && selectedThread.kind === 'support' ? (
+                <div className="border-t border-slate-200 bg-amber-50 p-4 text-center">
+                  <p className="text-sm font-black text-amber-900">Esperando al estudiante</p>
+                  <p className="mt-1 text-xs text-amber-800">
+                    El estudiante debe abrir este chat antes de que administración pueda enviar mensajes.
+                  </p>
+                </div>
+              ) : (
+                <div className="border-t border-slate-200 bg-blue-50 p-4 text-center">
+                  <p className="text-sm font-black text-ink">Este chat todavía no está activo</p>
+                  <p className="mx-auto mt-1 max-w-lg text-xs leading-5 text-slate-600">
+                    Solo puedes tener un chat activo. Después de finalizarlo tendrás que esperar 24 horas para
+                    abrir otro. En un chat de match, la otra persona también debe estar disponible.
+                  </p>
+                  <form action={openChat} className="mt-3">
+                    <input name="thread_id" type="hidden" value={selectedThread.id} />
+                    <OpenChatButton />
+                  </form>
                 </div>
               )}
             </>
