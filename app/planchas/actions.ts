@@ -54,5 +54,8 @@ export async function saveWorksheetPreferences(form: FormData) {
   if (error) redirectWithMessage('error', `No se pudieron guardar tus selecciones: ${error.message}`);
 
   revalidatePath('/planchas');
-  redirectWithMessage('success', 'Tus selecciones de planchas se guardaron correctamente.');
+  redirectWithMessage(
+    'success',
+    'Tus selecciones se guardaron y la búsqueda automática de matches quedó actualizada.',
+  );
 }
