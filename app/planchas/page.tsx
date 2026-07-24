@@ -126,10 +126,10 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Beneficio desbloqueado</p>
         <h1 className="mt-2 text-3xl font-black text-ink">Planchas 🔓</h1>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-          Organiza los cursos de los que ya tienes planchas y aquellos de los que deseas conseguir material.
-          {isAdmin
-            ? ' Esta opción está disponible por tu rol de administrador.'
-            : ` Esta opción está disponible porque alcanzaste ${approvedReviews} reseñas aprobadas.`}
+          Indica de qué cursos puedes compartir planchas y cuáles deseas conseguir. Cada vez que guardes tus
+          selecciones, buscaremos una coincidencia: una persona que quiera una plancha que tú tienes y que, al
+          mismo tiempo, tenga una que tú buscas. Cuando se encuentre un match, ambos recibirán una notificación
+          y podrán consultarlo en la sección <strong>Mis matches</strong>.
         </p>
       </section>
 
