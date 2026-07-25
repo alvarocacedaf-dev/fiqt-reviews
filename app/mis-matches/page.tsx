@@ -159,7 +159,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
 
   const activeThread = isAdmin ? null : threads.find(thread => thread.status === 'active') ?? null;
   const requestedThread = threads.find(thread => thread.id === query.chat);
-  const selectedThread = activeThread ?? requestedThread ?? threads[0] ?? null;
+  const selectedThread = requestedThread ?? activeThread ?? threads[0] ?? null;
   const { data: rawSelectedMessages, error: selectedMessagesError } = selectedThread
     ? await db
       .from('chat_messages')
@@ -268,7 +268,6 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               const personId = threadPersonId(thread);
               const lastMessage = lastMessageByThread.get(thread.id);
               const isSelected = selectedThread?.id === thread.id;
-              const isBlockedByActiveChat = Boolean(activeThread && activeThread.id !== thread.id);
               const preview = lastMessage?.body
                 || (lastMessage?.attachment_name ? `📎 ${lastMessage.attachment_name}` : 'Conversación disponible');
 
@@ -277,9 +276,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                   className={`block rounded-2xl p-3 transition ${
                     isSelected
                       ? 'bg-blue-100 ring-1 ring-blue-200'
-                      : isBlockedByActiveChat
-                        ? 'cursor-not-allowed opacity-45'
-                        : 'hover:bg-white'
+                      : 'hover:bg-white'
                   }`}
                 >
                   <div className="flex gap-3">
@@ -320,14 +317,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                 </span>
               );
 
-              return isBlockedByActiveChat ? (
-                <div
-                  key={thread.id}
-                  title="Finaliza el chat activo antes de abrir otra conversación."
-                >
-                  {content}
-                </div>
-              ) : (
+              return (
                 <a
                   href={`/mis-matches?chat=${encodeURIComponent(thread.id)}`}
                   key={thread.id}
@@ -473,14 +463,23 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               ) : (
                 <div className="border-t border-slate-200 bg-blue-50 p-4 text-center">
                   <p className="text-sm font-black text-ink">Este chat todavía no está activo</p>
-                  <p className="mx-auto mt-1 max-w-lg text-xs leading-5 text-slate-600">
-                    Solo puedes tener un chat activo. Después de finalizarlo tendrás que esperar 24 horas para
-                    abrir otro. En un chat de match, la otra persona también debe estar disponible.
-                  </p>
-                  <form action={openChat} className="mt-3">
-                    <input name="thread_id" type="hidden" value={selectedThread.id} />
-                    <OpenChatButton />
-                  </form>
+                  {activeThread && activeThread.id !== selectedThread.id ? (
+                    <p className="mx-auto mt-1 max-w-lg text-xs leading-5 text-slate-600">
+                      Puedes consultar esta conversación, pero no activarla ni escribir aquí mientras mantengas
+                      otro chat activo.
+                    </p>
+                  ) : (
+                    <>
+                      <p className="mx-auto mt-1 max-w-lg text-xs leading-5 text-slate-600">
+                        Solo puedes tener un chat activo. Después de finalizarlo tendrás que esperar 24 horas para
+                        abrir otro. En un chat de match, la otra persona también debe estar disponible.
+                      </p>
+                      <form action={openChat} className="mt-3">
+                        <input name="thread_id" type="hidden" value={selectedThread.id} />
+                        <OpenChatButton />
+                      </form>
+                    </>
+                  )}
                 </div>
               )}
             </>
