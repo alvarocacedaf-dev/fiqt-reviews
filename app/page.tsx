@@ -38,6 +38,9 @@ export default function Home() {
             <p className="mt-7 max-w-xl text-base leading-8 text-blue-50 sm:text-lg">
               Plataforma de acceso para estudiantes UNI. Crea una cuenta con tu correo institucional para explorar ciclos, cursos y profesores.
             </p>
+            <p className="mt-3 max-w-xl text-base font-bold text-gold sm:text-lg">
+              Conecta con una comunidad y consigue las planchas que buscas
+            </p>
 
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Link href="/registro" className="btn-primary bg-gold px-7 py-4 text-ink shadow-xl hover:bg-[#f4cf70]">
