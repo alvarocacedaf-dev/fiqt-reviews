@@ -250,7 +250,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
               </span>
             </div>
           ) : (
-            <div className="shrink-0 text-lg font-black tracking-tight">
+            <div className="shrink-0 text-lg font-black tracking-tight lg:-translate-x-10">
               FIQT <span className="text-gold">Reviews<span className="text-white">/</span>Planchas</span>
             </div>
           )}
