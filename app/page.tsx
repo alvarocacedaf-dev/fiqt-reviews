@@ -13,6 +13,10 @@ const featureCards = [
     title: 'Referencial',
     text: 'Información pública con fuente visible, nunca datos privados.',
   },
+  {
+    title: 'Planchas por curso',
+    text: 'Encuentra evaluaciones pasadas y material compartido por estudiantes.',
+  },
 ];
 
 export default function Home() {
@@ -52,7 +56,7 @@ export default function Home() {
       </div>
 
       <div className="bg-[#03142f] px-6 py-7 sm:px-10 lg:px-16">
-        <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-4">
           {featureCards.map((card) => (
             <article key={card.title} className="rounded-xl bg-white/10 p-5 text-left shadow-2xl backdrop-blur">
               <h2 className="text-base font-black text-white">{card.title}</h2>
