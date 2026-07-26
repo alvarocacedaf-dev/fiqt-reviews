@@ -242,12 +242,18 @@ if (email === 'alvaro.caceda.f@uni.pe') {
     <header className="relative z-50 border-b border-white/15 bg-[#071a3d]/70 text-white backdrop-blur">
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-          <div className="shrink-0 text-center font-black leading-none tracking-tight">
-            <span className="block text-base text-white">FIQT</span>
-            <span className="mt-1 block text-sm text-gold">
-              Reviews<span className="text-white">/</span>Planchas
-            </span>
-          </div>
+          {isLoggedIn ? (
+            <div className="shrink-0 text-center font-black leading-none tracking-tight">
+              <span className="block text-base text-white">FIQT</span>
+              <span className="mt-1 block text-sm text-gold">
+                Reviews<span className="text-white">/</span>Planchas
+              </span>
+            </div>
+          ) : (
+            <div className="shrink-0 text-lg font-black tracking-tight">
+              FIQT <span className="text-gold">Reviews<span className="text-white">/</span>Planchas</span>
+            </div>
+          )}
 
           {isLoggedIn && (
             <div className="flex min-w-0 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2 py-1.5 sm:px-3">
