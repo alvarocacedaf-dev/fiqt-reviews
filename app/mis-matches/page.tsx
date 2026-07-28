@@ -91,6 +91,13 @@ function initials(name: string) {
     .toUpperCase() || 'U';
 }
 
+function privateChatName(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return 'Usuario';
+  if (parts.length === 1) return parts[0];
+  return `${parts[0]}.${parts[1][0].toUpperCase()}`;
+}
+
 function formatBytes(value: number | null) {
   if (!value) return '';
   if (value < 1024 * 1024) return `${Math.max(1, Math.round(value / 1024))} KB`;
@@ -220,12 +227,15 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     if (thread.kind === 'support') {
       if (isAdmin) {
         const supportProfile = thread.support_user_id ? profiles[thread.support_user_id] : null;
-        return `Soporte · ${supportProfile?.full_name || 'Estudiante'}`;
+        return `Soporte · ${privateChatName(supportProfile?.full_name || 'Estudiante')}`;
       }
       return 'Administración FIQT Reviews';
     }
     const personId = threadPersonId(thread);
-    return (personId && profiles[personId]?.full_name) || 'Compañero de intercambio';
+    const fullName = personId ? profiles[personId]?.full_name : null;
+    return fullName
+      ? privateChatName(fullName)
+      : 'Compañero de intercambio';
   }
 
   const selectedTitle = selectedThread ? threadTitle(selectedThread) : '';
@@ -345,7 +355,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                   }`}>
                     {selectedThread.kind === 'support' && !isAdmin
                       ? 'A'
-                      : initials(selectedTitle.replace(/^Soporte · /, ''))}
+                      : initials(selectedProfile?.full_name || selectedTitle.replace(/^Soporte · /, ''))}
                   </span>
                   <div className="min-w-0">
                     <h2 className="truncate font-black text-ink">{selectedTitle}</h2>
@@ -384,7 +394,9 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                     >
                       {!isOwn && selectedThread.kind === 'support' && (
                         <p className="mb-1 text-[10px] font-black uppercase tracking-wider text-gold">
-                          {isAdmin ? profiles[message.sender_id]?.full_name || 'Estudiante' : 'Administración'}
+                          {isAdmin
+                            ? privateChatName(profiles[message.sender_id]?.full_name || 'Estudiante')
+                            : 'Administración'}
                         </p>
                       )}
                       {message.body && <p className="whitespace-pre-wrap break-words text-sm leading-6">{message.body}</p>}
@@ -502,7 +514,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                 }`}>
                   {selectedThread.kind === 'support' && !isAdmin
                     ? 'A'
-                    : initials(selectedTitle.replace(/^Soporte · /, ''))}
+                    : initials(selectedProfile?.full_name || selectedTitle.replace(/^Soporte · /, ''))}
                 </span>
                 <h2 className="mt-3 font-black text-ink">{selectedTitle}</h2>
                 <p className="mt-1 text-xs text-slate-500">
