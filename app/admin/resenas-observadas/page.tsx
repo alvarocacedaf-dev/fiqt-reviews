@@ -14,6 +14,7 @@ type ObservedReview = {
   fairness_rating: number;
   treatment_rating: number;
   workload_rating: number;
+  course_demand_rating: number;
   created_at: string;
   courses: { code: string | null; name: string } | { code: string | null; name: string }[] | null;
   professors: { full_name: string } | { full_name: string }[] | null;
@@ -35,7 +36,7 @@ export default async function ObservedReviewsPage() {
     .from('reviews')
     .select(`
       id,user_id,status,comment,moderation_reason,moderated_by_label,recommendation,selected_tags,
-      clarity_rating,difficulty_rating,fairness_rating,treatment_rating,workload_rating,created_at,
+      clarity_rating,difficulty_rating,fairness_rating,treatment_rating,workload_rating,course_demand_rating,created_at,
       courses(code,name),professors(full_name)
     `)
     .in('status', ['approved', 'rejected'])
@@ -91,7 +92,7 @@ export default async function ObservedReviewsPage() {
               {accountReviews.map(review => {
                 const course = firstRelation(review.courses);
                 const professor = firstRelation(review.professors);
-                const ratings = [review.clarity_rating, review.difficulty_rating, review.fairness_rating, review.treatment_rating, review.workload_rating];
+                const ratings = [review.clarity_rating, review.difficulty_rating, review.fairness_rating, review.treatment_rating, review.workload_rating, review.course_demand_rating];
                 const average = ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
                 return (
                   <article key={review.id} className="overflow-hidden rounded-2xl border border-slate-200">
@@ -109,7 +110,7 @@ export default async function ObservedReviewsPage() {
 
                     <div className="space-y-4 p-5">
                       <div className="flex flex-wrap gap-2 text-sm">
-                        <span className="rounded-full bg-blue-50 px-3 py-1 font-black text-royal">Promedio: {average.toFixed(1)}/5</span>
+                        <span className="rounded-full bg-blue-50 px-3 py-1 font-black text-royal">Promedio: {average.toFixed(1)}/10</span>
                         <span className={`rounded-full px-3 py-1 font-bold ${review.recommendation === 'like' ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
                           {review.recommendation === 'like' ? 'Lo recomienda' : 'No lo recomienda'}
                         </span>
