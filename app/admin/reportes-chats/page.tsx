@@ -14,6 +14,8 @@ type ChatReport = {
   created_at: string;
   reviewed_at: string | null;
   reviewed_by: string | null;
+  report_type: 'harassment' | 'fraud' | 'other' | null;
+  resolution: 'founded' | 'unfounded' | null;
 };
 
 type Attachment = {
@@ -50,6 +52,17 @@ const statusLabels = {
   dismissed: 'Descartado',
 };
 
+const reportTypeLabels = {
+  harassment: 'Acoso',
+  fraud: 'Fraude',
+  other: 'Otros',
+};
+
+const resolutionLabels = {
+  founded: 'Fundado',
+  unfounded: 'Infundado',
+};
+
 function formatDate(value: string | null) {
   if (!value) return 'Sin fecha';
   return new Intl.DateTimeFormat('es-PE', {
@@ -75,7 +88,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
   const { db } = await requireAdmin();
   const { data: rawReports, error: reportsError } = await db
     .from('chat_reports')
-    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by')
+    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by,report_type,resolution')
     .order('created_at', { ascending: false });
 
   const reports = (rawReports ?? []) as ChatReport[];
@@ -271,6 +284,16 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                 {report.reviewed_at && (
                   <section className="rounded-2xl bg-slate-100 p-4 text-xs text-slate-600">
                     <p>Última revisión: {formatDate(report.reviewed_at)}</p>
+                    {report.report_type && (
+                      <p className="mt-1">
+                        Tipo: <strong>{reportTypeLabels[report.report_type]}</strong>
+                      </p>
+                    )}
+                    {report.resolution && (
+                      <p className="mt-1">
+                        Conclusión: <strong>{resolutionLabels[report.resolution]}</strong>
+                      </p>
+                    )}
                     {report.reviewed_by && (
                       <p className="mt-1">
                         Por: {privateName(profiles[report.reviewed_by]?.full_name)}
@@ -281,23 +304,34 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
 
                 <div className="grid gap-2">
                   {report.status !== 'reviewed' && (
-                    <form action={updateChatReportStatus}>
+                    <form action={updateChatReportStatus} className="grid gap-4">
                       <input name="report_id" type="hidden" value={report.id} />
                       <input name="status" type="hidden" value="reviewed" />
+
+                      <label className="grid gap-2 text-sm font-black text-ink">
+                        Tipo de reporte:
+                        <select className="input" defaultValue="" name="report_type" required>
+                          <option disabled value="">Selecciona una opción</option>
+                          <option value="harassment">Acoso</option>
+                          <option value="fraud">Fraude</option>
+                          <option value="other">Otros</option>
+                        </select>
+                      </label>
+
+                      <fieldset className="grid gap-2">
+                        <legend className="text-sm font-black text-ink">Conclusión:</legend>
+                        <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                          <input name="resolution" required type="radio" value="founded" />
+                          Fundado
+                        </label>
+                        <label className="flex items-center gap-2 text-sm font-bold text-slate-700">
+                          <input name="resolution" required type="radio" value="unfounded" />
+                          Infundado
+                        </label>
+                      </fieldset>
+
                       <button className="btn-primary w-full" type="submit">
                         Marcar como revisado
-                      </button>
-                    </form>
-                  )}
-                  {report.status !== 'dismissed' && (
-                    <form action={updateChatReportStatus}>
-                      <input name="report_id" type="hidden" value={report.id} />
-                      <input name="status" type="hidden" value="dismissed" />
-                      <button
-                        className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm font-black text-slate-700"
-                        type="submit"
-                      >
-                        Descartar reporte
                       </button>
                     </form>
                   )}
