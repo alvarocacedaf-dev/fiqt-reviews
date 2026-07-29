@@ -180,9 +180,9 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
         const evidence = attachmentsByReport[report.id] ?? [];
 
         return (
-          <article className="overflow-hidden rounded-3xl bg-white shadow-card" key={report.id}>
-            <header className="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200 bg-slate-50 px-6 py-5">
-              <div>
+          <details className="group overflow-hidden rounded-3xl bg-white shadow-card" key={report.id}>
+            <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-5 bg-slate-50 px-6 py-5 [&::-webkit-details-marker]:hidden">
+              <div className="min-w-0 flex-1">
                 <p className="text-xs font-black uppercase tracking-wider text-royal">
                   Reporte de chat
                 </p>
@@ -191,16 +191,32 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                 </h2>
                 <div className="mt-1 space-y-0.5 text-xs text-slate-500">
                   {reporter?.student_code && <p>Código: {reporter.student_code}</p>}
-                  <p>ID de la cuenta: {report.reporter_id}</p>
+                  <p className="break-all">ID de la cuenta: {report.reporter_id}</p>
                   <p>Enviado: {formatDate(report.created_at)}</p>
                 </div>
               </div>
-              <span className={`rounded-full px-4 py-2 text-xs font-black ${statusStyles[report.status]}`}>
-                {statusLabels[report.status]}
-              </span>
-            </header>
 
-            <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+              <div className="min-w-52 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3">
+                <p className="text-xs font-black uppercase tracking-wider text-royal">
+                  Chat relacionado
+                </p>
+                <p className="mt-1 text-sm font-black text-ink">
+                  Con {privateName(counterpart?.full_name)}
+                </p>
+              </div>
+
+              <div className="flex min-w-32 flex-col items-end gap-2">
+                <span className={`rounded-full px-4 py-2 text-xs font-black ${statusStyles[report.status]}`}>
+                  {statusLabels[report.status]}
+                </span>
+                <span className="text-xs font-black text-royal">
+                  <span className="group-open:hidden">Ver reporte ↓</span>
+                  <span className="hidden group-open:inline">Ocultar reporte ↑</span>
+                </span>
+              </div>
+            </summary>
+
+            <div className="grid gap-6 border-t border-slate-200 p-6 lg:grid-cols-[minmax(0,1fr)_280px]">
               <div>
                 <p className="text-xs font-black uppercase tracking-wider text-royal">
                   ¿Qué sucedió?
@@ -240,17 +256,14 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
               </div>
 
               <aside className="space-y-4">
-                <section className="rounded-2xl border border-slate-200 bg-blue-50 p-4">
+                <section className="rounded-2xl border border-slate-200 bg-blue-50 p-4 text-xs text-slate-600">
                   <p className="text-xs font-black uppercase tracking-wider text-royal">
-                    Chat relacionado
+                    Información del chat
                   </p>
-                  <p className="mt-2 text-sm font-black text-ink">
-                    Con {privateName(counterpart?.full_name)}
-                  </p>
-                  <p className="mt-1 text-xs text-slate-600">
+                  <p className="mt-2">
                     Finalizado: {formatDate(thread?.ended_at ?? null)}
                   </p>
-                  <p className="mt-1 break-all text-xs text-slate-500">
+                  <p className="mt-1 break-all text-slate-500">
                     ID: {report.thread_id}
                   </p>
                 </section>
@@ -303,7 +316,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                 </div>
               </aside>
             </div>
-          </article>
+          </details>
         );
       })}
 
