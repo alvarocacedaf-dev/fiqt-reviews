@@ -15,6 +15,7 @@ type ColumnProps = {
   blocked: Set<string>;
   courses: CourseOption[];
   description: string;
+  disabled: boolean;
   emptyText: string;
   onAdd: (courseId: string) => void;
   onRemove: (courseId: string) => void;
@@ -26,6 +27,7 @@ function CourseColumn({
   blocked,
   courses,
   description,
+  disabled,
   emptyText,
   onAdd,
   onRemove,
@@ -36,7 +38,7 @@ function CourseColumn({
   const availableCourses = courses.filter(course => !selected.has(course.id) && !blocked.has(course.id));
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className={`rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${disabled ? 'opacity-60' : ''}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-2xl font-black text-ink">{title}</h2>
@@ -50,8 +52,9 @@ function CourseColumn({
       <label className="mt-5 block text-sm font-black text-ink">
         Seleccionar curso
         <select
-          className="input mt-2 w-full"
+          className="input mt-2 w-full disabled:cursor-not-allowed"
           defaultValue=""
+          disabled={disabled}
           onChange={event => {
             if (!event.target.value) return;
             onAdd(event.target.value);
@@ -82,7 +85,8 @@ function CourseColumn({
                 <p className="mt-1 text-xs font-semibold text-slate-500">{course.cycleLabel}</p>
               </div>
               <button
-                className="shrink-0 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-700 transition hover:bg-red-50"
+                className="shrink-0 rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-black text-red-700 transition hover:bg-red-50 disabled:cursor-not-allowed"
+                disabled={disabled}
                 onClick={() => onRemove(course.id)}
                 type="button"
               >
@@ -111,11 +115,15 @@ function CourseColumn({
   );
 }
 
-function SaveButton() {
+function SaveButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <button className="btn-primary min-w-52 disabled:cursor-wait disabled:opacity-60" disabled={pending} type="submit">
+    <button
+      className="btn-primary min-w-52 disabled:cursor-not-allowed disabled:opacity-50"
+      disabled={disabled || pending}
+      type="submit"
+    >
       {pending ? 'Guardando…' : 'Guardar mis selecciones'}
     </button>
   );
@@ -125,10 +133,16 @@ export function WorksheetPreferencesForm({
   courses,
   initialHave,
   initialWant,
+  isUnlocked,
+  approvedReviews,
+  requiredReviews,
 }: {
   courses: CourseOption[];
   initialHave: string[];
   initialWant: string[];
+  isUnlocked: boolean;
+  approvedReviews: number;
+  requiredReviews: number;
 }) {
   const [have, setHave] = useState(() => new Set(initialHave));
   const [want, setWant] = useState(() => new Set(initialWant));
@@ -181,6 +195,7 @@ export function WorksheetPreferencesForm({
           blocked={want}
           courses={courses}
           description="Elige en el desplegable los cursos de los que puedes compartir planchas."
+          disabled={!isUnlocked}
           emptyText="Aún no seleccionaste cursos en esta columna."
           onAdd={addHave}
           onRemove={removeHave}
@@ -191,6 +206,7 @@ export function WorksheetPreferencesForm({
           blocked={have}
           courses={courses}
           description="Elige en el desplegable los cursos cuyas planchas te gustaría conseguir."
+          disabled={!isUnlocked}
           emptyText="Aún no seleccionaste cursos en esta columna."
           onAdd={addWant}
           onRemove={removeWant}
@@ -200,10 +216,28 @@ export function WorksheetPreferencesForm({
       </div>
 
       <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:flex-row">
-        <p className="text-sm leading-6 text-slate-700">
-          Usa <strong>Quitar</strong> para retirar un curso y luego guarda los cambios. Un mismo curso solo puede estar en una columna.
-        </p>
-        <SaveButton />
+        {isUnlocked ? (
+          <div className="flex items-center gap-3">
+            <span className="text-3xl" aria-hidden="true">🔓</span>
+            <div>
+              <p className="font-black text-royal">Comunidad de planchas desbloqueada</p>
+              <p className="mt-1 text-sm leading-6 text-slate-700">
+                Usa <strong>Quitar</strong> para retirar un curso y luego guarda los cambios.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3">
+            <span className="text-3xl" aria-hidden="true">🔒</span>
+            <div>
+              <p className="font-black text-ink">Desplegables bloqueados</p>
+              <p className="mt-1 text-sm leading-6 text-slate-700">
+                Se desbloquean con {requiredReviews} reseñas aprobadas. Actualmente tienes {approvedReviews}.
+              </p>
+            </div>
+          </div>
+        )}
+        <SaveButton disabled={!isUnlocked} />
       </div>
     </form>
   );

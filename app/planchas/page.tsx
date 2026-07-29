@@ -49,6 +49,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
 
   const approvedReviews = count ?? 0;
   const isAdmin = profile?.role === 'admin';
+  const isUnlocked = isAdmin || approvedReviews >= MINIMUM_APPROVED_REVIEWS;
 
   if (profileError || (!isAdmin && countError)) {
     return (
@@ -57,34 +58,6 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
         <p className="mt-4 rounded-2xl bg-red-50 p-4 font-semibold text-red-800">
           No pudimos comprobar tus reseñas aprobadas. Inténtalo nuevamente en unos minutos.
         </p>
-      </section>
-    );
-  }
-
-  if (!isAdmin && approvedReviews < MINIMUM_APPROVED_REVIEWS) {
-    const remaining = MINIMUM_APPROVED_REVIEWS - approvedReviews;
-    const progress = Math.round((approvedReviews / MINIMUM_APPROVED_REVIEWS) * 100);
-
-    return (
-      <section className="panel mx-auto max-w-2xl">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Beneficio bloqueado</p>
-        <h1 className="mt-2 text-3xl font-black text-ink">Planchas 🔒</h1>
-        <p className="mt-4 leading-7 text-slate-600">
-          Esta opción se habilita cuando alcanzas 16 reseñas aprobadas. Actualmente tienes{' '}
-          <strong>{approvedReviews}</strong>.
-        </p>
-        <div className="mt-6 rounded-2xl bg-blue-50 p-5">
-          <div className="flex items-center justify-between gap-4 text-sm font-black text-royal">
-            <span>Tu progreso</span>
-            <span>{approvedReviews} / {MINIMUM_APPROVED_REVIEWS}</span>
-          </div>
-          <div className="mt-3 h-3 overflow-hidden rounded-full bg-blue-100">
-            <div className="h-full rounded-full bg-gold" style={{ width: `${progress}%` }} />
-          </div>
-          <p className="mt-3 text-sm text-slate-600">
-            Te faltan {remaining} reseña{remaining === 1 ? '' : 's'} aprobada{remaining === 1 ? '' : 's'} para desbloquearla.
-          </p>
-        </div>
       </section>
     );
   }
@@ -123,8 +96,8 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
   return (
     <div className="space-y-6">
       <section className="panel">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Beneficio desbloqueado</p>
-        <h1 className="mt-2 text-3xl font-black text-ink">Planchas 🔓</h1>
+        <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Comunidad de planchas</p>
+        <h1 className="mt-2 text-3xl font-black text-ink">Planchas</h1>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
           Indica de qué cursos puedes compartir planchas y cuáles deseas conseguir. Cada vez que guardes tus
           selecciones, buscaremos una coincidencia: una persona que quiera una plancha que tú tienes y que, al
@@ -151,6 +124,9 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
           courses={courseOptions}
           initialHave={initialHave}
           initialWant={initialWant}
+          isUnlocked={isUnlocked}
+          approvedReviews={approvedReviews}
+          requiredReviews={MINIMUM_APPROVED_REVIEWS}
         />
       )}
     </div>
