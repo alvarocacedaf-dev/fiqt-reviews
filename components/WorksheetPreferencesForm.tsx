@@ -217,24 +217,18 @@ export function WorksheetPreferencesForm({
 
       <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:flex-row">
         {isUnlocked ? (
-          <div className="flex items-center gap-3">
-            <span className="text-3xl" aria-hidden="true">🔓</span>
-            <div>
-              <p className="font-black text-royal">Comunidad de planchas desbloqueada</p>
-              <p className="mt-1 text-sm leading-6 text-slate-700">
-                Usa <strong>Quitar</strong> para retirar un curso y luego guarda los cambios.
-              </p>
-            </div>
+          <div>
+            <p className="font-black text-royal">Comunidad de planchas desbloqueada</p>
+            <p className="mt-1 text-sm leading-6 text-slate-700">
+              Usa <strong>Quitar</strong> para retirar un curso y luego guarda los cambios.
+            </p>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <span className="text-3xl" aria-hidden="true">🔒</span>
-            <div>
-              <p className="font-black text-ink">Desplegables bloqueados</p>
-              <p className="mt-1 text-sm leading-6 text-slate-700">
-                Se desbloquean con {requiredReviews} reseñas aprobadas. Actualmente tienes {approvedReviews}.
-              </p>
-            </div>
+          <div>
+            <p className="font-black text-ink">Desplegables bloqueados</p>
+            <p className="mt-1 text-sm leading-6 text-slate-700">
+              Se desbloquean con {requiredReviews} reseñas aprobadas. Actualmente tienes {approvedReviews}.
+            </p>
           </div>
         )}
         <SaveButton disabled={!isUnlocked} />
