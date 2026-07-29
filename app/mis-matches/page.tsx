@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { ChatAutoRefresh } from '@/components/ChatAutoRefresh';
 import { ChatComposer } from '@/components/ChatComposer';
+import { ChatReportForm } from '@/components/ChatReportForm';
 import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
 import { createClient } from '@/lib/supabase/server';
 import { finishChat, openChat } from './actions';
@@ -241,6 +242,20 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
   const selectedTitle = selectedThread ? threadTitle(selectedThread) : '';
   const selectedPersonId = selectedThread ? threadPersonId(selectedThread) : null;
   const selectedProfile = selectedPersonId ? profiles[selectedPersonId] : null;
+  let alreadyReportedSelectedChat = false;
+  if (
+    selectedThread?.kind === 'match'
+    && selectedThread.status === 'ended'
+    && !isAdmin
+  ) {
+    const { data: existingReport } = await db
+      .from('chat_reports')
+      .select('id')
+      .eq('thread_id', selectedThread.id)
+      .eq('reporter_id', user.id)
+      .maybeSingle();
+    alreadyReportedSelectedChat = Boolean(existingReport);
+  }
   const dataError = threadsError || profilesError || previewsError || selectedMessagesError;
 
   return (
@@ -567,9 +582,18 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               )}
 
               {selectedThread.status === 'ended' && selectedThread.ended_at && (
-                <p className="mt-5 rounded-2xl bg-slate-100 p-3 text-xs font-semibold text-slate-500">
-                  Finalizado el {formatMessageDate(selectedThread.ended_at)}.
-                </p>
+                <>
+                  <p className="mt-5 rounded-2xl bg-slate-100 p-3 text-xs font-semibold text-slate-500">
+                    Finalizado el {formatMessageDate(selectedThread.ended_at)}.
+                  </p>
+                  {selectedThread.kind === 'match' && !isAdmin && (
+                    <ChatReportForm
+                      alreadyReported={alreadyReportedSelectedChat}
+                      threadId={selectedThread.id}
+                      userId={user.id}
+                    />
+                  )}
+                </>
               )}
             </>
           ) : (
