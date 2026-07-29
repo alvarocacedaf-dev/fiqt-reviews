@@ -48,6 +48,11 @@ export function ChatReportForm({
       return;
     }
 
+    if (files.length === 0) {
+      setError('tienes que adjuntar al menos una foto');
+      return;
+    }
+
     if (files.length > MAX_IMAGES) {
       setError(`Puedes adjuntar como máximo ${MAX_IMAGES} imágenes.`);
       return;
