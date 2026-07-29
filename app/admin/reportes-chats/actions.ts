@@ -87,6 +87,9 @@ export async function updateChatReportStatus(form: FormData) {
 
   revalidatePath('/admin');
   revalidatePath('/admin/reportes-chats');
+  revalidatePath('/ciclos');
+  revalidatePath('/planchas');
+  revalidatePath('/mis-matches');
   redirect(
     `/admin/reportes-chats?success=${encodeURIComponent(
       status === 'reviewed'

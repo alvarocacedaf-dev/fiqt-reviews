@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
 import { createClient } from '@/lib/supabase/server';
+import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 
 const MINIMUM_APPROVED_REVIEWS = 16;
 
@@ -38,6 +39,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
   const [
     { data: profile, error: profileError },
     { count, error: countError },
+    sanctionState,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     db
@@ -45,6 +47,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .eq('status', 'approved'),
+    getWorksheetSanctionState(db),
   ]);
 
   const approvedReviews = count ?? 0;
@@ -60,6 +63,10 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
         </p>
       </section>
     );
+  }
+
+  if (!isAdmin && sanctionState.isPermanentlyBlocked) {
+    redirect('/ciclos');
   }
 
   const [

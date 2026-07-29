@@ -3,6 +3,11 @@ import { CycleSelector } from '@/components/CycleSelector';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
+import {
+  getWorksheetSanctionState,
+  seriousReportCategoryLabels,
+  type WorksheetSanction,
+} from '@/lib/worksheetSanctions';
 
 async function getApprovedReviewCount() {
   if (!isSupabaseConfigured) return null;
@@ -21,6 +26,67 @@ async function getApprovedReviewCount() {
     .eq('status', 'approved');
 
   return count ?? 0;
+}
+
+async function getPrivateWorksheetSanctions() {
+  if (!isSupabaseConfigured) return null;
+
+  const db = await createClient();
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+
+  if (!user) return null;
+
+  const [{ data: profile }, sanctionState] = await Promise.all([
+    db.from('profiles').select('role').eq('id', user.id).single(),
+    getWorksheetSanctionState(db),
+  ]);
+
+  if (profile?.role === 'admin' || sanctionState.error) return [];
+  return sanctionState.sanctions;
+}
+
+function WorksheetSanctionNotices({ sanctions }: { sanctions: WorksheetSanction[] }) {
+  if (!sanctions.length) return null;
+
+  return (
+    <div className="space-y-3">
+      {sanctions.map(sanction => {
+        const category = seriousReportCategoryLabels[sanction.report_type];
+        const isBlocked = sanction.founded_count >= 2;
+
+        return (
+          <section
+            className={`rounded-3xl border p-5 shadow-card ${
+              isBlocked
+                ? 'border-red-300 bg-red-50 text-red-950'
+                : 'border-amber-300 bg-amber-50 text-amber-950'
+            }`}
+            key={sanction.report_type}
+          >
+            <p className="text-xs font-black uppercase tracking-[0.2em]">
+              {isBlocked ? 'Acceso a Planchas deshabilitado' : 'Advertencia de la comunidad de Planchas'}
+            </p>
+            <p className="mt-2 font-semibold leading-7">
+              {isBlocked ? (
+                <>
+                  Tu cuenta acumuló dos reportes fundados en la categoría de <strong>{category}</strong>. Por
+                  este motivo, no podrás entrar a la sección de Planchas de forma permanente.
+                </>
+              ) : (
+                <>
+                  Tu cuenta ha sido reportada por un chat en la categoría de <strong>{category}</strong> y el
+                  reporte fue declarado fundado por las pruebas. De tener otro reporte fundado en la categoría
+                  de <strong>{category}</strong>, no podrás entrar a la sección de Planchas de forma permanente.
+                </>
+              )}
+            </p>
+          </section>
+        );
+      })}
+    </div>
+  );
 }
 
 function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
@@ -93,23 +159,30 @@ function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
 }
 
 export default async function CyclesPage() {
-  const [cycles, approvedReviewCount] = await Promise.all([getCycles(), getApprovedReviewCount()]);
+  const [cycles, approvedReviewCount, worksheetSanctions] = await Promise.all([
+    getCycles(),
+    getApprovedReviewCount(),
+    getPrivateWorksheetSanctions(),
+  ]);
 
   return (
     <div className={approvedReviewCount === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
-    <section className="panel">
-      <p className="text-sm font-bold text-royal">RUTA ACADÉMICA</p>
-      <h1 className="mt-1 text-3xl font-black text-ink">Explora por ciclo</h1>
-      <p className="mt-2 text-slate-600">Selecciona el ciclo o tipo de curso que quieres consultar.</p>
-      <div className="mt-7">
-        <CycleSelector cycles={cycles} />
-      </div>
-      {!cycles.length && (
-        <p className="mt-6 rounded-xl bg-amber-50 p-4 text-amber-900">
-          Aún no hay ciclos cargados. Ejecuta la migración y sus datos de ejemplo en Supabase.
-        </p>
-      )}
-    </section>
+    <div className="space-y-6">
+      <section className="panel">
+        <p className="text-sm font-bold text-royal">RUTA ACADÉMICA</p>
+        <h1 className="mt-1 text-3xl font-black text-ink">Explora por ciclo</h1>
+        <p className="mt-2 text-slate-600">Selecciona el ciclo o tipo de curso que quieres consultar.</p>
+        <div className="mt-7">
+          <CycleSelector cycles={cycles} />
+        </div>
+        {!cycles.length && (
+          <p className="mt-6 rounded-xl bg-amber-50 p-4 text-amber-900">
+            Aún no hay ciclos cargados. Ejecuta la migración y sus datos de ejemplo en Supabase.
+          </p>
+        )}
+      </section>
+      {worksheetSanctions && <WorksheetSanctionNotices sanctions={worksheetSanctions} />}
+    </div>
     {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} />}
     </div>
   );

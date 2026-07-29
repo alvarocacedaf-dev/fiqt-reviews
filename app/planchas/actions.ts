@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 
 const MINIMUM_APPROVED_REVIEWS = 16;
 
@@ -21,6 +22,7 @@ export async function saveWorksheetPreferences(form: FormData) {
   const [
     { data: profile, error: profileError },
     { count, error: countError },
+    sanctionState,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     db
@@ -28,11 +30,15 @@ export async function saveWorksheetPreferences(form: FormData) {
       .select('id', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .eq('status', 'approved'),
+    getWorksheetSanctionState(db),
   ]);
 
   const isAdmin = profile?.role === 'admin';
 
   if (profileError) redirectWithMessage('error', 'No se pudo comprobar tu tipo de cuenta.');
+  if (!isAdmin && sanctionState.isPermanentlyBlocked) {
+    redirect('/ciclos');
+  }
   if (!isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de reseñas aprobadas.');
   if (!isAdmin && (count ?? 0) < MINIMUM_APPROVED_REVIEWS) {
     redirectWithMessage('error', `Necesitas ${MINIMUM_APPROVED_REVIEWS} reseñas aprobadas para usar Planchas.`);
