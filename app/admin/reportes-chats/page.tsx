@@ -63,6 +63,13 @@ function formatBytes(value: number) {
   return `${(value / 1024 / 1024).toFixed(2)} MB`;
 }
 
+function privateName(name?: string | null) {
+  const parts = name?.trim().split(/\s+/).filter(Boolean) ?? [];
+  if (!parts.length) return 'Usuario';
+  if (parts.length === 1) return parts[0];
+  return `${parts[0]}.${parts[1][0].toUpperCase()}`;
+}
+
 export default async function AdminChatReportsPage({ searchParams }: PageProps) {
   const { error: messageError, success } = await searchParams;
   const { db } = await requireAdmin();
@@ -180,7 +187,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                   Reporte de chat
                 </p>
                 <h2 className="mt-1 text-xl font-black text-ink">
-                  {reporter?.full_name || 'Cuenta sin nombre'}
+                  {privateName(reporter?.full_name)}
                 </h2>
                 <div className="mt-1 space-y-0.5 text-xs text-slate-500">
                   {reporter?.student_code && <p>Código: {reporter.student_code}</p>}
@@ -238,7 +245,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                     Chat relacionado
                   </p>
                   <p className="mt-2 text-sm font-black text-ink">
-                    Con {counterpart?.full_name || 'otra cuenta'}
+                    Con {privateName(counterpart?.full_name)}
                   </p>
                   <p className="mt-1 text-xs text-slate-600">
                     Finalizado: {formatDate(thread?.ended_at ?? null)}
@@ -253,7 +260,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                     <p>Última revisión: {formatDate(report.reviewed_at)}</p>
                     {report.reviewed_by && (
                       <p className="mt-1">
-                        Por: {profiles[report.reviewed_by]?.full_name || report.reviewed_by}
+                        Por: {privateName(profiles[report.reviewed_by]?.full_name)}
                       </p>
                     )}
                   </section>
