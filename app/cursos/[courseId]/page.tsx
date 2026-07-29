@@ -1,5 +1,5 @@
 import { ProfessorCard } from '@/components/ProfessorCard';
-import { getCourse, getCourseProfessors, getProfessorReviews } from '@/lib/data';
+import { getCourse, getCourseProfessors, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 
 const courseSyllabi: Record<string, { label: string; href: string }> = {
   BDI01: {
@@ -186,9 +186,14 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = await params;
-  const course = await getCourse(courseId);
-  const professors = await getCourseProfessors(courseId);
-  const rows = await Promise.all(professors.map(async professor => [professor.id, await getProfessorReviews(professor.id)] as const));
+  const [course, professors, canViewReviews] = await Promise.all([
+    getCourse(courseId),
+    getCourseProfessors(courseId),
+    hasReviewAccess(),
+  ]);
+  const rows = canViewReviews
+    ? await Promise.all(professors.map(async professor => [professor.id, await getProfessorReviews(professor.id)] as const))
+    : [];
   const reviews = Object.fromEntries(rows);
   const syllabus = course?.code ? courseSyllabi[course.code] : null;
 
@@ -214,7 +219,14 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {professors.map(professor => (
-          <ProfessorCard key={professor.id} professor={professor} courseId={courseId} courseName={course?.name ?? ''} reviews={reviews[professor.id]} />
+          <ProfessorCard
+            key={professor.id}
+            professor={professor}
+            courseId={courseId}
+            courseName={course?.name ?? ''}
+            reviews={reviews[professor.id]}
+            hasReviewAccess={canViewReviews}
+          />
         ))}
       </div>
 

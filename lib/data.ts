@@ -2,6 +2,28 @@ import { createClient } from '@/lib/supabase/server';
 import type { Course, Cycle, Professor, Review } from '@/lib/types';
 import { demoCourseProfessors, demoCourses, demoCycles, demoProfessors, isSupabaseConfigured } from '@/lib/demo';
 
+export async function hasReviewAccess(): Promise<boolean> {
+  if (!isSupabaseConfigured) return false;
+
+  const db = await createClient();
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+
+  if (!user) return false;
+
+  const [{ data: profile }, { count, error: countError }] = await Promise.all([
+    db.from('profiles').select('role').eq('id', user.id).single(),
+    db
+      .from('reviews')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('status', 'approved'),
+  ]);
+
+  return profile?.role === 'admin' || (!countError && (count ?? 0) >= 4);
+}
+
 export async function getCycles(): Promise<Cycle[]> { if (!isSupabaseConfigured) return demoCycles; const db = await createClient(); const { data } = await db.from('cycles').select('*').order('number'); return (data as Cycle[]) ?? []; }
 export async function getCourses(cycleId: string): Promise<Course[]> { if (!isSupabaseConfigured) return demoCourses.filter(c => String(c.cycle_id) === cycleId); const db = await createClient(); const { data } = await db.from('courses').select('*').eq('cycle_id', cycleId).order('name'); return (data as Course[]) ?? []; }
 export async function getCourse(id: string): Promise<Course | null> { if (!isSupabaseConfigured) return demoCourses.find(c => c.id === id) ?? null; const db = await createClient(); const { data } = await db.from('courses').select('*').eq('id', id).single(); return data as Course | null; }

@@ -16,12 +16,14 @@ export function ProfessorCard({
   professor,
   courseId,
   courseName,
-  reviews = []
+  reviews = [],
+  hasReviewAccess
 }: {
   professor: Professor;
   courseId: string;
   courseName: string;
   reviews?: Review[];
+  hasReviewAccess: boolean;
 }) {
   const likes = reviews.filter(review => review.recommendation === 'like').length;
   const total = reviews.length;
@@ -55,17 +57,35 @@ export function ProfessorCard({
         </div>
 
         <div className="my-5 rounded-2xl border border-blue-100 bg-white/70 p-3">
-          <div className="mb-3 flex items-center justify-between text-xs font-bold text-slate-500">
-            <span>Recomendaciones</span>
-            <span>{total ? `${likes}/${total}` : 'Sin reseñas'}</span>
-          </div>
-          <RatingSummary reviews={reviews} />
+          {hasReviewAccess ? (
+            <>
+              <div className="mb-3 flex items-center justify-between text-xs font-bold text-slate-500">
+                <span>Recomendaciones</span>
+                <span>{total ? `${likes}/${total}` : 'Sin reseñas'}</span>
+              </div>
+              <RatingSummary reviews={reviews} />
+            </>
+          ) : (
+            <p className="py-3 text-center text-sm font-bold text-slate-600">
+              Aún te falta completar tus 4 primeras reseñas
+            </p>
+          )}
         </div>
 
         <div className="relative z-10 grid grid-cols-2 gap-3">
-          <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}`}>
-            Ver perfil
-          </Link>
+          {hasReviewAccess ? (
+            <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}`}>
+              Ver perfil
+            </Link>
+          ) : (
+            <span
+              aria-disabled="true"
+              className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-300 px-3 py-3 text-sm font-bold text-slate-600"
+              title="Aún te falta completar tus 4 primeras reseñas"
+            >
+              Ver perfil 🔒
+            </span>
+          )}
           <Link className="btn-secondary px-3 text-sm" href={`/profesores/${professor.id}/resena/${courseId}`}>
             Crear reseña
           </Link>

@@ -1,5 +1,5 @@
 import { RatingSummary } from '@/components/RatingSummary';
-import { getProfessor, getProfessorReviews } from '@/lib/data';
+import { getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
 
@@ -53,6 +53,17 @@ function getCourseInfo(link: CourseLink): CourseInfo | null {
 
 export default async function ProfessorPage({ params }: { params: Promise<{ professorId: string }> }) {
   const { professorId } = await params;
+  const canViewReviews = await hasReviewAccess();
+
+  if (!canViewReviews) {
+    return (
+      <section className="panel">
+        <h1 className="text-2xl font-black text-ink">Perfil bloqueado</h1>
+        <p className="mt-2 text-slate-600">Aún te falta completar tus 4 primeras reseñas</p>
+      </section>
+    );
+  }
+
   const [professor, reviews] = await Promise.all([getProfessor(professorId), getProfessorReviews(professorId)]);
   let links: CourseLink[] = [];
 
