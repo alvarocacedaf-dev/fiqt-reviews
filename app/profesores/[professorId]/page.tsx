@@ -9,6 +9,22 @@ type CourseLink = {
   courses: CourseInfo | CourseInfo[] | null;
 };
 
+const professorMaterials: Record<string, {
+  title: string;
+  description: string;
+  fileUrl: string;
+  fileName: string;
+  documentCount: number;
+}> = {
+  'b44d0eec-61bf-4f5d-920c-070dfd18389d': {
+    title: 'Material teórico de Física III',
+    description: 'Colección de temas compartidos para complementar el estudio del curso.',
+    fileUrl: '/materiales/fisica-iii-carhuancho-material-teorico.zip',
+    fileName: 'Fisica-III-Carhuancho-material-teorico.zip',
+    documentCount: 12,
+  },
+};
+
 function getCourseInfo(link: CourseLink): CourseInfo | null {
   if (Array.isArray(link.courses)) return link.courses[0] ?? null;
   return link.courses;
@@ -34,6 +50,7 @@ export default async function ProfessorPage({ params }: { params: Promise<{ prof
   }
 
   const courseNames = links.map(link => getCourseInfo(link)?.name).filter(Boolean).join(', ');
+  const material = professorMaterials[professorId];
 
   if (!professor) return <section className="panel">Profesor no encontrado.</section>;
 
@@ -48,6 +65,28 @@ export default async function ProfessorPage({ params }: { params: Promise<{ prof
           <RatingSummary reviews={reviews} />
         </div>
       </div>
+
+      {material && (
+        <div className="panel">
+          <p className="text-sm font-bold text-royal">MATERIAL DEL CURSO</p>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-5">
+            <div>
+              <h2 className="text-xl font-black text-ink">{material.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">{material.description}</p>
+              <p className="mt-2 text-xs font-bold text-slate-500">
+                Archivo ZIP · {material.documentCount} documentos PDF
+              </p>
+            </div>
+            <a
+              className="btn-primary shrink-0"
+              download={material.fileName}
+              href={material.fileUrl}
+            >
+              Descargar carpeta ZIP
+            </a>
+          </div>
+        </div>
+      )}
 
       <div className="panel">
         <h2 className="text-xl font-black text-ink">Reseñas aprobadas</h2>
