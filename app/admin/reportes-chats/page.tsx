@@ -14,6 +14,7 @@ type ChatReport = {
   created_at: string;
   reviewed_at: string | null;
   reviewed_by: string | null;
+  reviewed_by_label: string | null;
   report_type: 'harassment' | 'fraud' | 'other' | null;
   resolution: 'founded' | 'unfounded' | null;
 };
@@ -88,7 +89,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
   const { db } = await requireAdmin();
   const { data: rawReports, error: reportsError } = await db
     .from('chat_reports')
-    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by,report_type,resolution')
+    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by,reviewed_by_label,report_type,resolution')
     .order('created_at', { ascending: false });
 
   const reports = (rawReports ?? []) as ChatReport[];
@@ -294,9 +295,10 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                         Conclusión: <strong>{resolutionLabels[report.resolution]}</strong>
                       </p>
                     )}
-                    {report.reviewed_by && (
+                    {(report.reviewed_by_label || report.reviewed_by) && (
                       <p className="mt-1">
-                        Por: {privateName(profiles[report.reviewed_by]?.full_name)}
+                        Por: {report.reviewed_by_label
+                          || privateName(profiles[report.reviewed_by as string]?.full_name)}
                       </p>
                     )}
                   </section>
@@ -329,6 +331,18 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                           Infundado
                         </label>
                       </fieldset>
+
+                      <label className="grid gap-2 text-sm font-black text-ink">
+                        Código del asistente:
+                        <input
+                          autoComplete="off"
+                          className="input"
+                          name="action_code"
+                          placeholder="Código del asistente"
+                          required
+                          type="password"
+                        />
+                      </label>
 
                       <button className="btn-primary w-full" type="submit">
                         Marcar como revisado

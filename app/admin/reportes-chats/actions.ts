@@ -4,9 +4,40 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/admin';
 
+type AdminDb = Awaited<ReturnType<typeof requireAdmin>>['db'];
+
 const validStatuses = new Set(['pending', 'reviewed']);
 const validReportTypes = new Set(['harassment', 'fraud', 'other']);
 const validResolutions = new Set(['founded', 'unfounded']);
+
+async function verifyAssistantCode(db: AdminDb, form: FormData) {
+  const code = String(form.get('action_code') || '').trim();
+  if (!code) {
+    return { ok: false as const, message: 'Ingresa el código del asistente.' };
+  }
+
+  const { data, error } = await db.rpc('verify_admin_action_code', {
+    p_code: code,
+    p_scope: 'moderation',
+  });
+  const actor = Array.isArray(data)
+    ? data[0] as { code_id: string; actor_label: string } | undefined
+    : undefined;
+
+  if (error) {
+    return {
+      ok: false as const,
+      message: `No se pudo validar el código: ${error.message}`,
+    };
+  }
+  if (!actor) {
+    return {
+      ok: false as const,
+      message: 'El código es incorrecto o está desactivado.',
+    };
+  }
+  return { ok: true as const, label: actor.actor_label };
+}
 
 export async function updateChatReportStatus(form: FormData) {
   const { db, user } = await requireAdmin();
@@ -33,12 +64,18 @@ export async function updateChatReportStatus(form: FormData) {
     );
   }
 
+  const actor = isPending ? null : await verifyAssistantCode(db, form);
+  if (actor && !actor.ok) {
+    redirect(`/admin/reportes-chats?error=${encodeURIComponent(actor.message)}`);
+  }
+
   const { error } = await db
     .from('chat_reports')
     .update({
       status,
       reviewed_at: isPending ? null : new Date().toISOString(),
       reviewed_by: isPending ? null : user.id,
+      reviewed_by_label: isPending ? null : actor?.label,
       report_type: isPending ? null : reportType,
       resolution: isPending ? null : resolution,
     })
