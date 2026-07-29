@@ -9,19 +9,40 @@ type CourseLink = {
   courses: CourseInfo | CourseInfo[] | null;
 };
 
-const professorMaterials: Record<string, {
+type ProfessorMaterial = {
   title: string;
   description: string;
   fileUrl: string;
   fileName: string;
-  documentCount: number;
-}> = {
+  fileType: 'PDF' | 'ZIP';
+  contents: string;
+  fileSize: string;
+  downloadLabel: string;
+};
+
+const professorMaterials: Record<string, ProfessorMaterial> = {
   'b44d0eec-61bf-4f5d-920c-070dfd18389d': {
     title: 'Material teórico de Física III',
     description: 'Colección de temas compartidos para complementar el estudio del curso.',
     fileUrl: '/materiales/fisica-iii-carhuancho-material-teorico.zip',
     fileName: 'Fisica-III-Carhuancho-material-teorico.zip',
-    documentCount: 12,
+    fileType: 'ZIP',
+    contents: '12 documentos PDF',
+    fileSize: '27.05 MB',
+    downloadLabel: 'Descargar carpeta ZIP',
+  },
+};
+
+const professorMaterialsByName: Record<string, ProfessorMaterial> = {
+  'Huamán Pérez, Fernando': {
+    title: 'Física de Hugo Medina Guzmán',
+    description: 'Libro de consulta que reúne contenidos de Física 1, 2, 3 y 4.',
+    fileUrl: '/materiales/hugo-medina-guzman-fisica-1-2-3-4.pdf',
+    fileName: 'Hugo-Medina-Guzman-Fisica-1-2-3-4.pdf',
+    fileType: 'PDF',
+    contents: '1 documento PDF',
+    fileSize: '22.74 MB',
+    downloadLabel: 'Descargar documento PDF',
   },
 };
 
@@ -50,9 +71,10 @@ export default async function ProfessorPage({ params }: { params: Promise<{ prof
   }
 
   const courseNames = links.map(link => getCourseInfo(link)?.name).filter(Boolean).join(', ');
-  const material = professorMaterials[professorId];
 
   if (!professor) return <section className="panel">Profesor no encontrado.</section>;
+
+  const material = professorMaterials[professorId] ?? professorMaterialsByName[professor.full_name];
 
   return (
     <section className="space-y-6">
@@ -74,7 +96,7 @@ export default async function ProfessorPage({ params }: { params: Promise<{ prof
               <h2 className="text-xl font-black text-ink">{material.title}</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">{material.description}</p>
               <p className="mt-2 text-xs font-bold text-slate-500">
-                Archivo ZIP · {material.documentCount} documentos PDF
+                Archivo {material.fileType} · {material.contents} · {material.fileSize}
               </p>
             </div>
             <a
@@ -82,7 +104,7 @@ export default async function ProfessorPage({ params }: { params: Promise<{ prof
               download={material.fileName}
               href={material.fileUrl}
             >
-              Descargar carpeta ZIP
+              {material.downloadLabel}
             </a>
           </div>
         </div>
