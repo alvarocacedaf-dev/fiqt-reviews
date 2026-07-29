@@ -246,7 +246,6 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
   if (
     selectedThread?.kind === 'match'
     && selectedThread.status === 'ended'
-    && !isAdmin
   ) {
     const { data: existingReport } = await db
       .from('chat_reports')
@@ -586,7 +585,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                   <p className="mt-5 rounded-2xl bg-slate-100 p-3 text-xs font-semibold text-slate-500">
                     Finalizado el {formatMessageDate(selectedThread.ended_at)}.
                   </p>
-                  {selectedThread.kind === 'match' && !isAdmin && (
+                  {selectedThread.kind === 'match' && (
                     <ChatReportForm
                       alreadyReported={alreadyReportedSelectedChat}
                       threadId={selectedThread.id}
