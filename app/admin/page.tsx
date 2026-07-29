@@ -1,2 +1,42 @@
-import Link from 'next/link'; import { requireAdmin } from '@/lib/admin';
-export default async function Admin() { const { db } = await requireAdmin(); const [reviews, verifications, reports] = await Promise.all([db.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending'), db.from('verification_submissions').select('*', { count: 'exact', head: true }).eq('status', 'pending'), db.from('review_reports').select('*', { count: 'exact', head: true })]); const cards = [['Reseñas pendientes', reviews.count, '/admin/resenas'], ['Verificaciones pendientes', verifications.count, '/admin/verificaciones'], ['Reportes recibidos', reports.count, '/admin/resenas']]; return <div className="panel"><h1 className="text-3xl font-black text-ink">Panel básico</h1><div className="mt-6 grid gap-4 sm:grid-cols-3">{cards.map(([name,count,href]) => <Link className="rounded-2xl bg-blue-50 p-5" href={href as string} key={name as string}><p className="text-sm text-slate-600">{name}</p><p className="text-3xl font-black text-royal">{count ?? 0}</p></Link>)}</div></div> }
+import Link from 'next/link';
+import { requireAdmin } from '@/lib/admin';
+
+export default async function Admin() {
+  const { db } = await requireAdmin();
+  const [reviews, verifications, reviewReports, chatReports] = await Promise.all([
+    db.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+    db
+      .from('verification_submissions')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending'),
+    db.from('review_reports').select('*', { count: 'exact', head: true }),
+    db
+      .from('chat_reports')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending'),
+  ]);
+  const cards = [
+    ['Reseñas pendientes', reviews.count, '/admin/resenas'],
+    ['Verificaciones pendientes', verifications.count, '/admin/verificaciones'],
+    ['Reportes de reseñas', reviewReports.count, '/admin/resenas'],
+    ['Reportes de chats pendientes', chatReports.count, '/admin/reportes-chats'],
+  ];
+
+  return (
+    <div className="panel">
+      <h1 className="text-3xl font-black text-ink">Panel básico</h1>
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {cards.map(([name, count, href]) => (
+          <Link
+            className="rounded-2xl bg-blue-50 p-5"
+            href={href as string}
+            key={name as string}
+          >
+            <p className="text-sm text-slate-600">{name}</p>
+            <p className="text-3xl font-black text-royal">{count ?? 0}</p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}

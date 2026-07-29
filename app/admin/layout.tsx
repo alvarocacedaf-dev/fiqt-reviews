@@ -18,6 +18,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin/planchas">Planchas de usuarios</Link>
           <Link href="/admin/planchas-administracion">Planchas de la administración</Link>
           <Link href="/admin/matches-planchas">Matches de planchas</Link>
+          <Link href="/admin/reportes-chats">Reportes de los chats</Link>
           <Link href="/admin/ciclos">Ciclos</Link>
           <Link href="/admin/profesores">Profesores</Link>
           <Link href="/admin/cursos">Cursos</Link>
