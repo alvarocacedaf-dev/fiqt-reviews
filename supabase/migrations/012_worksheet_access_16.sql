@@ -1,14 +1,4 @@
--- Preferencias para el intercambio de planchas.
--- El acceso se concede únicamente a cuentas con 16 o más reseñas aprobadas.
-create table if not exists public.worksheet_preferences (
-  user_id uuid not null references auth.users(id) on delete cascade,
-  course_id uuid not null references public.courses(id) on delete cascade,
-  preference text not null check (preference in ('have', 'want')),
-  updated_at timestamptz not null default now(),
-  primary key (user_id, course_id)
-);
-
-alter table public.worksheet_preferences enable row level security;
+-- Reduce de 18 a 16 reseñas aprobadas el acceso a la comunidad de planchas.
 
 create or replace function public.has_worksheet_access(p_user_id uuid default auth.uid())
 returns boolean
@@ -32,16 +22,6 @@ $$;
 
 revoke all on function public.has_worksheet_access(uuid) from public;
 grant execute on function public.has_worksheet_access(uuid) to authenticated;
-
-drop policy if exists "worksheet preferences own read" on public.worksheet_preferences;
-create policy "worksheet preferences own read"
-on public.worksheet_preferences
-for select
-to authenticated
-using (
-  user_id = auth.uid()
-  and public.has_worksheet_access(auth.uid())
-);
 
 create or replace function public.save_worksheet_preferences(
   p_have_course_ids uuid[],
@@ -87,6 +67,8 @@ begin
     select distinct course_id
     from unnest(coalesce(p_want_course_ids, array[]::uuid[])) as selected(course_id)
   ) as unique_want;
+
+  perform public.refresh_worksheet_matches(v_user_id);
 end;
 $$;
 

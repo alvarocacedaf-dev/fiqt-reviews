@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
-const MINIMUM_APPROVED_REVIEWS = 18;
+const MINIMUM_APPROVED_REVIEWS = 16;
 
 function redirectWithMessage(type: 'error' | 'success', message: string): never {
   redirect(`/planchas?${type}=${encodeURIComponent(message)}`);

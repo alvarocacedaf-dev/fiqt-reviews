@@ -157,7 +157,7 @@ begin
   end if;
 
   if not public.has_worksheet_access(v_user_id) then
-    raise exception 'Necesitas 18 reseñas aprobadas para usar Planchas.';
+    raise exception 'Necesitas 16 reseñas aprobadas para usar Planchas.';
   end if;
 
   if exists (

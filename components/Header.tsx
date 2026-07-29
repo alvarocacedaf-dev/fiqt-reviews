@@ -126,7 +126,7 @@ function LoggedInLinks({
             </div>
           </details>
         ) : (
-          <span className="flex cursor-not-allowed items-center justify-between gap-3 rounded-2xl px-4 py-3 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
+          <span className="flex cursor-not-allowed items-center justify-between gap-3 rounded-2xl px-4 py-3 text-white/55" title="Se desbloquea con 16 reseñas aprobadas">
             <span>Planchas</span>
             <span aria-hidden="true">🔒</span>
           </span>
@@ -176,7 +176,7 @@ function LoggedInLinks({
           </div>
         </details>
       ) : (
-        <span className="inline-flex cursor-not-allowed items-center gap-2 text-white/55" title="Se desbloquea con 18 reseñas aprobadas">
+        <span className="inline-flex cursor-not-allowed items-center gap-2 text-white/55" title="Se desbloquea con 16 reseñas aprobadas">
           Planchas <span aria-hidden="true">🔒</span>
         </span>
       )}
@@ -226,7 +226,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           .eq('status', 'approved'),
       ]);
       isAdmin = profile?.role === 'admin';
-      hasWorksheetAccess = isAdmin || (approvedReviewCount ?? 0) >= 18;
+      hasWorksheetAccess = isAdmin || (approvedReviewCount ?? 0) >= 16;
     }
   }
 

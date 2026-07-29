@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
 import { createClient } from '@/lib/supabase/server';
 
-const MINIMUM_APPROVED_REVIEWS = 18;
+const MINIMUM_APPROVED_REVIEWS = 16;
 
 type PageProps = {
   searchParams: Promise<{ error?: string; success?: string }>;
@@ -70,7 +70,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Beneficio bloqueado</p>
         <h1 className="mt-2 text-3xl font-black text-ink">Planchas 🔒</h1>
         <p className="mt-4 leading-7 text-slate-600">
-          Esta opción se habilita cuando alcanzas 18 reseñas aprobadas. Actualmente tienes{' '}
+          Esta opción se habilita cuando alcanzas 16 reseñas aprobadas. Actualmente tienes{' '}
           <strong>{approvedReviews}</strong>.
         </p>
         <div className="mt-6 rounded-2xl bg-blue-50 p-5">

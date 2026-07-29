@@ -123,7 +123,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
   ]);
 
   const isAdmin = profile?.role === 'admin';
-  const hasAccess = isAdmin || (approvedReviewCount ?? 0) >= 18;
+  const hasAccess = isAdmin || (approvedReviewCount ?? 0) >= 16;
   if (!hasAccess) redirect('/ciclos');
 
   const { error: ensureError } = await db.rpc('ensure_user_chat_threads');
