@@ -275,7 +275,7 @@ export function AdminWorksheetLibraryTree({
     setOpenCategories(current => (
       isOpen
         ? current.filter(item => item !== key)
-        : [...current, key]
+        : [key]
     ));
     setSelectedFolder(isOpen ? null : { courseId, examType });
     setMessage(null);
@@ -291,7 +291,7 @@ export function AdminWorksheetLibraryTree({
     if (!selectedFiles.length) return;
 
     const key = folderKey(courseId, examType);
-    setOpenCategories(current => current.includes(key) ? current : [...current, key]);
+    setOpenCategories([key]);
     setSelectedFolder({ courseId, examType });
     setUploadDraft({
       courseId,
