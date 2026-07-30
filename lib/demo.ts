@@ -51,7 +51,6 @@ export const demoCourses: Course[] = [
   { id: 'demo-pi318', cycle_id: 7, code: 'PI318', name: 'Industria de los Procesos Químicos', credits: 5 },
   { id: 'demo-pi514', cycle_id: 7, code: 'PI514', name: 'Ciencias de los Materiales', credits: 2 },
   { id: 'demo-pi520', cycle_id: 7, code: 'PI520', name: 'Recursos Químicos en la Biodiversidad', credits: 3 },
-  { id: 'demo-bae01', cycle_id: 8, code: 'BAE01', name: 'Actividades Extracurriculares', credits: 1 },
   { id: 'demo-ep818', cycle_id: 8, code: 'EP818', name: 'Costos y Presupuestos', credits: 3 },
   { id: 'demo-pi143', cycle_id: 8, code: 'PI143', name: 'Transferencia de Calor', credits: 3 },
   { id: 'demo-pi144', cycle_id: 8, code: 'PI144', name: 'Transferencia de Masa', credits: 3 },

@@ -67,7 +67,6 @@ insert into public.courses(cycle_id, code, name, credits) values
   ((select id from public.cycles where number=7), 'PI318', 'Industria de los Procesos Químicos', 5),
   ((select id from public.cycles where number=7), 'PI514', 'Ciencias de los Materiales', 2),
   ((select id from public.cycles where number=7), 'PI520', 'Recursos Químicos en la Biodiversidad', 3),
-  ((select id from public.cycles where number=8), 'BAE01', 'Actividades Extracurriculares', 1),
   ((select id from public.cycles where number=8), 'EP818', 'Costos y Presupuestos', 3),
   ((select id from public.cycles where number=8), 'PI143', 'Transferencia de Calor', 3),
   ((select id from public.cycles where number=8), 'PI144', 'Transferencia de Masa', 3),
