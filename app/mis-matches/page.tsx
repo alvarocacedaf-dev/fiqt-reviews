@@ -115,20 +115,13 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
 
   if (!user) redirect('/login?next=/mis-matches');
 
-  const [{ data: profile }, { count: approvedReviewCount }, sanctionState] = await Promise.all([
+  const [{ data: profile }, sanctionState] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
-    db
-      .from('reviews')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('status', 'approved'),
     getWorksheetSanctionState(db),
   ]);
 
   const isAdmin = profile?.role === 'admin';
   if (!isAdmin && sanctionState.isPermanentlyBlocked) redirect('/ciclos');
-  const hasAccess = isAdmin || (approvedReviewCount ?? 0) >= 16;
-  if (!hasAccess) redirect('/ciclos');
 
   const { error: ensureError } = await db.rpc('ensure_user_chat_threads');
   if (ensureError) {
