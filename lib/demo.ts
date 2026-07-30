@@ -38,7 +38,6 @@ export const demoCourses: Course[] = [
   { id: 'demo-qu328', cycle_id: 5, code: 'QU328', name: 'Química Orgánica I', credits: 5 },
   { id: 'demo-qu428', cycle_id: 5, code: 'QU428', name: 'Fisicoquímica II', credits: 5 },
   { id: 'demo-qu518', cycle_id: 5, code: 'QU518', name: 'Análisis Químico', credits: 4 },
-  { id: 'demo-bie01', cycle_id: 6, code: 'BIE01', name: 'Idioma Extranjero o Lengua Nativa en el Nivel Intermedio', credits: 2 },
   { id: 'demo-brn01', cycle_id: 6, code: 'BRN01', name: 'Realidad Nacional, Constitución y Derechos Humanos', credits: 3 },
   { id: 'demo-ec618', cycle_id: 6, code: 'EC618', name: 'Mecánica y Resistencia de los Materiales', credits: 3 },
   { id: 'demo-ee103', cycle_id: 6, code: 'EE103', name: 'Circuitos e Instalaciones Eléctricas Industriales', credits: 3 },

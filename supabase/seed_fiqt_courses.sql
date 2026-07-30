@@ -54,7 +54,6 @@ insert into public.courses(cycle_id, code, name, credits) values
   ((select id from public.cycles where number=5), 'QU328', 'Química Orgánica I', 5),
   ((select id from public.cycles where number=5), 'QU428', 'Fisicoquímica II', 5),
   ((select id from public.cycles where number=5), 'QU518', 'Análisis Químico', 4),
-  ((select id from public.cycles where number=6), 'BIE01', 'Idioma Extranjero o Lengua Nativa en el Nivel Intermedio', 2),
   ((select id from public.cycles where number=6), 'BRN01', 'Realidad Nacional, Constitución y Derechos Humanos', 3),
   ((select id from public.cycles where number=6), 'EC618', 'Mecánica y Resistencia de los Materiales', 3),
   ((select id from public.cycles where number=6), 'EE103', 'Circuitos e Instalaciones Eléctricas Industriales', 3),
