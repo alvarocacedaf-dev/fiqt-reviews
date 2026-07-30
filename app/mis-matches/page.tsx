@@ -532,14 +532,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                 </p>
               </div>
 
-              {selectedThread.kind === 'support' ? (
-                <section className="mt-6 rounded-2xl bg-blue-50 p-4">
-                  <p className="text-xs font-black uppercase tracking-wider text-royal">Ayuda y soporte</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Este chat está anclado para consultas sobre verificaciones, reseñas y uso de la plataforma.
-                  </p>
-                </section>
-              ) : (
+              {selectedThread.kind === 'match' && (
                 <section className="mt-6">
                   <p className="text-xs font-black uppercase tracking-wider text-royal">Intercambio acordado</p>
                   <div className="mt-3 space-y-3">
