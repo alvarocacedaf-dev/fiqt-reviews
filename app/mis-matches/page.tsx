@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { ChatAutoRefresh } from '@/components/ChatAutoRefresh';
 import { ChatComposer } from '@/components/ChatComposer';
+import { ChatExchangeDeliveryForm } from '@/components/ChatExchangeDeliveryForm';
 import { ChatReportForm } from '@/components/ChatReportForm';
 import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
 import { createClient } from '@/lib/supabase/server';
@@ -45,6 +46,24 @@ type ChatPreview = {
   body: string | null;
   attachment_name: string | null;
   created_at: string | null;
+};
+
+type ExchangeSubmission = {
+  thread_id: string;
+  user_id: string;
+  submitted_at: string;
+};
+
+type ExchangeFile = {
+  id: string;
+  thread_id: string;
+  uploader_id: string;
+  file_path: string;
+  file_name: string;
+  mime_type: string | null;
+  file_size: number;
+  created_at: string;
+  signed_url?: string | null;
 };
 
 type Profile = {
@@ -183,6 +202,51 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     }),
   );
 
+  let exchangeSubmissions: ExchangeSubmission[] = [];
+  let exchangeFiles: ExchangeFile[] = [];
+  let exchangeError: { message: string } | null = null;
+  if (selectedThread?.kind === 'match') {
+    const [
+      { data: rawExchangeSubmissions, error: submissionsError },
+      { data: rawExchangeFiles, error: filesError },
+    ] = await Promise.all([
+      db
+        .from('chat_exchange_submissions')
+        .select('thread_id,user_id,submitted_at')
+        .eq('thread_id', selectedThread.id),
+      db
+        .from('chat_exchange_files')
+        .select('id,thread_id,uploader_id,file_path,file_name,mime_type,file_size,created_at')
+        .eq('thread_id', selectedThread.id)
+        .order('created_at', { ascending: true }),
+    ]);
+
+    exchangeSubmissions = (rawExchangeSubmissions ?? []) as ExchangeSubmission[];
+    exchangeFiles = (rawExchangeFiles ?? []) as ExchangeFile[];
+    exchangeError = submissionsError || filesError;
+  }
+
+  const exchangeParticipantIds = selectedThread?.kind === 'match'
+    ? [selectedThread.user_a_id, selectedThread.user_b_id].filter((id): id is string => Boolean(id))
+    : [];
+  const submittedUserIds = new Set(exchangeSubmissions.map(submission => submission.user_id));
+  const exchangeReady = exchangeParticipantIds.length === 2
+    && exchangeParticipantIds.every(participantId => submittedUserIds.has(participantId));
+  const currentUserSubmitted = submittedUserIds.has(user.id);
+  const otherParticipantId = exchangeParticipantIds.find(participantId => participantId !== user.id) ?? null;
+  const otherUserSubmitted = otherParticipantId ? submittedUserIds.has(otherParticipantId) : false;
+
+  const exchangeFilesWithUrls = await Promise.all(
+    exchangeFiles.map(async file => {
+      const canDownload = isAdmin || exchangeReady || file.uploader_id === user.id;
+      if (!canDownload) return file;
+      const { data } = await db.storage
+        .from('chat-attachments')
+        .createSignedUrl(file.file_path, 3600);
+      return { ...file, signed_url: data?.signedUrl ?? null };
+    }),
+  );
+
   let selectedMatches: WorksheetMatch[] = [];
   let courses: Record<string, Course> = {};
   if (
@@ -251,7 +315,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
       .maybeSingle();
     alreadyReportedSelectedChat = Boolean(existingReport);
   }
-  const dataError = threadsError || profilesError || previewsError || selectedMessagesError;
+  const dataError = threadsError || profilesError || previewsError || selectedMessagesError || exchangeError;
 
   return (
     <div className="space-y-4">
@@ -289,7 +353,11 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               const lastMessage = lastMessageByThread.get(thread.id);
               const isSelected = selectedThread?.id === thread.id;
               const preview = lastMessage?.body
-                || (lastMessage?.attachment_name ? `📎 ${lastMessage.attachment_name}` : 'Conversación disponible');
+                || (lastMessage?.attachment_name
+                  ? `📎 ${lastMessage.attachment_name}`
+                  : thread.kind === 'match' && thread.status === 'available'
+                    ? 'Entrega de archivos pendiente'
+                    : 'Conversación disponible');
 
               const content = (
                 <span
@@ -330,7 +398,9 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                           ? 'Activo'
                           : thread.status === 'ended'
                             ? 'Finalizado'
-                            : 'Disponible'}
+                            : thread.kind === 'match'
+                              ? 'Esperando archivos'
+                              : 'Disponible'}
                       </span>
                     </span>
                   </div>
@@ -374,7 +444,9 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                         ? 'Chat activo'
                         : selectedThread.status === 'ended'
                           ? 'Chat finalizado'
-                          : 'Disponible para abrir'}
+                          : selectedThread.kind === 'match'
+                            ? 'Esperando la entrega de archivos'
+                            : 'Disponible para abrir'}
                     </p>
                   </div>
                 </div>
@@ -391,6 +463,32 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                 className="flex min-h-[430px] flex-1 flex-col gap-3 overflow-y-auto bg-slate-50 p-4 sm:p-6"
                 id="chat-message-panel"
               >
+                {selectedThread.kind === 'match' && selectedThread.status === 'available' && (
+                  <div className="mx-auto w-full max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center">
+                    <p className="text-sm font-black text-amber-950">Entrega previa obligatoria</p>
+                    <p className="mt-2 text-sm leading-6 text-amber-900">
+                      Antes de iniciar el chat debes enviar tus archivos que intercambiarás. La otra persona no podrá
+                      descargar estos archivos a menos que también envíe sus archivos que intercambiará.
+                    </p>
+                    <div className="mt-3 flex justify-center gap-2 text-xs font-black">
+                      <span className={`rounded-full px-3 py-1 ${
+                        currentUserSubmitted
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-white text-amber-900'
+                      }`}>
+                        Tu entrega: {currentUserSubmitted ? 'completa' : 'pendiente'}
+                      </span>
+                      <span className={`rounded-full px-3 py-1 ${
+                        otherUserSubmitted
+                          ? 'bg-emerald-100 text-emerald-800'
+                          : 'bg-white text-amber-900'
+                      }`}>
+                        Otra persona: {otherUserSubmitted ? 'completa' : 'pendiente'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+
                 {messagesWithUrls.map(message => {
                   const isOwn = message.sender_id === user.id;
                   return (
@@ -475,6 +573,22 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                     Los mensajes y archivos permanecen guardados, pero ya no se pueden realizar nuevos envíos.
                   </p>
                 </div>
+              ) : selectedThread.kind === 'match' ? (
+                isAdmin ? (
+                  <div className="border-t border-slate-200 bg-amber-50 p-4 text-center">
+                    <p className="text-sm font-black text-amber-900">Intercambio pendiente</p>
+                    <p className="mt-1 text-xs text-amber-800">
+                      El chat se activará automáticamente cuando ambos estudiantes entreguen sus archivos.
+                    </p>
+                  </div>
+                ) : (
+                  <ChatExchangeDeliveryForm
+                    alreadySubmitted={currentUserSubmitted}
+                    otherSubmitted={otherUserSubmitted}
+                    threadId={selectedThread.id}
+                    userId={user.id}
+                  />
+                )
               ) : isAdmin && selectedThread.kind === 'support' ? (
                 <div className="border-t border-slate-200 bg-amber-50 p-4 text-center">
                   <p className="text-sm font-black text-amber-900">Esperando al estudiante</p>
@@ -533,9 +647,60 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
               </div>
 
               {selectedThread.kind === 'match' && (
-                <section className="mt-6">
-                  <p className="text-xs font-black uppercase tracking-wider text-royal">Intercambio acordado</p>
-                  <div className="mt-3 space-y-3">
+                <>
+                  <section className="mt-6">
+                    <p className="text-xs font-black uppercase tracking-wider text-royal">Archivos del intercambio</p>
+                    <div className="mt-3 space-y-3">
+                      {exchangeParticipantIds.map(participantId => {
+                        const isCurrentUser = participantId === user.id;
+                        const participantSubmitted = submittedUserIds.has(participantId);
+                        const participantFiles = exchangeFilesWithUrls.filter(file => file.uploader_id === participantId);
+
+                        return (
+                          <div className="rounded-2xl border border-slate-200 p-3 text-xs" key={participantId}>
+                            <div className="flex items-center justify-between gap-2">
+                              <p className="font-black text-ink">
+                                {isCurrentUser ? 'Tu entrega' : 'Entrega de la otra persona'}
+                              </p>
+                              <span className={`rounded-full px-2 py-1 text-[10px] font-black ${
+                                participantSubmitted
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-amber-100 text-amber-800'
+                              }`}>
+                                {participantSubmitted ? 'Entregada' : 'Pendiente'}
+                              </span>
+                            </div>
+                            {participantFiles.length > 0 && (
+                              <ul className="mt-2 space-y-2">
+                                {participantFiles.map(file => (
+                                  <li key={file.id}>
+                                    {file.signed_url ? (
+                                      <a
+                                        className="block truncate font-bold text-royal hover:underline"
+                                        href={file.signed_url}
+                                        rel="noreferrer"
+                                        target="_blank"
+                                      >
+                                        📎 {file.file_name}
+                                      </a>
+                                    ) : (
+                                      <span className="block truncate font-semibold text-slate-500">
+                                        🔒 Archivo protegido hasta completar ambas entregas
+                                      </span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  <section className="mt-6">
+                    <p className="text-xs font-black uppercase tracking-wider text-royal">Intercambio acordado</p>
+                    <div className="mt-3 space-y-3">
                     {selectedMatches.filter(match => match.status === 'active').map(match => {
                       const currentGivesId = match.user_a_id === user.id
                         ? match.user_a_gives_course_id
@@ -565,8 +730,9 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                         Las selecciones ya no coinciden, pero el historial del chat se conserva.
                       </p>
                     )}
-                  </div>
-                </section>
+                    </div>
+                  </section>
+                </>
               )}
 
               {selectedThread.status === 'ended' && selectedThread.ended_at && (
