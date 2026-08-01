@@ -3,6 +3,7 @@ import {
   AdminWorksheetUploadForm,
 } from '@/components/AdminWorksheetLibraryManager';
 import { requireAdmin } from '@/lib/admin';
+import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
 
 type Cycle = {
   id: number;
@@ -28,11 +29,13 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
+  storage_provider: 'supabase' | 'r2';
   signed_url?: string | null;
 };
 
 export default async function AdminWorksheetsPage() {
-  const { db, user } = await requireAdmin();
+  const { db } = await requireAdmin();
+  const r2Configured = isR2Configured();
   const [
     { data: rawCycles, error: cyclesError },
     { data: rawCourses, error: coursesError },
@@ -42,7 +45,7 @@ export default async function AdminWorksheetsPage() {
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
     db
       .from('admin_worksheets')
-      .select('id,course_id,title,exam_type,academic_term,file_path,file_name,mime_type,file_size,created_at')
+      .select('id,course_id,title,exam_type,academic_term,file_path,file_name,mime_type,file_size,created_at,storage_provider')
       .order('created_at', { ascending: false }),
   ]);
 
@@ -50,13 +53,19 @@ export default async function AdminWorksheetsPage() {
   const courses = (rawCourses ?? []) as Course[];
   const files = await Promise.all(
     ((rawFiles ?? []) as WorksheetFile[]).map(async file => {
+      if (file.storage_provider === 'r2') {
+        return {
+          ...file,
+          signed_url: isR2Configured() ? createR2PresignedUrl('GET', file.file_path, 3600) : null,
+        };
+      }
       const { data } = await db.storage
         .from('admin-worksheets')
         .createSignedUrl(file.file_path, 3600);
       return { ...file, signed_url: data?.signedUrl ?? null };
     }),
   );
-  const migrationMissing = filesError?.code === '42P01';
+  const migrationMissing = filesError?.code === '42P01' || filesError?.code === '42703';
 
   return (
     <div className="space-y-6">
@@ -73,18 +82,23 @@ export default async function AdminWorksheetsPage() {
         <section className="panel">
           <p className="font-black text-amber-900">Primero debes aplicar la migración 010 en Supabase.</p>
           <p className="mt-2 text-sm text-slate-600">
-            El archivo se llama <strong>010_admin_worksheets.sql</strong>.
+            Aplica las migraciones pendientes, incluida <strong>024_admin_worksheets_r2.sql</strong>.
           </p>
         </section>
       ) : (
         <>
+          {!r2Configured && (
+            <section className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm font-bold text-amber-900">
+              Cloudflare R2 todavía no está configurado. Agrega las cuatro variables R2 antes de subir archivos.
+            </section>
+          )}
           <section className="panel">
             <h2 className="text-2xl font-black text-ink">Agregar planchas</h2>
             <p className="mt-2 text-sm text-slate-600">
               Al seleccionar un curso, sus archivos quedarán agrupados automáticamente en la misma carpeta.
             </p>
             <div className="mt-5">
-              <AdminWorksheetUploadForm courses={courses} userId={user.id} />
+              <AdminWorksheetUploadForm courses={courses} />
             </div>
           </section>
 
@@ -100,7 +114,6 @@ export default async function AdminWorksheetsPage() {
               courses={courses}
               cycles={cycles}
               files={files}
-              userId={user.id}
             />
 
             {(cyclesError || coursesError || filesError) && !migrationMissing && (

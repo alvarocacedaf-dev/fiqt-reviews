@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [
@@ -36,6 +35,7 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
+  storage_provider: 'supabase' | 'r2';
   signed_url?: string | null;
 };
 
@@ -51,16 +51,59 @@ const LEGACY_CATEGORY_LABELS: Partial<Record<ExamType, string>> = {
   other: 'Otros materiales',
 };
 
-function safeFileName(name: string) {
-  const extension = name.includes('.') ? `.${name.split('.').pop()!.toLowerCase()}` : '';
-  const base = name
-    .slice(0, extension ? -extension.length : undefined)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-zA-Z0-9_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 100) || 'plancha';
-  return `${base}${extension}`;
+async function readApiResponse(response: Response) {
+  const result = await response.json().catch(() => ({})) as {
+    error?: string;
+    key?: string;
+    uploadUrl?: string;
+  };
+  if (!response.ok) throw new Error(result.error || 'La operación no pudo completarse.');
+  return result;
+}
+
+async function uploadWorksheetToR2({
+  file,
+  courseId,
+  title,
+  examType,
+  academicTerm,
+}: {
+  file: File;
+  courseId: string;
+  title: string;
+  examType: ExamType;
+  academicTerm: string;
+}) {
+  const prepared = await readApiResponse(await fetch('/api/admin/worksheets/upload-url', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ courseId, fileName: file.name, fileSize: file.size }),
+  }));
+  if (!prepared.key || !prepared.uploadUrl) throw new Error('R2 no devolvió una URL de subida válida.');
+
+  const uploadResponse = await fetch(prepared.uploadUrl, {
+    method: 'PUT',
+    headers: file.type ? { 'Content-Type': file.type } : undefined,
+    body: file,
+  });
+  if (!uploadResponse.ok) {
+    throw new Error(`R2 rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
+  }
+
+  await readApiResponse(await fetch('/api/admin/worksheets/confirm', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      courseId,
+      title,
+      examType,
+      academicTerm,
+      key: prepared.key,
+      fileName: file.name,
+      mimeType: file.type,
+      fileSize: file.size,
+    }),
+  }));
 }
 
 function formatDate(value: string) {
@@ -78,10 +121,8 @@ function formatBytes(value: number) {
 
 export function AdminWorksheetUploadForm({
   courses,
-  userId,
 }: {
   courses: CourseOption[];
-  userId: string;
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
@@ -108,8 +149,6 @@ export function AdminWorksheetUploadForm({
       return;
     }
 
-    const db = createClient();
-
     try {
       setPending(true);
       setMessage(null);
@@ -123,29 +162,14 @@ export function AdminWorksheetUploadForm({
           throw new Error(`“${file.name}” supera el límite de 25 MB.`);
         }
 
-        const path = `${courseId}/${userId}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
-        const { error: uploadError } = await db.storage
-          .from('admin-worksheets')
-          .upload(path, file, { upsert: false });
-        if (uploadError) throw new Error(`No se pudo subir “${file.name}”: ${uploadError.message}`);
-
         const displayTitle = title || file.name.replace(/\.[^.]+$/, '');
-        const { error: insertError } = await db.from('admin_worksheets').insert({
-          course_id: courseId,
+        await uploadWorksheetToR2({
+          file,
+          courseId,
           title: displayTitle,
-          exam_type: examType,
-          academic_term: academicTerm || null,
-          file_path: path,
-          file_name: file.name,
-          mime_type: file.type || null,
-          file_size: file.size,
-          uploaded_by: userId,
+          examType: examType as ExamType,
+          academicTerm,
         });
-
-        if (insertError) {
-          await db.storage.from('admin-worksheets').remove([path]);
-          throw new Error(`No se pudo registrar “${file.name}”: ${insertError.message}`);
-        }
       }
 
       formRef.current?.reset();
@@ -246,12 +270,10 @@ export function AdminWorksheetLibraryTree({
   cycles,
   courses,
   files,
-  userId,
 }: {
   cycles: CycleOption[];
   courses: CourseOption[];
   files: WorksheetFile[];
-  userId: string;
 }) {
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -313,8 +335,6 @@ export function AdminWorksheetLibraryTree({
       return;
     }
 
-    const db = createClient();
-
     try {
       setPending(true);
       setMessage(null);
@@ -328,29 +348,14 @@ export function AdminWorksheetLibraryTree({
           throw new Error(`“${file.name}” supera el límite de 25 MB.`);
         }
 
-        const path = `${uploadDraft.courseId}/${userId}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
-        const { error: uploadError } = await db.storage
-          .from('admin-worksheets')
-          .upload(path, file, { upsert: false });
-        if (uploadError) throw new Error(`No se pudo subir “${file.name}”: ${uploadError.message}`);
-
         const displayTitle = uploadDraft.title.trim() || file.name.replace(/\.[^.]+$/, '');
-        const { error: insertError } = await db.from('admin_worksheets').insert({
-          course_id: uploadDraft.courseId,
+        await uploadWorksheetToR2({
+          file,
+          courseId: uploadDraft.courseId,
           title: displayTitle,
-          exam_type: uploadDraft.examType,
-          academic_term: uploadDraft.academicTerm.trim() || null,
-          file_path: path,
-          file_name: file.name,
-          mime_type: file.type || null,
-          file_size: file.size,
-          uploaded_by: userId,
+          examType: uploadDraft.examType,
+          academicTerm: uploadDraft.academicTerm,
         });
-
-        if (insertError) {
-          await db.storage.from('admin-worksheets').remove([path]);
-          throw new Error(`No se pudo registrar “${file.name}”: ${insertError.message}`);
-        }
       }
 
       const savedCount = uploadDraft.files.length;
@@ -613,7 +618,10 @@ export function AdminWorksheetLibraryTree({
                     ) : (
                       <span className="rounded-xl bg-slate-200 px-3 py-2 text-xs font-bold text-slate-500">No disponible</span>
                     )}
-                    <AdminWorksheetDeleteButton fileId={file.id} filePath={file.file_path} />
+                    <AdminWorksheetDeleteButton
+                      fileId={file.id}
+                      storageProvider={file.storage_provider}
+                    />
                   </div>
                 </article>
               ))}
@@ -644,10 +652,10 @@ export function AdminWorksheetLibraryTree({
 
 export function AdminWorksheetDeleteButton({
   fileId,
-  filePath,
+  storageProvider,
 }: {
   fileId: string;
-  filePath: string;
+  storageProvider: 'supabase' | 'r2';
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -655,18 +663,17 @@ export function AdminWorksheetDeleteButton({
 
   async function removeFile() {
     if (!window.confirm('¿Eliminar esta plancha de forma permanente?')) return;
-    const db = createClient();
-
     try {
       setPending(true);
       setError('');
-      const { error: rowError } = await db.from('admin_worksheets').delete().eq('id', fileId);
-      if (rowError) throw new Error(rowError.message);
-
-      const { error: storageError } = await db.storage.from('admin-worksheets').remove([filePath]);
-      if (storageError) {
-        setError('El registro fue eliminado, pero el archivo no pudo limpiarse del almacenamiento.');
+      if (storageProvider !== 'r2') {
+        throw new Error('Este archivo antiguo todavía pertenece a Supabase Storage.');
       }
+      await readApiResponse(await fetch('/api/admin/worksheets/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileId }),
+      }));
       router.refresh();
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'No se pudo eliminar la plancha.');
