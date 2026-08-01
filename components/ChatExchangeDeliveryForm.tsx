@@ -4,8 +4,8 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MAX_FILES = 10;
+const MAX_TOTAL_SIZE = 40 * 1024 * 1024;
+const MIN_FILES = 2;
 const ACCEPTED_EXTENSIONS = [
   '.jpg', '.jpeg', '.png', '.webp', '.gif', '.pdf', '.doc', '.docx',
   '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip',
@@ -21,6 +21,17 @@ function safeFileName(name: string) {
     .replace(/^-+|-+$/g, '')
     .slice(0, 80) || 'archivo';
   return `${base}${extension}`;
+}
+
+async function sha256(file: File) {
+  const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+  return Array.from(new Uint8Array(digest))
+    .map(byte => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function formatMegabytes(bytes: number) {
+  return (bytes / (1024 * 1024)).toFixed(2);
 }
 
 export function ChatExchangeDeliveryForm({
@@ -55,13 +66,27 @@ export function ChatExchangeDeliveryForm({
 
   async function submitFiles() {
     if (pending) return;
-    if (!files.length) {
-      setError('Debes seleccionar al menos un archivo para realizar tu entrega.');
+    if (files.length < MIN_FILES) {
+      setError(`Debes seleccionar al menos ${MIN_FILES} archivos para realizar tu entrega.`);
       return;
     }
-    if (files.length > MAX_FILES) {
-      setError(`Puedes entregar como máximo ${MAX_FILES} archivos.`);
+
+    const totalSize = files.reduce((total, file) => total + file.size, 0);
+    if (totalSize > MAX_TOTAL_SIZE) {
+      setError(`Los archivos seleccionados pesan ${formatMegabytes(totalSize)} MB. El máximo total es 40 MB.`);
       return;
+    }
+
+    for (const file of files) {
+      const extension = file.name.includes('.') ? `.${file.name.split('.').pop()!.toLowerCase()}` : '';
+      if (!ACCEPTED_EXTENSIONS.includes(extension)) {
+        setError(`El formato de “${file.name}” no está permitido.`);
+        return;
+      }
+      if (file.size < 1) {
+        setError(`“${file.name}” está vacío.`);
+        return;
+      }
     }
 
     const db = createClient();
@@ -71,17 +96,17 @@ export function ChatExchangeDeliveryForm({
       setPending(true);
       setError('');
 
-      const metadata = [];
-      for (const file of files) {
-        const extension = file.name.includes('.') ? `.${file.name.split('.').pop()!.toLowerCase()}` : '';
-        if (!ACCEPTED_EXTENSIONS.includes(extension)) {
-          throw new Error(`El formato de “${file.name}” no está permitido.`);
-        }
-        if (file.size < 1 || file.size > MAX_FILE_SIZE) {
-          throw new Error(`“${file.name}” está vacío o supera el límite de 10 MB.`);
-        }
+      const preparedFiles = await Promise.all(
+        files.map(async file => ({ file, hash: await sha256(file) })),
+      );
+      const hashes = new Set(preparedFiles.map(item => item.hash));
+      if (hashes.size !== preparedFiles.length) {
+        throw new Error('Hay archivos duplicados. Retira las copias repetidas antes de continuar.');
+      }
 
-        const path = `${threadId}/${userId}/exchange/${crypto.randomUUID()}-${safeFileName(file.name)}`;
+      const metadata = [];
+      for (const { file, hash } of preparedFiles) {
+        const path = `${threadId}/${userId}/exchange/${hash}-${safeFileName(file.name)}`;
         const { error: uploadError } = await db.storage
           .from('chat-attachments')
           .upload(path, file, { upsert: false });
@@ -93,6 +118,7 @@ export function ChatExchangeDeliveryForm({
           name: file.name,
           type: file.type || 'application/octet-stream',
           size: file.size,
+          sha256: hash,
         });
       }
 
@@ -136,11 +162,16 @@ export function ChatExchangeDeliveryForm({
           type="file"
         />
         {files.length > 0 && (
-          <ul className="mt-3 max-h-24 space-y-1 overflow-y-auto text-xs text-slate-600">
-            {files.map(file => (
-              <li className="truncate" key={`${file.name}-${file.lastModified}`}>• {file.name}</li>
-            ))}
-          </ul>
+          <>
+            <p className="mt-3 text-xs font-bold text-royal">
+              {files.length} archivos · {formatMegabytes(files.reduce((total, file) => total + file.size, 0))} MB de 40 MB
+            </p>
+            <ul className="mt-2 max-h-24 space-y-1 overflow-y-auto text-xs text-slate-600">
+              {files.map(file => (
+                <li className="truncate" key={`${file.name}-${file.lastModified}`}>• {file.name}</li>
+              ))}
+            </ul>
+          </>
         )}
         <button
           className="btn-primary mt-3 w-full"
@@ -152,7 +183,7 @@ export function ChatExchangeDeliveryForm({
         </button>
         {error && <p className="mt-2 text-xs font-bold text-red-700">{error}</p>}
         <p className="mt-2 text-[11px] text-slate-500">
-          Hasta {MAX_FILES} archivos. Imágenes, PDF, Office, TXT o ZIP de máximo 10 MB cada uno.
+          Mínimo 2 archivos, sin límite de cantidad. Imágenes, PDF, Office, TXT o ZIP de máximo 40 MB en total.
         </p>
       </div>
     </div>
