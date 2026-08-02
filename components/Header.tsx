@@ -120,6 +120,9 @@ function LoggedInLinks({
             <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
               Mis matches
             </a>
+            <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/planchas-administracion">
+              Planchas de la Administración
+            </a>
           </div>
         </details>
         {isAdmin && (
@@ -162,6 +165,9 @@ function LoggedInLinks({
           </a>
           <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
             Mis matches
+          </a>
+          <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/planchas-administracion">
+            Planchas de la Administración
           </a>
         </div>
       </details>

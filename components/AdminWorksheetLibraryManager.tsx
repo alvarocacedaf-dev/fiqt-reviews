@@ -30,7 +30,7 @@ type WorksheetFile = {
   title: string;
   exam_type: ExamType;
   academic_term: string | null;
-  file_path: string;
+  file_path?: string;
   file_name: string;
   mime_type: string | null;
   file_size: number;
@@ -270,10 +270,12 @@ export function AdminWorksheetLibraryTree({
   cycles,
   courses,
   files,
+  readOnly = false,
 }: {
   cycles: CycleOption[];
   courses: CourseOption[];
   files: WorksheetFile[];
+  readOnly?: boolean;
 }) {
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -450,7 +452,7 @@ export function AdminWorksheetLibraryTree({
                               const key = folderKey(course.id, category.type);
                               const isOpen = openCategories.includes(key);
                               const categoryFiles = filesFor(course.id, category.type);
-                              const canUpload = FOLDER_CATEGORIES.some(item => item.type === category.type);
+                              const canUpload = !readOnly && FOLDER_CATEGORIES.some(item => item.type === category.type);
                               const inputId = `add-${course.id}-${category.type}`;
 
                               return (
@@ -522,7 +524,7 @@ export function AdminWorksheetLibraryTree({
               {selectedCourse.code || 'Sin código'} — {selectedCourse.name}
             </p>
 
-            {uploadDraft
+            {!readOnly && uploadDraft
               && uploadDraft.courseId === selectedFolder.courseId
               && uploadDraft.examType === selectedFolder.examType && (
               <section className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4">
@@ -585,7 +587,7 @@ export function AdminWorksheetLibraryTree({
               </section>
             )}
 
-            {message && (
+            {!readOnly && message && (
               <p className={`mt-4 rounded-xl p-3 text-sm font-bold ${
                 message.type === 'success'
                   ? 'bg-emerald-50 text-emerald-800'
@@ -610,26 +612,32 @@ export function AdminWorksheetLibraryTree({
                     </p>
                   </div>
 
-                  <div className="mt-3 flex items-start gap-2">
-                    {file.signed_url ? (
-                      <a className="btn-secondary px-3 py-2 text-xs" href={file.signed_url} rel="noreferrer" target="_blank">
-                        Abrir
-                      </a>
-                    ) : (
-                      <span className="rounded-xl bg-slate-200 px-3 py-2 text-xs font-bold text-slate-500">No disponible</span>
-                    )}
-                    <AdminWorksheetDeleteButton
-                      fileId={file.id}
-                      storageProvider={file.storage_provider}
-                    />
-                  </div>
+                  {!readOnly && (
+                    <div className="mt-3 flex items-start gap-2">
+                      {file.signed_url ? (
+                        <a className="btn-secondary px-3 py-2 text-xs" href={file.signed_url} rel="noreferrer" target="_blank">
+                          Abrir
+                        </a>
+                      ) : (
+                        <span className="rounded-xl bg-slate-200 px-3 py-2 text-xs font-bold text-slate-500">No disponible</span>
+                      )}
+                      <AdminWorksheetDeleteButton
+                        fileId={file.id}
+                        storageProvider={file.storage_provider}
+                      />
+                    </div>
+                  )}
                 </article>
               ))}
 
               {!selectedFiles.length && (
                 <div className="rounded-2xl bg-slate-100 p-6 text-center">
                   <p className="font-black text-ink">Esta carpeta está vacía.</p>
-                  <p className="mt-2 text-sm text-slate-500">Usa + Añadir para seleccionar sus primeros archivos.</p>
+                  <p className="mt-2 text-sm text-slate-500">
+                    {readOnly
+                      ? 'La administración todavía no ha agregado archivos en esta categoría.'
+                      : 'Usa + Añadir para seleccionar sus primeros archivos.'}
+                  </p>
                 </div>
               )}
             </div>
