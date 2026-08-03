@@ -600,16 +600,16 @@ export function AdminWorksheetLibraryTree({
             <div className="mt-5 space-y-3">
               {selectedFiles.map(file => (
                 <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4" key={file.id}>
-                  <div className="min-w-0">
+                  <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h4 className="break-words text-xs font-black leading-4 text-ink">{file.title}</h4>
+                    <span className="text-[10px] leading-4 text-slate-500">
+                      {formatBytes(file.file_size)} · {formatDate(file.created_at)}
+                    </span>
                     {file.academic_term && (
-                      <span className="mt-2 inline-block rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase text-amber-900">
+                      <span className="inline-block rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase text-amber-900">
                         {file.academic_term}
                       </span>
                     )}
-                    <p className="mt-2 break-all text-xs leading-5 text-slate-500">
-                      {file.file_name} · {formatBytes(file.file_size)} · {formatDate(file.created_at)}
-                    </p>
                   </div>
 
                   {!readOnly && (
