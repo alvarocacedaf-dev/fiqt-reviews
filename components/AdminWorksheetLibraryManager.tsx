@@ -601,7 +601,7 @@ export function AdminWorksheetLibraryTree({
               {selectedFiles.map(file => (
                 <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4" key={file.id}>
                   <div className="min-w-0">
-                    <h4 className="break-words text-sm font-black leading-5 text-ink">{file.title}</h4>
+                    <h4 className="break-words text-xs font-black leading-4 text-ink">{file.title}</h4>
                     {file.academic_term && (
                       <span className="mt-2 inline-block rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase text-amber-900">
                         {file.academic_term}
