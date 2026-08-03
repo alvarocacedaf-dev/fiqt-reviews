@@ -1,5 +1,5 @@
 import { RatingSummary } from '@/components/RatingSummary';
-import { getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
+import { getCourse, getCourseProfessors, getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
 
@@ -51,9 +51,23 @@ function getCourseInfo(link: CourseLink): CourseInfo | null {
   return link.courses;
 }
 
-export default async function ProfessorPage({ params }: { params: Promise<{ professorId: string }> }) {
-  const { professorId } = await params;
-  const canViewReviews = await hasReviewAccess();
+export default async function ProfessorPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ professorId: string }>;
+  searchParams: Promise<{ courseId?: string | string[] }>;
+}) {
+  const [{ professorId }, query] = await Promise.all([params, searchParams]);
+  const courseId = typeof query.courseId === 'string' ? query.courseId : null;
+  const [hasGeneralReviewAccess, contextCourse, contextProfessors] = await Promise.all([
+    hasReviewAccess(),
+    courseId ? getCourse(courseId) : Promise.resolve(null),
+    courseId ? getCourseProfessors(courseId) : Promise.resolve([]),
+  ]);
+  const isFirstCycleProfile = contextCourse?.cycle_id === 1
+    && contextProfessors.some(professor => professor.id === professorId);
+  const canViewReviews = hasGeneralReviewAccess || isFirstCycleProfile;
 
   if (!canViewReviews) {
     return (

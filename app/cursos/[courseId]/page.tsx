@@ -186,11 +186,12 @@ const courseSyllabi: Record<string, { label: string; href: string }> = {
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = await params;
-  const [course, professors, canViewReviews] = await Promise.all([
+  const [course, professors, hasGeneralReviewAccess] = await Promise.all([
     getCourse(courseId),
     getCourseProfessors(courseId),
     hasReviewAccess(),
   ]);
+  const canViewReviews = hasGeneralReviewAccess || course?.cycle_id === 1;
   const rows = canViewReviews
     ? await Promise.all(professors.map(async professor => [professor.id, await getProfessorReviews(professor.id)] as const))
     : [];

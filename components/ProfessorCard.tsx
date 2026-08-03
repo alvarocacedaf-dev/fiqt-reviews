@@ -74,7 +74,7 @@ export function ProfessorCard({
 
         <div className="relative z-10 grid grid-cols-2 gap-3">
           {hasReviewAccess ? (
-            <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}`}>
+            <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}?courseId=${encodeURIComponent(courseId)}`}>
               Ver perfil
             </Link>
           ) : (
