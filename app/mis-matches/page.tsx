@@ -325,6 +325,10 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
         <p className="mt-2 text-sm leading-6 text-slate-600">
           Conversa con administración o coordina el intercambio con las personas que hicieron match contigo.
         </p>
+        <p className="mt-1 text-xs font-semibold leading-5 text-amber-800">
+          A excepción del chat anclado con la administración, todos los demás chats que generes se eliminarán
+          después de 14 días. Guarda los archivos de tus chats antes de ese plazo para no perderlos.
+        </p>
       </header>
 
       {query.success && (
