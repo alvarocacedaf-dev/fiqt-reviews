@@ -49,6 +49,13 @@ export async function POST(request: Request) {
     const { data: course } = await context.db.from('courses').select('id').eq('id', courseId).maybeSingle();
     if (!course) return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });
 
+    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', {
+      p_action: 'worksheet_upload_url',
+    });
+    if (rateLimitError) {
+      return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
+    }
+
     const key = `admin-worksheets/${courseId}/${context.user.id}/${randomUUID()}-${safeFileName(fileName)}`;
     return NextResponse.json({ key, uploadUrl: createR2PresignedUrl('PUT', key, 900) });
   } catch (error) {

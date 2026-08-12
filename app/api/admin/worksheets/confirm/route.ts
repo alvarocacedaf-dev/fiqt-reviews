@@ -45,6 +45,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'El tipo de evaluación no es válido.' }, { status: 400 });
     }
 
+    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', {
+      p_action: 'worksheet_upload_confirm',
+    });
+    if (rateLimitError) {
+      return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
+    }
+
     const uploadedObject = await fetch(createR2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
     const uploadedSize = Number(uploadedObject.headers.get('content-length'));
     if (!uploadedObject.ok || uploadedSize !== fileSize) {
