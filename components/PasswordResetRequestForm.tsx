@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 
 export function PasswordResetRequestForm() {
   const [message, setMessage] = useState('');
@@ -15,15 +14,19 @@ export function PasswordResetRequestForm() {
 
     const email = String(form.get('email')).trim().toLowerCase();
 
-    const db = createClient();
-    const { error: resetError } = await db.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/recuperar-contrasena/nueva`
+    const response = await fetch('/api/auth/password-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
     });
+    const result = await response.json().catch(() => ({
+      error: 'No se pudo procesar la solicitud. Intenta nuevamente.',
+    }));
 
     setLoading(false);
 
-    if (resetError) {
-      setError(resetError.message);
+    if (!response.ok) {
+      setError(result.error ?? 'No se pudo procesar la solicitud.');
       return;
     }
 

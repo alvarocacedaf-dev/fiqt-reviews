@@ -29,6 +29,9 @@ export function VerificationForm() {
 
     if (error) {
       await db.storage.from('verification-evidence').remove([path]);
+      if (error.message.toLowerCase().includes('demasiados intentos')) {
+        return setMessage('Alcanzaste el límite de 5 evidencias de verificación por día. Intenta nuevamente mañana.');
+      }
       return setMessage(error.message);
     }
 

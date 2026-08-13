@@ -57,7 +57,15 @@ export async function saveWorksheetPreferences(form: FormData) {
     p_want_course_ids: wantCourseIds,
   });
 
-  if (error) redirectWithMessage('error', `No se pudieron guardar tus selecciones: ${error.message}`);
+  if (error) {
+    if (error.message.toLowerCase().includes('demasiados intentos')) {
+      redirectWithMessage(
+        'error',
+        'Alcanzaste el límite de 10 cambios de selecciones cada 10 minutos. Espera un momento e inténtalo nuevamente.',
+      );
+    }
+    redirectWithMessage('error', `No se pudieron guardar tus selecciones: ${error.message}`);
+  }
 
   revalidatePath('/planchas');
   redirectWithMessage(

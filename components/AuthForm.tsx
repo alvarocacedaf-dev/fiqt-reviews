@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 
 const UNI_EMAIL_DOMAIN = '@uni.pe';
 
@@ -13,7 +12,6 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     setLoading(true);
     setError('');
 
-    const db = createClient();
     const email = String(form.get('email')).trim().toLowerCase();
     const password = String(form.get('password'));
 
@@ -23,22 +21,24 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       return;
     }
 
-    const result = mode === 'login'
-      ? await db.auth.signInWithPassword({ email, password })
-      : await db.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name: String(form.get('full_name')) },
-            emailRedirectTo: `${window.location.origin}/auth/callback`
-          }
-        });
+    const response = await fetch(mode === 'login' ? '/api/auth/login' : '/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        password,
+        fullName: mode === 'register' ? String(form.get('full_name')).trim() : undefined,
+      }),
+    });
+    const result = await response.json().catch(() => ({
+      error: 'No se pudo procesar la solicitud. Intenta nuevamente.',
+    }));
 
     setLoading(false);
 
-    if (result.error) return setError(result.error.message);
+    if (!response.ok) return setError(result.error ?? 'No se pudo procesar la solicitud.');
 
-    if (mode === 'register' && !result.data.session) {
+    if (mode === 'register' && result.requiresEmailConfirmation) {
       setError('Revisa tu correo UNI para confirmar la cuenta.');
       return;
     }
