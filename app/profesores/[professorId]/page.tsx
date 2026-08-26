@@ -1,4 +1,6 @@
 import { RatingSummary } from '@/components/RatingSummary';
+import { ContentHeader } from '@/components/ContentHeader';
+import { StatusBadge } from '@/components/StatusBadge';
 import { Icon } from '@/components/ui/Icon';
 import { getCourse, getCourseProfessors, getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
@@ -104,15 +106,12 @@ export default async function ProfessorPage({
 
   return (
     <section className="space-y-6">
-      <div className="panel">
-        <p className="text-sm font-bold text-royal">PERFIL DOCENTE</p>
-        <h1 className="mt-1 text-3xl font-black text-ink">{professor.full_name}</h1>
-        <p className="mt-2 text-slate-600">Cursos asociados: {courseNames || 'Por asignar'}</p>
-        <p className="mt-2 text-xs leading-5 text-slate-500">Información pública referencial. Fuente: DIRCE UNI.</p>
-        <div className="mt-5">
-          <RatingSummary reviews={reviews} />
-        </div>
-      </div>
+      <ContentHeader
+        actions={<div className="surface-muted min-w-48 bg-white p-3"><RatingSummary reviews={reviews} /></div>}
+        description={<>Cursos asociados: {courseNames || 'Por asignar'}<span className="mt-1 block text-xs text-slate-500">Información pública referencial · Fuente: DIRCE UNI</span></>}
+        eyebrow="Perfil docente"
+        title={professor.full_name}
+      />
 
       {material && (
         <div className="panel">
@@ -140,15 +139,20 @@ export default async function ProfessorPage({
         <h2 className="text-xl font-black text-ink">Reseñas aprobadas</h2>
         <div className="mt-5 space-y-4">
           {reviews.map(review => (
-            <article key={review.id} className="rounded-2xl bg-slate-50 p-4">
+            <article key={review.id} className="surface-card-interactive p-4">
+              <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="flex items-center gap-2 font-semibold text-royal">
                 <Icon className="h-4 w-4" name={review.recommendation === 'like' ? 'check' : 'close'} />
                 {review.recommendation === 'like' ? 'Lo recomienda' : 'No lo recomienda'}
               </p>
+                <StatusBadge tone={review.recommendation === 'like' ? 'success' : 'danger'}>
+                  {review.recommendation === 'like' ? 'Recomendada' : 'No recomendada'}
+                </StatusBadge>
+              </div>
               <p className="mt-2 text-slate-700">{review.comment}</p>
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
                 {review.selected_tags.map(tag => (
-                  <span className="rounded-full bg-blue-100 px-2 py-1 text-xs text-royal" key={tag}>{tag}</span>
+                  <StatusBadge key={tag} tone="info">{tag}</StatusBadge>
                 ))}
               </div>
             </article>

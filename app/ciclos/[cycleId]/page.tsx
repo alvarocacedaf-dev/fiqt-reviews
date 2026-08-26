@@ -1,4 +1,5 @@
 import { CourseCard } from '@/components/CourseCard';
+import { ContentHeader } from '@/components/ContentHeader';
 import { getCourses, getCycles } from '@/lib/data';
 
 function cycleHeader(cycle?: { number: number; name: string }) {
@@ -16,10 +17,12 @@ export default async function CyclePage({ params }: { params: Promise<{ cycleId:
 
   return (
     <section>
-      <div className="mb-6 text-white">
-        <p className="text-sm font-bold text-gold">{header.eyebrow}</p>
-        <h1 className="text-3xl font-black">{header.title}</h1>
-      </div>
+      <ContentHeader
+        description={`${courses.length} curso${courses.length === 1 ? '' : 's'} disponible${courses.length === 1 ? '' : 's'} en esta sección.`}
+        eyebrow={header.eyebrow}
+        title={header.title}
+        tone="dark"
+      />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map(course => <CourseCard key={course.id} course={course} />)}
       </div>

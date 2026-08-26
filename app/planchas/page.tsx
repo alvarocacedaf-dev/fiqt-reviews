@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
+import { ContentHeader } from '@/components/ContentHeader';
 import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
@@ -103,18 +104,16 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <section className="panel">
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Comunidad de planchas</p>
-        <h1 className="mt-2 flex items-center gap-3 text-3xl font-black text-ink">
-          Planchas <Icon className="h-7 w-7" name={isUnlocked ? 'unlock' : 'lock'} />
-        </h1>
-        <p className="mt-3 max-w-3xl leading-7 text-slate-600">
+      <ContentHeader
+        description={<>
           Indica de qué cursos puedes compartir planchas y cuáles deseas conseguir. Cada vez que guardes tus
           selecciones, buscaremos una coincidencia: una persona que quiera una plancha que tú tienes y que, al
           mismo tiempo, tenga una que tú buscas. Cuando se encuentre un match, ambos recibirán una notificación
           y podrán consultarlo en la sección <strong>Mis matches</strong>.
-        </p>
-      </section>
+        </>}
+        eyebrow="Comunidad de planchas"
+        title={<span className="flex items-center gap-3">Planchas <Icon className="h-7 w-7" name={isUnlocked ? 'unlock' : 'lock'} /></span>}
+      />
 
       {success && <p className="rounded-2xl bg-emerald-50 p-4 font-semibold text-emerald-800">{success}</p>}
       {error && <p className="rounded-2xl bg-red-50 p-4 font-semibold text-red-800">{error}</p>}

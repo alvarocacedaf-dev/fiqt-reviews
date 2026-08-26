@@ -1,4 +1,5 @@
 import { ProfessorCard } from '@/components/ProfessorCard';
+import { ContentHeader } from '@/components/ContentHeader';
 import { Icon } from '@/components/ui/Icon';
 import { getCourse, getCourseProfessors, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 
@@ -201,23 +202,22 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
 
   return (
     <section>
-      <div className="mb-6 text-white">
-        <p className="text-sm font-bold text-gold">{course?.code ?? 'CURSO'}</p>
-        <h1 className="text-3xl font-black">{course?.name ?? 'Profesores'}</h1>
-        <p className="mt-1 text-blue-100">
-          Docentes asociados como información pública referencial. Fuente visible: DIRCE UNI.
-        </p>
-        {syllabus && (
+      <ContentHeader
+        actions={syllabus && (
           <a
             href={syllabus.href}
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
           >
             <Icon className="h-5 w-5" name="file" /> {syllabus.label}
           </a>
         )}
-      </div>
+        description={`Docentes asociados como información pública referencial. ${professors.length} profesor${professors.length === 1 ? '' : 'es'} · Fuente: DIRCE UNI.`}
+        eyebrow={course?.code ?? 'Curso'}
+        title={course?.name ?? 'Profesores'}
+        tone="dark"
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {professors.map(professor => (

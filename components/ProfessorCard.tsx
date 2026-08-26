@@ -73,7 +73,7 @@ export function ProfessorCard({
           )}
         </div>
 
-        <div className="relative z-10 grid grid-cols-2 gap-3">
+        <div className="relative z-10 grid grid-cols-2 gap-3 transition duration-200 md:translate-y-1 md:opacity-85 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100">
           {hasReviewAccess ? (
             <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}?courseId=${encodeURIComponent(courseId)}`}>
               Ver perfil
