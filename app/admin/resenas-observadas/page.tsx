@@ -1,4 +1,8 @@
 import { requireAdmin } from '@/lib/admin';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
+
+type PageProps = { searchParams: Promise<{ page?: string }> };
 
 type ObservedReview = {
   id: string;
@@ -30,17 +34,20 @@ function firstRelation<T>(relation: T | T[] | null): T | null {
   return Array.isArray(relation) ? relation[0] ?? null : relation;
 }
 
-export default async function ObservedReviewsPage() {
+export default async function ObservedReviewsPage({ searchParams }: PageProps) {
+  const query = await searchParams;
+  const pagination = getPagination(query.page);
   const { db } = await requireAdmin();
-  const { data: rawReviews, error } = await db
+  const { data: rawReviews, error, count } = await db
     .from('reviews')
     .select(`
       id,user_id,status,comment,moderation_reason,moderated_by_label,recommendation,selected_tags,
       clarity_rating,difficulty_rating,fairness_rating,treatment_rating,workload_rating,course_demand_rating,created_at,
       courses(code,name),professors(full_name)
-    `)
+    `, { count: 'exact' })
     .in('status', ['approved', 'rejected'])
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: false })
+    .range(pagination.from, pagination.to);
 
   const reviews = (rawReviews ?? []) as unknown as ObservedReview[];
   const userIds = [...new Set(reviews.map(review => review.user_id))];
@@ -143,6 +150,12 @@ export default async function ObservedReviewsPage() {
           <p className="text-xl font-black text-ink">Todavía no hay reseñas aprobadas o rechazadas.</p>
         </div>
       )}
+      <Pagination
+        currentPage={pagination.page}
+        pageSize={pagination.pageSize}
+        pathname="/admin/resenas-observadas"
+        totalItems={count ?? 0}
+      />
     </div>
   );
 }

@@ -1,4 +1,8 @@
 import { requireAdmin } from '@/lib/admin';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
+
+type PageProps = { searchParams: Promise<{ page?: string }> };
 
 type Profile = {
   id: string;
@@ -69,12 +73,15 @@ function CourseList({
   );
 }
 
-export default async function AdminWorksheetsPage() {
+export default async function AdminWorksheetsPage({ searchParams }: PageProps) {
+  const query = await searchParams;
+  const pagination = getPagination(query.page);
   const { db } = await requireAdmin();
-  const { data: rawPreferences, error } = await db
+  const { data: rawPreferences, error, count } = await db
     .from('worksheet_preferences')
-    .select('user_id,course_id,preference,updated_at,courses(code,name)')
-    .order('updated_at', { ascending: false });
+    .select('user_id,course_id,preference,updated_at,courses(code,name)', { count: 'exact' })
+    .order('updated_at', { ascending: false })
+    .range(pagination.from, pagination.to);
 
   const rows = (rawPreferences ?? []) as unknown as WorksheetPreferenceRow[];
   const userIds = [...new Set(rows.map(row => row.user_id))];
@@ -166,7 +173,12 @@ export default async function AdminWorksheetsPage() {
           <p className="text-xl font-black text-ink">Todavía no hay cuentas con selecciones de Planchas.</p>
         </div>
       )}
+      <Pagination
+        currentPage={pagination.page}
+        pageSize={pagination.pageSize}
+        pathname="/admin/planchas"
+        totalItems={count ?? 0}
+      />
     </div>
   );
 }
-

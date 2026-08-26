@@ -1,4 +1,8 @@
 import { requireAdmin } from '@/lib/admin';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
+
+type PageProps = { searchParams: Promise<{ page?: string }> };
 
 type Submission = {
   id: string;
@@ -49,17 +53,22 @@ const accountStatusText: Record<string, string> = {
   rejected: 'Requiere cambios',
 };
 
-export default async function VerifiedAccountsPage() {
+export default async function VerifiedAccountsPage({ searchParams }: PageProps) {
+  const query = await searchParams;
+  const pagination = getPagination(query.page);
   const { db } = await requireAdmin();
-  const [{ data: rawSubmissions }, { data: rawApprovals }] = await Promise.all([
-    db.from('verification_submissions')
-      .select('id,user_id,file_url,status,admin_notes,created_at,reviewed_at,reviewed_by_label')
-      .order('created_at', { ascending: false }),
-    db.from('verification_submission_approvals')
-      .select('submission_id,academic_term,section,courses(code,name),professors(full_name)'),
-  ]);
+  const { data: rawSubmissions, count } = await db.from('verification_submissions')
+    .select('id,user_id,file_url,status,admin_notes,created_at,reviewed_at,reviewed_by_label', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(pagination.from, pagination.to);
 
   const submissions = (rawSubmissions ?? []) as Submission[];
+  const submissionIds = submissions.map(item => item.id);
+  const { data: rawApprovals } = submissionIds.length
+    ? await db.from('verification_submission_approvals')
+      .select('submission_id,academic_term,section,courses(code,name),professors(full_name)')
+      .in('submission_id', submissionIds)
+    : { data: [] };
   const userIds = [...new Set(submissions.map(item => item.user_id))];
   const { data: rawProfiles } = userIds.length
     ? await db.from('profiles').select('id,full_name,student_code,verification_status').in('id', userIds)
@@ -184,6 +193,12 @@ export default async function VerifiedAccountsPage() {
       })}
 
       {!submissions.length && <div className="panel text-center"><p className="text-xl font-black text-ink">Todavía no hay cuentas con evidencias.</p></div>}
+      <Pagination
+        currentPage={pagination.page}
+        pageSize={pagination.pageSize}
+        pathname="/admin/cuentas-verificadas"
+        totalItems={count ?? 0}
+      />
     </div>
   );
 }

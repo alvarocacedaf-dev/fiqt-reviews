@@ -10,6 +10,7 @@ type ConversationListProps = {
   threadPersonId: (thread: ChatThread) => string | null;
   threadTitle: (thread: ChatThread) => string;
   threads: ChatThread[];
+  totalThreads?: number;
 };
 
 export function ConversationList({
@@ -21,13 +22,14 @@ export function ConversationList({
   threadPersonId,
   threadTitle,
   threads,
+  totalThreads = threads.length,
 }: ConversationListProps) {
   return (
     <aside className="border-b border-slate-200 bg-slate-50 lg:border-b-0 lg:border-r">
       <div className="border-b border-slate-200 p-5">
         <h2 className="text-xl font-black text-ink">Chats</h2>
         <p className="mt-1 text-xs text-slate-500">
-          {threads.length} conversación{threads.length === 1 ? '' : 'es'}
+          {totalThreads} conversación{totalThreads === 1 ? '' : 'es'}
         </p>
       </div>
 

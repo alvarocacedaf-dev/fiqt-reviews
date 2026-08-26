@@ -1,8 +1,10 @@
 import { requireAdmin } from '@/lib/admin';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
 import { updateChatReportStatus } from './actions';
 
 type PageProps = {
-  searchParams: Promise<{ error?: string; success?: string }>;
+  searchParams: Promise<{ error?: string; page?: string; success?: string }>;
 };
 
 type ChatReport = {
@@ -85,12 +87,15 @@ function privateName(name?: string | null) {
 }
 
 export default async function AdminChatReportsPage({ searchParams }: PageProps) {
-  const { error: messageError, success } = await searchParams;
+  const query = await searchParams;
+  const { error: messageError, success } = query;
+  const pagination = getPagination(query.page);
   const { db } = await requireAdmin();
-  const { data: rawReports, error: reportsError } = await db
+  const { data: rawReports, error: reportsError, count } = await db
     .from('chat_reports')
-    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by,reviewed_by_label,report_type,resolution')
-    .order('created_at', { ascending: false });
+    .select('id,thread_id,reporter_id,description,status,created_at,reviewed_at,reviewed_by,reviewed_by_label,report_type,resolution', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(pagination.from, pagination.to);
 
   const reports = (rawReports ?? []) as ChatReport[];
   const reportIds = reports.map(report => report.id);
@@ -376,6 +381,13 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
           </p>
         </div>
       )}
+      <Pagination
+        currentPage={pagination.page}
+        pageSize={pagination.pageSize}
+        pathname="/admin/reportes-chats"
+        searchParams={{ error: messageError, success }}
+        totalItems={count ?? 0}
+      />
     </div>
   );
 }

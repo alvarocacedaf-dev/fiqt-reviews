@@ -1,7 +1,9 @@
 import { requireAdmin } from '@/lib/admin';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
 import { removeVerifiedCourseAccess } from '../actions';
 
-type PageProps = { searchParams: Promise<{ error?: string; success?: string }> };
+type PageProps = { searchParams: Promise<{ error?: string; page?: string; success?: string }> };
 type Profile = { id: string; full_name: string | null; student_code: string | null };
 type VerifiedCourseRow = {
   user_id: string;
@@ -29,14 +31,23 @@ function firstRelation<T>(relation: T | T[] | null): T | null {
 }
 
 export default async function AccountCoursesPage({ searchParams }: PageProps) {
-  const { error, success } = await searchParams;
+  const query = await searchParams;
+  const { error, success } = query;
+  const pagination = getPagination(query.page);
   const { db } = await requireAdmin();
-  const [{ data: rawCourses, error: coursesError }, { data: rawProfessors }] = await Promise.all([
-    db.from('verified_courses').select('user_id,course_id,academic_term,section,courses(code,name)').order('created_at', { ascending: false }),
-    db.from('verified_course_professors').select('user_id,course_id,professors(full_name)'),
-  ]);
+  const { data: rawCourses, error: coursesError, count } = await db
+    .from('verified_courses')
+    .select('user_id,course_id,academic_term,section,courses(code,name)', { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(pagination.from, pagination.to);
 
   const rows = (rawCourses ?? []) as unknown as VerifiedCourseRow[];
+  const pagedUserIds = [...new Set(rows.map(row => row.user_id))];
+  const { data: rawProfessors } = pagedUserIds.length
+    ? await db.from('verified_course_professors')
+      .select('user_id,course_id,professors(full_name)')
+      .in('user_id', pagedUserIds)
+    : { data: [] };
   const professorRows = (rawProfessors ?? []) as unknown as VerifiedProfessorRow[];
   const professorsByAccess = professorRows.reduce<Record<string, string[]>>((groups, row) => {
     const professor = firstRelation(row.professors);
@@ -121,5 +132,12 @@ export default async function AccountCoursesPage({ searchParams }: PageProps) {
     })}
 
     {!accesses.length && !coursesError && <div className="panel text-center"><p className="text-xl font-black text-ink">No hay cursos habilitados en ninguna cuenta.</p></div>}
+    <Pagination
+      currentPage={pagination.page}
+      pageSize={pagination.pageSize}
+      pathname="/admin/cursos-cuentas"
+      searchParams={{ error, success }}
+      totalItems={count ?? 0}
+    />
   </div>;
 }

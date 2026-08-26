@@ -5,6 +5,8 @@ import { ChatExchangeDeliveryForm } from '@/components/ChatExchangeDeliveryForm'
 import { ChatReportForm } from '@/components/ChatReportForm';
 import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
 import { ConversationList } from '@/components/matches/ConversationList';
+import { Pagination } from '@/components/Pagination';
+import { getPagination } from '@/lib/pagination';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { finishChat, openChat } from './actions';
@@ -21,11 +23,12 @@ import type {
 } from './types';
 
 type PageProps = {
-  searchParams: Promise<{ chat?: string; error?: string; success?: string }>;
+  searchParams: Promise<{ chat?: string; error?: string; page?: string; success?: string }>;
 };
 
 export default async function MyMatchesPage({ searchParams }: PageProps) {
   const query = await searchParams;
+  const pagination = getPagination(query.page);
   const db = await createClient();
   const {
     data: { user },
@@ -56,14 +59,15 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
   }
 
   const [
-    { data: rawThreads, error: threadsError },
+    { data: rawThreads, error: threadsError, count: threadsCount },
     { data: rawProfiles, error: profilesError },
     { data: rawPreviews, error: previewsError },
   ] = await Promise.all([
     db
       .from('chat_threads')
-      .select('id,kind,support_user_id,user_a_id,user_b_id,status,opened_by,opened_at,ended_by,created_at,last_message_at,ended_at')
-      .order('last_message_at', { ascending: false }),
+      .select('id,kind,support_user_id,user_a_id,user_b_id,status,opened_by,opened_at,ended_by,created_at,last_message_at,ended_at', { count: 'exact' })
+      .order('last_message_at', { ascending: false })
+      .range(pagination.from, pagination.to),
     db.rpc('get_chat_participant_profiles'),
     db.rpc('get_chat_thread_previews'),
   ]);
@@ -75,6 +79,26 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     if (!isAdmin && a.kind !== b.kind) return a.kind === 'support' ? -1 : 1;
     return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
   });
+  if (!isAdmin) {
+    const missingThreadQueries = [
+      db.from('chat_threads')
+        .select('id,kind,support_user_id,user_a_id,user_b_id,status,opened_by,opened_at,ended_by,created_at,last_message_at,ended_at')
+        .eq('status', 'active')
+        .limit(1),
+      ...(query.chat && !threads.some(thread => thread.id === query.chat)
+        ? [db.from('chat_threads')
+          .select('id,kind,support_user_id,user_a_id,user_b_id,status,opened_by,opened_at,ended_by,created_at,last_message_at,ended_at')
+          .eq('id', query.chat)
+          .limit(1)]
+        : []),
+    ];
+    const extraResults = await Promise.all(missingThreadQueries);
+    for (const result of extraResults) {
+      for (const thread of (result.data ?? []) as ChatThread[]) {
+        if (!threads.some(existing => existing.id === thread.id)) threads.unshift(thread);
+      }
+    }
+  }
   const lastMessageByThread = new Map(
     ((rawPreviews ?? []) as ChatPreview[]).map(preview => [preview.thread_id, preview]),
   );
@@ -252,6 +276,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
           threadPersonId={threadPersonId}
           threadTitle={threadTitle}
           threads={threads}
+          totalThreads={threadsCount ?? threads.length}
         />
 
         <div className="flex min-h-[620px] min-w-0 flex-col border-b border-slate-200 lg:border-b-0 lg:border-r">
@@ -586,6 +611,13 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
           )}
         </aside>
       </section>
+      <Pagination
+        currentPage={pagination.page}
+        pageSize={pagination.pageSize}
+        pathname="/mis-matches"
+        searchParams={{ chat: query.chat, error: query.error, success: query.success }}
+        totalItems={threadsCount ?? 0}
+      />
     </div>
   );
 }
