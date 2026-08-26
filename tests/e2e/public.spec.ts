@@ -80,3 +80,22 @@ test.describe('validación pública de APIs', () => {
     await expect(response.json()).resolves.toEqual({ error: 'Ingresa tu correo.' });
   });
 });
+
+test.describe('cabeceras HTTP de seguridad', () => {
+  test('protege todas las páginas sin bloquear Supabase ni R2', async ({ request }) => {
+    const response = await request.get('/');
+    const headers = response.headers();
+    const csp = headers['content-security-policy'];
+
+    expect(response.ok()).toBe(true);
+    expect(headers['x-content-type-options']).toBe('nosniff');
+    expect(headers['x-frame-options']).toBe('DENY');
+    expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
+    expect(headers['permissions-policy']).toContain('camera=()');
+    expect(csp).toContain("default-src 'self'");
+    expect(csp).toContain("frame-ancestors 'none'");
+    expect(csp).toContain('https://*.supabase.co');
+    expect(csp).toContain('wss://*.supabase.co');
+    expect(csp).toContain('https://*.r2.cloudflarestorage.com');
+  });
+});
