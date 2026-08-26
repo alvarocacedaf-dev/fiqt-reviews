@@ -4,126 +4,25 @@ import { ChatComposer } from '@/components/ChatComposer';
 import { ChatExchangeDeliveryForm } from '@/components/ChatExchangeDeliveryForm';
 import { ChatReportForm } from '@/components/ChatReportForm';
 import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
+import { ConversationList } from '@/components/matches/ConversationList';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { finishChat, openChat } from './actions';
+import { formatBytes, formatMessageDate, formatMessageTime, initials, privateChatName } from './formatters';
+import type {
+  ChatMessage,
+  ChatPreview,
+  ChatThread,
+  Course,
+  ExchangeFile,
+  ExchangeSubmission,
+  Profile,
+  WorksheetMatch,
+} from './types';
 
 type PageProps = {
   searchParams: Promise<{ chat?: string; error?: string; success?: string }>;
 };
-
-type ChatThread = {
-  id: string;
-  kind: 'support' | 'match';
-  support_user_id: string | null;
-  user_a_id: string | null;
-  user_b_id: string | null;
-  status: 'available' | 'active' | 'ended';
-  opened_by: string | null;
-  opened_at: string | null;
-  ended_by: string | null;
-  created_at: string;
-  last_message_at: string;
-  ended_at: string | null;
-};
-
-type ChatMessage = {
-  id: string;
-  thread_id: string;
-  sender_id: string;
-  body: string | null;
-  attachment_path: string | null;
-  attachment_name: string | null;
-  attachment_type: string | null;
-  attachment_size: number | null;
-  created_at: string;
-  attachment_url?: string | null;
-};
-
-type ChatPreview = {
-  thread_id: string;
-  sender_id: string | null;
-  body: string | null;
-  attachment_name: string | null;
-  created_at: string | null;
-};
-
-type ExchangeSubmission = {
-  thread_id: string;
-  user_id: string;
-  submitted_at: string;
-};
-
-type ExchangeFile = {
-  id: string;
-  thread_id: string;
-  uploader_id: string;
-  file_path: string;
-  file_name: string;
-  mime_type: string | null;
-  file_size: number;
-  created_at: string;
-  signed_url?: string | null;
-};
-
-type Profile = {
-  id: string;
-  full_name: string | null;
-};
-
-type WorksheetMatch = {
-  id: string;
-  user_a_id: string;
-  user_b_id: string;
-  user_a_gives_course_id: string;
-  user_b_gives_course_id: string;
-  status: 'active' | 'invalidated';
-};
-
-type Course = {
-  id: string;
-  code: string | null;
-  name: string;
-};
-
-function formatMessageTime(value: string) {
-  return new Intl.DateTimeFormat('es-PE', {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: 'America/Lima',
-  }).format(new Date(value));
-}
-
-function formatMessageDate(value: string) {
-  return new Intl.DateTimeFormat('es-PE', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'America/Lima',
-  }).format(new Date(value));
-}
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(part => part[0])
-    .join('')
-    .toUpperCase() || 'U';
-}
-
-function privateChatName(name: string) {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
-  if (!parts.length) return 'Usuario';
-  if (parts.length === 1) return parts[0];
-  return `${parts[0]}.${parts[1][0].toUpperCase()}`;
-}
-
-function formatBytes(value: number | null) {
-  if (!value) return '';
-  if (value < 1024 * 1024) return `${Math.max(1, Math.round(value / 1024))} KB`;
-  return `${(value / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 export default async function MyMatchesPage({ searchParams }: PageProps) {
   const query = await searchParams;
@@ -344,88 +243,16 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
       )}
 
       <section className="grid min-h-[680px] overflow-hidden rounded-3xl bg-white shadow-card lg:grid-cols-[280px_minmax(0,1fr)_270px]">
-        <aside className="border-b border-slate-200 bg-slate-50 lg:border-b-0 lg:border-r">
-          <div className="border-b border-slate-200 p-5">
-            <h2 className="text-xl font-black text-ink">Chats</h2>
-            <p className="mt-1 text-xs text-slate-500">{threads.length} conversación{threads.length === 1 ? '' : 'es'}</p>
-          </div>
-
-          <nav className="max-h-[610px] space-y-2 overflow-y-auto p-3" aria-label="Conversaciones">
-            {threads.map(thread => {
-              const title = threadTitle(thread);
-              const personId = threadPersonId(thread);
-              const lastMessage = lastMessageByThread.get(thread.id);
-              const isSelected = selectedThread?.id === thread.id;
-              const preview = lastMessage?.body
-                || (lastMessage?.attachment_name
-                  ? `📎 ${lastMessage.attachment_name}`
-                  : thread.kind === 'match' && thread.status === 'available'
-                    ? 'Entrega de archivos pendiente'
-                    : 'Conversación disponible');
-
-              const content = (
-                <span
-                  className={`block rounded-2xl p-3 transition ${
-                    isSelected
-                      ? 'bg-blue-100 ring-1 ring-blue-200'
-                      : 'hover:bg-white'
-                  }`}
-                >
-                  <div className="flex gap-3">
-                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full font-black ${
-                      thread.kind === 'support'
-                        ? 'bg-gold text-ink'
-                        : 'bg-royal text-white'
-                    }`}>
-                      {thread.kind === 'support' && !isAdmin
-                        ? 'A'
-                        : initials((personId && profiles[personId]?.full_name) || 'Usuario')}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm font-black text-ink">{title}</span>
-                        {thread.kind === 'support' && !isAdmin && (
-                          <span className="text-[10px] font-black uppercase text-royal">Anclado</span>
-                        )}
-                      </span>
-                      <span className="mt-1 block truncate text-xs text-slate-500">
-                        {lastMessage?.sender_id === user.id ? 'Tú: ' : ''}{preview}
-                      </span>
-                      <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-black ${
-                        thread.status === 'active'
-                          ? 'bg-emerald-100 text-emerald-800'
-                          : thread.status === 'ended'
-                            ? 'bg-slate-200 text-slate-600'
-                            : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {thread.status === 'active'
-                          ? 'Activo'
-                          : thread.status === 'ended'
-                            ? 'Finalizado'
-                            : thread.kind === 'match'
-                              ? 'Esperando archivos'
-                              : 'Disponible'}
-                      </span>
-                    </span>
-                  </div>
-                </span>
-              );
-
-              return (
-                <a
-                  href={`/mis-matches?chat=${encodeURIComponent(thread.id)}`}
-                  key={thread.id}
-                >
-                  {content}
-                </a>
-              );
-            })}
-
-            {!threads.length && (
-              <p className="p-4 text-center text-sm text-slate-500">Todavía no hay conversaciones.</p>
-            )}
-          </nav>
-        </aside>
+        <ConversationList
+          currentUserId={user.id}
+          isAdmin={isAdmin}
+          lastMessageByThread={lastMessageByThread}
+          profiles={profiles}
+          selectedThreadId={selectedThread?.id ?? null}
+          threadPersonId={threadPersonId}
+          threadTitle={threadTitle}
+          threads={threads}
+        />
 
         <div className="flex min-h-[620px] min-w-0 flex-col border-b border-slate-200 lg:border-b-0 lg:border-r">
           {selectedThread ? (
