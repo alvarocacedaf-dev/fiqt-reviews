@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin';
+import { Icon, type IconName } from '@/components/ui/Icon';
 
 type StorageUsageRow = {
   bucket_id: string;
@@ -48,25 +49,32 @@ export default async function Admin() {
     0,
   );
   const cleanupStatus = ((cleanupStatusResult.data ?? []) as CleanupStatusRow[])[0];
-  const cards = [
-    ['Reseñas pendientes', reviews.count, '/admin/resenas'],
-    ['Verificaciones pendientes', verifications.count, '/admin/verificaciones'],
-    ['Reportes de reseñas', reviewReports.count, '/admin/resenas'],
-    ['Reportes de chats pendientes', chatReports.count, '/admin/reportes-chats'],
+  const cards: { count: number | null; href: string; icon: IconName; label: string }[] = [
+    { label: 'Reseñas pendientes', count: reviews.count, href: '/admin/resenas', icon: 'star' },
+    { label: 'Verificaciones pendientes', count: verifications.count, href: '/admin/verificaciones', icon: 'verification' },
+    { label: 'Reportes de reseñas', count: reviewReports.count, href: '/admin/resenas', icon: 'shield' },
+    { label: 'Reportes de chats pendientes', count: chatReports.count, href: '/admin/reportes-chats', icon: 'chat' },
   ];
 
   return (
     <div className="panel">
-      <h1 className="text-3xl font-black text-ink">Panel básico</h1>
+      <p className="text-sm font-black uppercase tracking-wider text-royal">Resumen operativo</p>
+      <h1 className="mt-1 text-3xl font-black text-ink">Panel de administración</h1>
+      <p className="mt-2 text-sm text-slate-600">Consulta rápidamente las tareas pendientes y el estado de los servicios internos.</p>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {cards.map(([name, count, href]) => (
+        {cards.map(card => (
           <Link
-            className="surface-card-interactive border-blue-100 bg-blue-50 p-5"
-            href={href as string}
-            key={name as string}
+            className="surface-card-interactive flex items-center gap-4 border-blue-100 bg-blue-50 p-4"
+            href={card.href}
+            key={card.label}
           >
-            <p className="text-sm text-slate-600">{name}</p>
-            <p className="text-3xl font-black text-royal">{count ?? 0}</p>
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-royal shadow-sm">
+              <Icon className="h-5 w-5" name={card.icon} />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-2xl font-black leading-none text-royal">{card.count ?? 0}</span>
+              <span className="mt-1 block text-xs font-bold leading-4 text-slate-600">{card.label}</span>
+            </span>
           </Link>
         ))}
       </div>

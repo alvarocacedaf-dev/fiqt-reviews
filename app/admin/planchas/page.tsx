@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/admin';
 import { Pagination } from '@/components/Pagination';
 import { getPagination } from '@/lib/pagination';
+import { AdminEmptyState } from '@/components/AdminEmptyState';
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
 
@@ -169,9 +170,11 @@ export default async function AdminWorksheetsPage({ searchParams }: PageProps) {
       })}
 
       {!rows.length && !error && (
-        <div className="panel text-center">
-          <p className="text-xl font-black text-ink">Todavía no hay cuentas con selecciones de Planchas.</p>
-        </div>
+        <AdminEmptyState
+          description="Las preferencias aparecerán cuando los estudiantes indiquen qué planchas tienen y cuáles buscan."
+          icon="file"
+          title="Todavía no hay selecciones de planchas"
+        />
       )}
       <Pagination
         currentPage={pagination.page}

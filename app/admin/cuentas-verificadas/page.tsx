@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/admin';
 import { Pagination } from '@/components/Pagination';
 import { getPagination } from '@/lib/pagination';
+import { AdminEmptyState } from '@/components/AdminEmptyState';
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
 
@@ -192,7 +193,13 @@ export default async function VerifiedAccountsPage({ searchParams }: PageProps) 
         );
       })}
 
-      {!submissions.length && <div className="panel text-center"><p className="text-xl font-black text-ink">Todavía no hay cuentas con evidencias.</p></div>}
+      {!submissions.length && (
+        <AdminEmptyState
+          description="Las cuentas aparecerán aquí cuando sus titulares envíen una evidencia académica."
+          icon="users"
+          title="Todavía no hay cuentas con evidencias"
+        />
+      )}
       <Pagination
         currentPage={pagination.page}
         pageSize={pagination.pageSize}

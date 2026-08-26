@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/admin';
 import { Pagination } from '@/components/Pagination';
 import { getPagination } from '@/lib/pagination';
+import { AdminEmptyState } from '@/components/AdminEmptyState';
 import { removeVerifiedCourseAccess } from '../actions';
 
 type PageProps = { searchParams: Promise<{ error?: string; page?: string; success?: string }> };
@@ -131,7 +132,13 @@ export default async function AccountCoursesPage({ searchParams }: PageProps) {
       </details>;
     })}
 
-    {!accesses.length && !coursesError && <div className="panel text-center"><p className="text-xl font-black text-ink">No hay cursos habilitados en ninguna cuenta.</p></div>}
+    {!accesses.length && !coursesError && (
+      <AdminEmptyState
+        description="Los accesos aparecerán después de aprobar cursos y profesores para una cuenta verificada."
+        icon="academic"
+        title="No hay cursos habilitados"
+      />
+    )}
     <Pagination
       currentPage={pagination.page}
       pageSize={pagination.pageSize}

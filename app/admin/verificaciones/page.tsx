@@ -1,5 +1,6 @@
 import { requireAdmin } from '@/lib/admin';
 import { VerificationApprovalForm } from '@/components/VerificationApprovalForm';
+import { AdminEmptyState } from '@/components/AdminEmptyState';
 
 type Submission = {
   id: string;
@@ -177,10 +178,11 @@ export default async function AdminVerifications() {
       })}
 
       {!items.length && (
-        <div className="panel text-center">
-          <p className="text-2xl font-black text-ink">No hay evidencias pendientes</p>
-          <p className="mt-2 text-slate-600">Las nuevas solicitudes aparecerán aquí automáticamente.</p>
-        </div>
+        <AdminEmptyState
+          description="Las nuevas solicitudes aparecerán aquí automáticamente cuando un estudiante envíe su evidencia."
+          icon="verification"
+          title="No hay evidencias pendientes"
+        />
       )}
     </div>
   );

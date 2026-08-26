@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/admin';
 import { Pagination } from '@/components/Pagination';
 import { getPagination } from '@/lib/pagination';
+import { AdminEmptyState } from '@/components/AdminEmptyState';
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
 
@@ -146,9 +147,11 @@ export default async function ObservedReviewsPage({ searchParams }: PageProps) {
       })}
 
       {!reviews.length && !error && (
-        <div className="panel text-center">
-          <p className="text-xl font-black text-ink">Todavía no hay reseñas aprobadas o rechazadas.</p>
-        </div>
+        <AdminEmptyState
+          description="Cuando se modere una reseña, su decisión y detalles aparecerán en este historial."
+          icon="star"
+          title="Todavía no hay reseñas observadas"
+        />
       )}
       <Pagination
         currentPage={pagination.page}
