@@ -1,6 +1,7 @@
 'use server';
 import { revalidatePath } from 'next/cache'; import { requireAdmin } from '@/lib/admin';
 import { redirect } from 'next/navigation';
+import { getRequestId, observeInfo } from '@/lib/observability';
 
 type AdminDb = Awaited<ReturnType<typeof requireAdmin>>['db'];
 type CodeScope = 'moderation' | 'catalog';
@@ -52,6 +53,13 @@ export async function moderateReview(
     return { ok: false, message: `No se pudo actualizar la reseña: ${error?.message ?? 'sin respuesta de la base de datos'}` };
   }
 
+  observeInfo('admin.review.moderated', {
+    requestId: getRequestId(),
+    reviewId: id,
+    status,
+    actorLabel: actor.label,
+  });
+
   revalidatePath('/admin/resenas');
   revalidatePath('/admin/resenas-observadas');
   revalidatePath(`/profesores/${form.get('professor_id')}`);
@@ -100,6 +108,13 @@ export async function moderateVerification(
     return { ok: false, message: 'La base de datos no devolvió el resultado de la verificación.' };
   }
   if (!result.ok) return result;
+
+  observeInfo('admin.verification.moderated', {
+    requestId: getRequestId(),
+    submissionId: id,
+    status,
+    pairCount: pairs.length,
+  });
 
   revalidatePath('/admin/verificaciones');
   revalidatePath('/admin/cuentas-verificadas');

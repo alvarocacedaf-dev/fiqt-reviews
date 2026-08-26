@@ -6,9 +6,11 @@ import {
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
+import { getRequestId, observeError, requestIdHeaders } from '@/lib/observability';
 import { normalizeEmail, validatePasswordResetInput } from '@/lib/validation';
 
 export async function POST(request: Request) {
+  const requestId = getRequestId(request);
   try {
     const body = await request.json();
     const email = normalizeEmail(body.email);
@@ -32,7 +34,10 @@ export async function POST(request: Request) {
     if (isRateLimitError(error)) {
       return rateLimitResponse('Alcanzaste el límite de recuperaciones. Espera una hora antes de volver a intentar.');
     }
-    console.error('Error al recuperar la contraseña:', error);
-    return NextResponse.json({ error: 'No se pudo procesar la solicitud.' }, { status: 500 });
+    observeError('auth.password_recovery.failed', error, { requestId, provider: 'supabase' });
+    return NextResponse.json(
+      { error: 'No se pudo procesar la solicitud.', requestId },
+      { status: 500, headers: requestIdHeaders(requestId) },
+    );
   }
 }

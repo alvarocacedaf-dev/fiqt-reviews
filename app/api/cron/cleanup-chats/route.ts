@@ -1,4 +1,11 @@
 import type { NextRequest } from 'next/server';
+import {
+  getRequestId,
+  observeError,
+  observeInfo,
+  observeWarning,
+  requestIdHeaders,
+} from '@/lib/observability';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const dynamic = 'force-dynamic';
@@ -41,10 +48,19 @@ async function removeStorageFiles(
 }
 
 export async function GET(request: NextRequest) {
+  const requestId = getRequestId(request);
+  const startedAt = Date.now();
+  const respond = (body: Record<string, unknown>, status = 200) => Response.json(
+    { ...body, requestId },
+    { status, headers: requestIdHeaders(requestId) },
+  );
   const cronSecret = process.env.CRON_SECRET;
   if (!cronSecret || request.headers.get('authorization') !== `Bearer ${cronSecret}`) {
-    return Response.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+    observeWarning('cron.chat_cleanup.unauthorized', { requestId });
+    return respond({ ok: false, error: 'Unauthorized' }, 401);
   }
+
+  observeInfo('cron.chat_cleanup.started', { requestId });
 
   const db = createAdminClient();
   const now = Date.now();
@@ -61,12 +77,24 @@ export async function GET(request: NextRequest) {
     .limit(BATCH_SIZE);
 
   if (threadsError) {
-    return Response.json({ ok: false, error: threadsError.message }, { status: 500 });
+    observeError('cron.chat_cleanup.lookup_failed', threadsError, {
+      requestId,
+      provider: 'supabase',
+      durationMs: Date.now() - startedAt,
+    });
+    return respond({ ok: false, error: threadsError.message }, 500);
   }
 
   const threads = (rawThreads ?? []) as ThreadRow[];
   if (!threads.length) {
-    return Response.json({ ok: true, deletedThreads: 0, skippedThreads: 0 });
+    observeInfo('cron.chat_cleanup.completed', {
+      requestId,
+      deletedThreads: 0,
+      skippedThreads: 0,
+      failureCount: 0,
+      durationMs: Date.now() - startedAt,
+    });
+    return respond({ ok: true, deletedThreads: 0, skippedThreads: 0 });
   }
 
   const threadIds = threads.map(thread => thread.id);
@@ -76,7 +104,12 @@ export async function GET(request: NextRequest) {
     .in('thread_id', threadIds);
 
   if (reportsError) {
-    return Response.json({ ok: false, error: reportsError.message }, { status: 500 });
+    observeError('cron.chat_cleanup.reports_lookup_failed', reportsError, {
+      requestId,
+      provider: 'supabase',
+      durationMs: Date.now() - startedAt,
+    });
+    return respond({ ok: false, error: reportsError.message }, 500);
   }
 
   const reports = (rawReports ?? []) as ReportRow[];
@@ -131,6 +164,11 @@ export async function GET(request: NextRequest) {
       if (deleteError) throw new Error(deleteError.message);
       deletedThreads += 1;
     } catch (error) {
+      observeError('cron.chat_cleanup.thread_failed', error, {
+        requestId,
+        provider: 'supabase-storage',
+        threadId: thread.id,
+      });
       failures.push({
         threadId: thread.id,
         error: error instanceof Error ? error.message : 'Error desconocido',
@@ -138,8 +176,16 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return Response.json(
-    { ok: failures.length === 0, deletedThreads, skippedThreads, failures },
-    { status: failures.length ? 500 : 200 },
-  );
+  const result = { ok: failures.length === 0, deletedThreads, skippedThreads, failures };
+  const metrics = {
+    requestId,
+    deletedThreads,
+    skippedThreads,
+    failureCount: failures.length,
+    durationMs: Date.now() - startedAt,
+  };
+  if (failures.length) observeError('cron.chat_cleanup.failed', new Error('La limpieza terminó con fallos.'), metrics);
+  else observeInfo('cron.chat_cleanup.completed', metrics);
+
+  return respond(result, failures.length ? 500 : 200);
 }

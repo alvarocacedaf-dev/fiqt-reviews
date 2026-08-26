@@ -8,9 +8,11 @@ import {
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
+import { getRequestId, observeError, requestIdHeaders } from '@/lib/observability';
 import { normalizeEmail, validateLoginInput } from '@/lib/validation';
 
 export async function POST(request: Request) {
+  const requestId = getRequestId(request);
   try {
     const body = await request.json();
     const email = normalizeEmail(body.email);
@@ -48,7 +50,10 @@ export async function POST(request: Request) {
     if (isRateLimitError(error)) {
       return rateLimitResponse('Demasiados intentos incorrectos. Espera 15 minutos antes de volver a intentar.');
     }
-    console.error('Error al iniciar sesión:', error);
-    return NextResponse.json({ error: 'No se pudo iniciar sesión.' }, { status: 500 });
+    observeError('auth.login.failed', error, { requestId, provider: 'supabase' });
+    return NextResponse.json(
+      { error: 'No se pudo iniciar sesión.', requestId },
+      { status: 500, headers: requestIdHeaders(requestId) },
+    );
   }
 }

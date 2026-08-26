@@ -1,4 +1,5 @@
 import { createHash, createHmac } from 'node:crypto';
+import { getRequestId, observeError, observeInfo } from '@/lib/observability';
 
 type R2Method = 'GET' | 'HEAD' | 'PUT' | 'DELETE';
 
@@ -93,8 +94,23 @@ export function createR2PresignedUrl(
 }
 
 export async function deleteR2Object(key: string) {
+  const requestId = getRequestId();
+  const startedAt = Date.now();
   const response = await fetch(createR2PresignedUrl('DELETE', key), { method: 'DELETE' });
   if (!response.ok && response.status !== 404) {
-    throw new Error(`R2 rechazó la eliminación del archivo (${response.status}).`);
+    const error = new Error(`R2 rechazó la eliminación del archivo (${response.status}).`);
+    observeError('storage.r2.delete_failed', error, {
+      requestId,
+      provider: 'r2',
+      status: response.status,
+      durationMs: Date.now() - startedAt,
+    });
+    throw error;
   }
+  observeInfo('storage.r2.delete_completed', {
+    requestId,
+    provider: 'r2',
+    status: response.status,
+    durationMs: Date.now() - startedAt,
+  });
 }
