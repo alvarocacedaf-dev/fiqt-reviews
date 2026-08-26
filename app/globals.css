@@ -2,7 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base { body { @apply min-h-screen bg-black text-slate-900; } }
+@layer base {
+  html {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply min-h-screen bg-black text-slate-900;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  h1 {
+    letter-spacing: -0.035em;
+  }
+
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+
+  p,
+  li {
+    text-wrap: pretty;
+  }
+}
 @layer components {
   .page-shell {
     @apply min-h-screen;
