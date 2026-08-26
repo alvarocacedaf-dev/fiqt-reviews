@@ -11,20 +11,17 @@ import { createAdminClient } from '@/lib/supabase/admin';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const DAY_MS = 24 * 60 * 60 * 1000;
 const CHAT_RETENTION_DAYS = 14;
 const REPORT_RETENTION_DAYS = 30;
 const BATCH_SIZE = 100;
 
-type ThreadRow = {
-  id: string;
-  ended_at: string;
-};
-
-type ReportRow = {
+type CleanupJob = {
   id: string;
   thread_id: string;
-  reviewed_at: string | null;
+  status: 'pending' | 'failed';
+  chat_attachment_paths: string[];
+  report_attachment_paths: string[];
+  attempt_count: number;
 };
 
 function chunks<T>(items: T[], size: number) {
@@ -63,124 +60,90 @@ export async function GET(request: NextRequest) {
   observeInfo('cron.chat_cleanup.started', { requestId });
 
   const db = createAdminClient();
-  const now = Date.now();
-  const endedBefore = new Date(now - CHAT_RETENTION_DAYS * DAY_MS).toISOString();
-  const reviewedBefore = now - REPORT_RETENTION_DAYS * DAY_MS;
+  const { data: rawJobs, error: preparationError } = await db.rpc('prepare_chat_cleanup', {
+    p_chat_retention_days: CHAT_RETENTION_DAYS,
+    p_report_retention_days: REPORT_RETENTION_DAYS,
+    p_limit: BATCH_SIZE,
+  });
 
-  const { data: rawThreads, error: threadsError } = await db
-    .from('chat_threads')
-    .select('id,ended_at')
-    .eq('status', 'ended')
-    .not('ended_at', 'is', null)
-    .lte('ended_at', endedBefore)
-    .order('ended_at', { ascending: true })
-    .limit(BATCH_SIZE);
-
-  if (threadsError) {
-    observeError('cron.chat_cleanup.lookup_failed', threadsError, {
+  if (preparationError) {
+    observeError('cron.chat_cleanup.preparation_failed', preparationError, {
       requestId,
       provider: 'supabase',
       durationMs: Date.now() - startedAt,
     });
-    return respond({ ok: false, error: threadsError.message }, 500);
+    return respond({ ok: false, error: preparationError.message }, 500);
   }
 
-  const threads = (rawThreads ?? []) as ThreadRow[];
-  if (!threads.length) {
+  const jobs = (rawJobs ?? []) as CleanupJob[];
+  if (!jobs.length) {
     observeInfo('cron.chat_cleanup.completed', {
       requestId,
-      deletedThreads: 0,
-      skippedThreads: 0,
+      processedJobs: 0,
+      completedJobs: 0,
       failureCount: 0,
       durationMs: Date.now() - startedAt,
     });
-    return respond({ ok: true, deletedThreads: 0, skippedThreads: 0 });
+    return respond({ ok: true, processedJobs: 0, completedJobs: 0, retriedJobs: 0, failures: [] });
   }
 
-  const threadIds = threads.map(thread => thread.id);
-  const { data: rawReports, error: reportsError } = await db
-    .from('chat_reports')
-    .select('id,thread_id,reviewed_at')
-    .in('thread_id', threadIds);
-
-  if (reportsError) {
-    observeError('cron.chat_cleanup.reports_lookup_failed', reportsError, {
-      requestId,
-      provider: 'supabase',
-      durationMs: Date.now() - startedAt,
-    });
-    return respond({ ok: false, error: reportsError.message }, 500);
-  }
-
-  const reports = (rawReports ?? []) as ReportRow[];
-  const reportsByThread = new Map<string, ReportRow[]>();
-  for (const report of reports) {
-    reportsByThread.set(report.thread_id, [...(reportsByThread.get(report.thread_id) ?? []), report]);
-  }
-
-  let deletedThreads = 0;
-  let skippedThreads = 0;
+  let completedJobs = 0;
+  let retriedJobs = 0;
   const failures: Array<{ threadId: string; error: string }> = [];
 
-  for (const thread of threads) {
-    const threadReports = reportsByThread.get(thread.id) ?? [];
-    const reportMustBeRetained = threadReports.some(report => (
-      !report.reviewed_at || new Date(report.reviewed_at).getTime() > reviewedBefore
-    ));
-
-    if (reportMustBeRetained) {
-      skippedThreads += 1;
-      continue;
-    }
-
+  for (const job of jobs) {
+    if (job.attempt_count > 0) retriedJobs += 1;
     try {
-      const reportIds = threadReports.map(report => report.id);
-      const [
-        { data: messages, error: messagesError },
-        { data: exchangeFiles, error: exchangeError },
-        reportAttachmentsResult,
-      ] = await Promise.all([
-        db.from('chat_messages').select('attachment_path').eq('thread_id', thread.id),
-        db.from('chat_exchange_files').select('file_path').eq('thread_id', thread.id),
-        reportIds.length
-          ? db.from('chat_report_attachments').select('storage_path').in('report_id', reportIds)
-          : Promise.resolve({ data: [], error: null }),
-      ]);
+      await removeStorageFiles(db, 'chat-attachments', job.chat_attachment_paths);
+      await removeStorageFiles(db, 'chat-report-evidence', job.report_attachment_paths);
 
-      const lookupError = messagesError || exchangeError || reportAttachmentsResult.error;
-      if (lookupError) throw new Error(lookupError.message);
-
-      await removeStorageFiles(db, 'chat-attachments', [
-        ...(messages ?? []).map(item => item.attachment_path as string),
-        ...(exchangeFiles ?? []).map(item => item.file_path as string),
-      ]);
-      await removeStorageFiles(
-        db,
-        'chat-report-evidence',
-        (reportAttachmentsResult.data ?? []).map(item => item.storage_path as string),
-      );
-
-      const { error: deleteError } = await db.from('chat_threads').delete().eq('id', thread.id);
-      if (deleteError) throw new Error(deleteError.message);
-      deletedThreads += 1;
+      const { error: completionError } = await db
+        .from('chat_cleanup_jobs')
+        .update({
+          status: 'completed',
+          attempt_count: job.attempt_count + 1,
+          last_error: null,
+          last_attempt_at: new Date().toISOString(),
+          completed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', job.id);
+      if (completionError) throw new Error(`No se registró la finalización: ${completionError.message}`);
+      completedJobs += 1;
     } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error desconocido';
+      await db
+        .from('chat_cleanup_jobs')
+        .update({
+          status: 'failed',
+          attempt_count: job.attempt_count + 1,
+          last_error: message.slice(0, 1000),
+          last_attempt_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', job.id);
       observeError('cron.chat_cleanup.thread_failed', error, {
         requestId,
         provider: 'supabase-storage',
-        threadId: thread.id,
+        threadId: job.thread_id,
+        attemptCount: job.attempt_count + 1,
       });
-      failures.push({
-        threadId: thread.id,
-        error: error instanceof Error ? error.message : 'Error desconocido',
-      });
+      failures.push({ threadId: job.thread_id, error: message });
     }
   }
 
-  const result = { ok: failures.length === 0, deletedThreads, skippedThreads, failures };
+  const result = {
+    ok: failures.length === 0,
+    processedJobs: jobs.length,
+    completedJobs,
+    retriedJobs,
+    failures,
+  };
   const metrics = {
     requestId,
-    deletedThreads,
-    skippedThreads,
+    processedJobs: jobs.length,
+    completedJobs,
+    retriedJobs,
     failureCount: failures.length,
     durationMs: Date.now() - startedAt,
   };

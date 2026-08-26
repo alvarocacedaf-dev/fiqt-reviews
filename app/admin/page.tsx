@@ -7,6 +7,14 @@ type StorageUsageRow = {
   total_bytes: number;
 };
 
+type CleanupStatusRow = {
+  pending_jobs: number;
+  failed_jobs: number;
+  completed_jobs: number;
+  last_activity_at: string | null;
+  last_error: string | null;
+};
+
 function formatBytes(bytes: number) {
   if (bytes >= 1024 ** 3) return `${(bytes / 1024 ** 3).toFixed(2)} GB`;
   if (bytes >= 1024 ** 2) return `${(bytes / 1024 ** 2).toFixed(2)} MB`;
@@ -16,7 +24,7 @@ function formatBytes(bytes: number) {
 
 export default async function Admin() {
   const { db } = await requireAdmin();
-  const [reviews, verifications, reviewReports, chatReports, storageUsageResult] = await Promise.all([
+  const [reviews, verifications, reviewReports, chatReports, storageUsageResult, cleanupStatusResult] = await Promise.all([
     db.from('reviews').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
     db
       .from('verification_submissions')
@@ -28,6 +36,7 @@ export default async function Admin() {
       .select('*', { count: 'exact', head: true })
       .eq('status', 'pending'),
     db.rpc('admin_storage_usage'),
+    db.rpc('admin_chat_cleanup_status'),
   ]);
   const storageUsage = (storageUsageResult.data ?? []) as StorageUsageRow[];
   const totalStorageBytes = storageUsage.reduce(
@@ -38,6 +47,7 @@ export default async function Admin() {
     (total, bucket) => total + Number(bucket.object_count),
     0,
   );
+  const cleanupStatus = ((cleanupStatusResult.data ?? []) as CleanupStatusRow[])[0];
   const cards = [
     ['Reseñas pendientes', reviews.count, '/admin/resenas'],
     ['Verificaciones pendientes', verifications.count, '/admin/verificaciones'],
@@ -84,6 +94,46 @@ export default async function Admin() {
               </div>
             ))}
           </div>
+        )}
+      </section>
+
+      <section className="mt-6 rounded-2xl bg-slate-100 p-5">
+        <h2 className="text-xl font-black text-ink">Limpieza automática de chats</h2>
+        {cleanupStatusResult.error ? (
+          <p className="mt-3 text-sm font-bold text-amber-800">
+            Aplica la migración 029 para consultar y reintentar el estado de limpieza.
+          </p>
+        ) : (
+          <>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-xs font-bold text-slate-500">Pendientes</p>
+                <p className="text-2xl font-black text-royal">{cleanupStatus?.pending_jobs ?? 0}</p>
+              </div>
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-xs font-bold text-slate-500">Con fallo, se reintentarán</p>
+                <p className="text-2xl font-black text-red-700">{cleanupStatus?.failed_jobs ?? 0}</p>
+              </div>
+              <div className="rounded-xl bg-white p-4">
+                <p className="text-xs font-bold text-slate-500">Completados</p>
+                <p className="text-2xl font-black text-emerald-700">{cleanupStatus?.completed_jobs ?? 0}</p>
+              </div>
+            </div>
+            {cleanupStatus?.last_activity_at && (
+              <p className="mt-3 text-xs font-semibold text-slate-500">
+                Última actividad: {new Intl.DateTimeFormat('es-PE', {
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                  timeZone: 'America/Lima',
+                }).format(new Date(cleanupStatus.last_activity_at))}
+              </p>
+            )}
+            {cleanupStatus?.last_error && (
+              <p className="mt-3 rounded-xl bg-red-50 p-3 text-sm font-semibold text-red-800">
+                Último fallo: {cleanupStatus.last_error}
+              </p>
+            )}
+          </>
         )}
       </section>
     </div>
