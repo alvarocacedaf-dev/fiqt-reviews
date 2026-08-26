@@ -2,8 +2,13 @@
 .env*.local
 
 node_modules
+.npm-cache
 .next
 out
+playwright-report
+.playwright-browsers
+test-results
+coverage
 
 npm-debug.log*
 yarn-debug.log*

@@ -8,15 +8,17 @@ import {
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
+import { normalizeEmail, validateLoginInput } from '@/lib/validation';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const email = String(body.email || '').trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const password = String(body.password || '');
+    const validationError = validateLoginInput({ email, password });
 
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Completa el correo y la contraseña.' }, { status: 400 });
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
     }
 
     const subjects = getAuthRateSubjects(request, email);

@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-
-const UNI_EMAIL_DOMAIN = '@uni.pe';
+import { isUniEmail, normalizeEmail } from '@/lib/validation';
 
 export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [error, setError] = useState('');
@@ -12,10 +11,10 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
     setLoading(true);
     setError('');
 
-    const email = String(form.get('email')).trim().toLowerCase();
+    const email = normalizeEmail(form.get('email'));
     const password = String(form.get('password'));
 
-    if (mode === 'register' && !email.endsWith(UNI_EMAIL_DOMAIN)) {
+    if (mode === 'register' && !isUniEmail(email)) {
       setLoading(false);
       setError('Para crear una cuenta de estudiante debes usar un correo institucional que termine en @uni.pe.');
       return;

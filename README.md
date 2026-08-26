@@ -26,6 +26,16 @@ where email = 'TU_CORREO_AQUI'
 on conflict (id) do update set role='admin', verification_status='verified';
 ```
 
+## Pruebas
+
+- `npm run typecheck`: comprueba TypeScript sin generar archivos.
+- `npm run test:unit`: ejecuta Vitest para reglas, componentes y rutas.
+- `npm run test:e2e`: ejecuta los recorridos de Playwright.
+- `npm run test:db`: ejecuta las pruebas pgTAP con Supabase local iniciado.
+
+La preparación completa, variables opcionales y reglas para no tocar producción
+están documentadas en [`docs/TESTING.md`](docs/TESTING.md).
+
 ## Arquitectura
 
 - `app/`: rutas App Router, vistas públicas, autenticación, verificación y panel admin.

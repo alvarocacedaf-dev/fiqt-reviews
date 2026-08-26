@@ -6,19 +6,18 @@ import {
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
+import { normalizeEmail, validateRegistrationInput } from '@/lib/validation';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const email = String(body.email || '').trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     const password = String(body.password || '');
     const fullName = String(body.fullName || '').trim();
+    const validationError = validateRegistrationInput({ email, password, fullName });
 
-    if (!email.endsWith('@uni.pe')) {
-      return NextResponse.json({ error: 'Usa tu correo institucional @uni.pe.' }, { status: 400 });
-    }
-    if (password.length < 8 || !fullName) {
-      return NextResponse.json({ error: 'Completa tu nombre y usa una contraseña de al menos 8 caracteres.' }, { status: 400 });
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
     }
 
     const subjects = getAuthRateSubjects(request, email);

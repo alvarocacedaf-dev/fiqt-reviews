@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { containsForbiddenReviewLanguage } from '@/lib/validation';
 
 const positiveTags = [
   'Explica claro',
@@ -24,8 +25,6 @@ const negativeTags = [
   'Solo lee las PPTs',
   'Sus evaluaciones no se sienten coherentes con lo enseñado',
 ];
-
-const forbidden = /\b(corrupto|corrupta|acosador|acosadora|ladr[oó]n|ladrona|idiota|imb[eé]cil|mierda|puta|maric[oó]n)\b/i;
 
 const ratingQuestions = [
   {
@@ -131,7 +130,7 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
     setMessage('');
     const comment = String(form.get('comment') || '').trim();
 
-    if (forbidden.test(comment)) {
+    if (containsForbiddenReviewLanguage(comment)) {
       return setMessage('Tu reseña debe enfocarse en la experiencia académica y mantener un lenguaje respetuoso.');
     }
 
