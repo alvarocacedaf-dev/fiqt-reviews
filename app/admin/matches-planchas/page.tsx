@@ -149,7 +149,7 @@ export default async function AdminWorksheetMatchesPage() {
       {matches.map(match => {
         const isActive = match.status === 'active';
         return (
-          <article className="overflow-hidden rounded-3xl bg-white shadow-card" key={match.id}>
+          <article className="surface-card overflow-hidden" key={match.id}>
             <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-wider text-royal">
@@ -203,4 +203,3 @@ export default async function AdminWorksheetMatchesPage() {
     </div>
   );
 }
-

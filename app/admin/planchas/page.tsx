@@ -131,7 +131,7 @@ export default async function AdminWorksheetsPage({ searchParams }: PageProps) {
         const total = preferences.have.length + preferences.want.length;
 
         return (
-          <details className="group overflow-hidden rounded-3xl bg-white shadow-card" key={userId}>
+          <details className="surface-card-interactive group overflow-hidden" key={userId}>
             <summary className="cursor-pointer list-none bg-slate-50 px-6 py-5">
               <p className="text-xs font-black uppercase tracking-wider text-royal">Cuenta</p>
               <div className="flex flex-wrap items-center justify-between gap-3">

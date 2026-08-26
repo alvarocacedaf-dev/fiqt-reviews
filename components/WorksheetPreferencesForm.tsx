@@ -38,7 +38,7 @@ function CourseColumn({
   const availableCourses = courses.filter(course => !selected.has(course.id) && !blocked.has(course.id));
 
   return (
-    <section className={`rounded-3xl border border-slate-200 bg-white p-5 shadow-sm ${disabled ? 'opacity-60' : ''}`}>
+    <section className={`surface-card p-5 ${disabled ? 'opacity-60' : ''}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 className="text-2xl font-black text-ink">{title}</h2>
@@ -75,7 +75,7 @@ function CourseColumn({
         <div className="mt-3 space-y-2">
           {selectedCourses.map(course => (
             <article
-              className="flex items-start justify-between gap-4 rounded-2xl border border-blue-100 bg-blue-50 p-4"
+              className="surface-muted flex items-start justify-between gap-4 border-blue-100 bg-blue-50 p-4"
               key={course.id}
             >
               <div className="min-w-0">
@@ -96,7 +96,7 @@ function CourseColumn({
           ))}
 
           {!selectedCourses.length && (
-            <p className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-600">{emptyText}</p>
+            <p className="surface-muted p-4 text-sm text-slate-600">{emptyText}</p>
           )}
         </div>
       </div>
@@ -107,7 +107,7 @@ function CourseColumn({
         </p>
       )}
       {!courses.length && (
-        <p className="mt-4 rounded-2xl bg-amber-50 p-4 text-sm font-semibold text-amber-900">
+        <p className="surface-muted mt-4 border-amber-100 bg-amber-50 p-4 text-sm font-semibold text-amber-900">
           Todavía no hay cursos disponibles.
         </p>
       )}
@@ -215,7 +215,7 @@ export function WorksheetPreferencesForm({
         />
       </div>
 
-      <div className="mt-6 flex flex-col items-center justify-between gap-4 rounded-3xl border border-blue-100 bg-blue-50 p-5 sm:flex-row">
+      <div className="surface-muted mt-6 flex flex-col items-center justify-between gap-4 border-blue-100 bg-blue-50 p-5 sm:flex-row">
         {isUnlocked ? (
           <div>
             <p className="font-black text-royal">Comunidad de planchas desbloqueada</p>

@@ -392,7 +392,7 @@ export function AdminWorksheetLibraryTree({
 
   return (
     <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
-      <section className="overflow-hidden rounded-3xl bg-white shadow-card">
+      <section className="surface-card overflow-hidden">
         <div className="border-b border-slate-200 px-5 py-4">
           <h3 className="text-xl font-black text-ink">Biblioteca por ciclos</h3>
           <p className="mt-1 text-xs text-slate-500">
@@ -432,7 +432,7 @@ export function AdminWorksheetLibraryTree({
                       const categories = [...FOLDER_CATEGORIES, ...legacyCategories];
 
                       return (
-                        <details className="group/course overflow-hidden rounded-2xl border border-slate-200 bg-white" key={course.id}>
+                        <details className="surface-card-interactive group/course overflow-hidden" key={course.id}>
                           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
                             <span className="flex min-w-0 items-center gap-3">
                               <Icon className="h-4 w-4" name="folder-open" />
@@ -516,7 +516,7 @@ export function AdminWorksheetLibraryTree({
         </div>
       </section>
 
-      <aside className="rounded-3xl bg-white p-5 shadow-card lg:sticky lg:top-4">
+      <aside className="surface-card p-5 lg:sticky lg:top-4">
         {selectedFolder && selectedCourse ? (
           <>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-royal">Carpeta seleccionada</p>

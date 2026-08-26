@@ -199,7 +199,7 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
         const evidence = attachmentsByReport[report.id] ?? [];
 
         return (
-          <details className="group overflow-hidden rounded-3xl bg-white shadow-card" key={report.id}>
+          <details className="surface-card-interactive group overflow-hidden" key={report.id}>
             <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-5 bg-slate-50 px-6 py-5 [&::-webkit-details-marker]:hidden">
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-black uppercase tracking-wider text-royal">

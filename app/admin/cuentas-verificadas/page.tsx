@@ -106,7 +106,7 @@ export default async function VerifiedAccountsPage({ searchParams }: PageProps) 
       {Object.entries(submissionsByUser).map(([userId, accountSubmissions]) => {
         const profile = profiles[userId];
         return (
-          <details key={userId} className="group overflow-hidden rounded-3xl bg-white shadow-card">
+          <details key={userId} className="surface-card-interactive group overflow-hidden">
             <summary className="cursor-pointer list-none bg-slate-50 px-6 py-5">
               <p className="text-xs font-black uppercase tracking-wider text-royal">Cuenta</p>
               <div className="flex flex-wrap items-center justify-between gap-3">

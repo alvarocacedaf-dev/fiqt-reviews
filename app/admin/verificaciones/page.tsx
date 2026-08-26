@@ -83,7 +83,7 @@ export default async function AdminVerifications() {
         const url = signedUrls[item.id];
 
         return (
-          <article key={item.id} className="overflow-hidden rounded-3xl bg-white shadow-card">
+          <article key={item.id} className="surface-card overflow-hidden">
             <div className="border-b border-slate-200 bg-slate-50 px-6 py-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
@@ -101,7 +101,7 @@ export default async function AdminVerifications() {
             <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,1fr)]">
               <section>
                 <h3 className="font-black text-ink">Evidencia académica</h3>
-                <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                <div className="surface-muted mt-3 overflow-hidden">
                   {isPdf ? (
                     <div className="flex min-h-72 items-center justify-center p-8 text-center">
                       <div>
@@ -125,7 +125,7 @@ export default async function AdminVerifications() {
                 <div>
                   <h3 className="font-black text-ink">Cursos y profesores autorizados</h3>
                   <p className="mt-1 text-sm text-slate-600">Marca cada profesor que el estudiante llevó en su curso.</p>
-                  <div className="mt-3 max-h-72 space-y-2 overflow-y-auto rounded-2xl border border-slate-200 p-3">
+                  <div className="surface-muted mt-3 max-h-72 space-y-2 overflow-y-auto bg-white p-3">
                     {professorCourses.map(link => (
                       <label key={`${link.course_id}-${link.professor_id}`} className="flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-blue-50">
                         <input type="checkbox" name="professor_course_ids" value={`${link.course_id}|${link.professor_id}`} className="mt-1 h-4 w-4" />
@@ -152,7 +152,7 @@ export default async function AdminVerifications() {
                   <textarea name="notes" className="input mt-1 min-h-24" placeholder="Opcional al aprobar; explica el motivo si rechazas." />
                 </label>
 
-                <div className="rounded-2xl bg-emerald-50 p-4 text-sm text-emerald-950">
+                <div className="surface-muted border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-950">
                   <strong>Aprobar:</strong> habilita reseñas únicamente para los profesores y cursos marcados.
                 </div>
                 <div className="flex flex-wrap gap-3">

@@ -44,8 +44,17 @@
     background-attachment: fixed;
   }
   .panel {
-    @apply rounded-3xl bg-white/95 p-6 shadow-card backdrop-blur;
+    @apply rounded-[1.25rem] border border-slate-200/80 bg-white/95 p-6 shadow-sm backdrop-blur;
     animation: panel-enter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .surface-card {
+    @apply rounded-2xl border border-slate-200/90 bg-white shadow-sm;
+  }
+  .surface-card-interactive {
+    @apply rounded-2xl border border-slate-200/90 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-lg;
+  }
+  .surface-muted {
+    @apply rounded-xl border border-slate-200/70 bg-slate-50;
   }
   .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-royal px-4 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0d2f6c] hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50; }
   .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 font-semibold text-royal transition duration-200 hover:-translate-y-0.5 hover:bg-sky hover:shadow-md active:translate-y-0; }

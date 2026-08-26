@@ -48,7 +48,7 @@ export function CycleSelector({ cycles }: { cycles: Cycle[] }) {
         <Link
           key={cycle.id}
           href={`/ciclos/${cycle.id}`}
-          className={`inline-flex items-center justify-center gap-3 rounded-2xl border border-blue-100 bg-white p-4 text-center font-bold text-royal shadow transition hover:-translate-y-1 hover:border-gold ${
+          className={`surface-card-interactive inline-flex items-center justify-center gap-3 p-4 text-center font-bold text-royal hover:border-gold ${
             cycle.number > 10 ? 'col-span-2 whitespace-nowrap sm:col-span-2 sm:px-8' : ''
           }`}
         >

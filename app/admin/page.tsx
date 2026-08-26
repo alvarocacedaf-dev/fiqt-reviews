@@ -61,7 +61,7 @@ export default async function Admin() {
       <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map(([name, count, href]) => (
           <Link
-            className="rounded-2xl bg-blue-50 p-5"
+            className="surface-card-interactive border-blue-100 bg-blue-50 p-5"
             href={href as string}
             key={name as string}
           >
@@ -71,7 +71,7 @@ export default async function Admin() {
         ))}
       </div>
 
-      <section className="mt-6 rounded-2xl bg-blue-50 p-5">
+      <section className="surface-muted mt-6 border-blue-100 bg-blue-50 p-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-sm text-slate-600">Almacenamiento utilizado</p>
@@ -87,7 +87,7 @@ export default async function Admin() {
         ) : (
           <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
             {storageUsage.map(bucket => (
-              <div className="rounded-xl bg-white p-3" key={bucket.bucket_id}>
+              <div className="surface-muted bg-white p-3" key={bucket.bucket_id}>
                 <p className="truncate text-xs font-bold text-slate-500">{bucket.bucket_id}</p>
                 <p className="mt-1 font-black text-ink">{formatBytes(Number(bucket.total_bytes))}</p>
                 <p className="text-xs text-slate-500">{bucket.object_count} archivos</p>
@@ -97,7 +97,7 @@ export default async function Admin() {
         )}
       </section>
 
-      <section className="mt-6 rounded-2xl bg-slate-100 p-5">
+      <section className="surface-muted mt-6 p-5">
         <h2 className="text-xl font-black text-ink">Limpieza automática de chats</h2>
         {cleanupStatusResult.error ? (
           <p className="mt-3 text-sm font-bold text-amber-800">
@@ -106,15 +106,15 @@ export default async function Admin() {
         ) : (
           <>
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl bg-white p-4">
+              <div className="surface-muted bg-white p-4">
                 <p className="text-xs font-bold text-slate-500">Pendientes</p>
                 <p className="text-2xl font-black text-royal">{cleanupStatus?.pending_jobs ?? 0}</p>
               </div>
-              <div className="rounded-xl bg-white p-4">
+              <div className="surface-muted bg-white p-4">
                 <p className="text-xs font-bold text-slate-500">Con fallo, se reintentarán</p>
                 <p className="text-2xl font-black text-red-700">{cleanupStatus?.failed_jobs ?? 0}</p>
               </div>
-              <div className="rounded-xl bg-white p-4">
+              <div className="surface-muted bg-white p-4">
                 <p className="text-xs font-bold text-slate-500">Completados</p>
                 <p className="text-2xl font-black text-emerald-700">{cleanupStatus?.completed_jobs ?? 0}</p>
               </div>
