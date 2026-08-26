@@ -1,5 +1,17 @@
 import { expect, test } from '@playwright/test';
 
+async function expectNoHorizontalOverflow(page: import('@playwright/test').Page) {
+  const layout = await page.evaluate(() => ({
+    clientWidth: document.documentElement.clientWidth,
+    scrollWidth: document.documentElement.scrollWidth,
+  }));
+
+  expect(
+    layout.scrollWidth,
+    `La página mide ${layout.scrollWidth}px, pero el viewport solo ${layout.clientWidth}px.`,
+  ).toBeLessThanOrEqual(layout.clientWidth);
+}
+
 test.describe('recorridos públicos', () => {
   test('la portada ofrece registro e inicio de sesión', async ({ page }) => {
     await page.goto('/');
@@ -34,6 +46,13 @@ test.describe('recorridos públicos', () => {
     await expect(page.getByLabel('Correo electrónico de la cuenta')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Enviar enlace de recuperación' })).toBeVisible();
   });
+
+  for (const route of ['/', '/registro', '/login']) {
+    test(`${route} no produce desplazamiento horizontal`, async ({ page }) => {
+      await page.goto(route);
+      await expectNoHorizontalOverflow(page);
+    });
+  }
 });
 
 test.describe('validación pública de APIs', () => {
