@@ -109,6 +109,10 @@ function LoggedInLinks({
           <NavIcon type="verified" />
           Cursos verificados
         </a>
+        <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/horario">
+          <Icon className="h-5 w-5" name="calendar" />
+          Armar mi horario
+        </a>
         <details>
           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold [&::-webkit-details-marker]:hidden">
             <span>Planchas</span>
@@ -154,6 +158,10 @@ function LoggedInLinks({
       <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
         <NavIcon type="verified" />
         Cursos verificados
+      </a>
+      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/horario">
+        <Icon className="h-5 w-5" name="calendar" />
+        Armar mi horario
       </a>
       <details className="group relative">
         <summary className="inline-flex cursor-pointer list-none items-center gap-2 transition hover:text-gold [&::-webkit-details-marker]:hidden">
@@ -246,7 +254,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           )}
         </div>
 
-        <div className="hidden items-center gap-5 text-sm font-semibold md:flex">
+        <div className="hidden items-center gap-4 text-sm font-semibold xl:flex">
           {isLoggedIn ? (
             <LoggedInLinks signOut={signOut} isAdmin={isAdmin} />
           ) : (
@@ -261,7 +269,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           )}
         </div>
 
-        <div className="md:hidden">
+        <div className="xl:hidden">
           {isLoggedIn ? (
             <details className="group">
               <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-white/15 bg-white text-ink shadow-lg transition hover:bg-gold [&::-webkit-details-marker]:hidden">
