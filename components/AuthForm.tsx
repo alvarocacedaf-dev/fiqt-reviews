@@ -1,24 +1,44 @@
 'use client';
 
 import { useState } from 'react';
+import { Icon } from '@/components/ui/Icon';
 import { isUniEmail, normalizeEmail } from '@/lib/validation';
 
+type FieldErrors = Partial<Record<'email' | 'fullName' | 'password', string>>;
+
 export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
-  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   async function submit(form: FormData) {
-    setLoading(true);
-    setError('');
-
     const email = normalizeEmail(form.get('email'));
     const password = String(form.get('password'));
+    const fullName = mode === 'register' ? String(form.get('full_name')).trim() : '';
+    const nextErrors: FieldErrors = {};
 
-    if (mode === 'register' && !isUniEmail(email)) {
-      setLoading(false);
-      setError('Para crear una cuenta de estudiante debes usar un correo institucional que termine en @uni.pe.');
+    if (mode === 'register' && fullName.length < 2) {
+      nextErrors.fullName = 'Ingresa tu nombre completo.';
+    }
+    if (!email) {
+      nextErrors.email = 'Ingresa tu correo electrónico.';
+    } else if (mode === 'register' && !isUniEmail(email)) {
+      nextErrors.email = 'Usa un correo institucional que termine en @uni.pe.';
+    }
+    if (password.length < 8) {
+      nextErrors.password = 'La contraseña debe tener al menos 8 caracteres.';
+    }
+
+    if (Object.keys(nextErrors).length) {
+      setFieldErrors(nextErrors);
+      setMessage(null);
       return;
     }
+
+    setLoading(true);
+    setFieldErrors({});
+    setMessage(null);
 
     const response = await fetch(mode === 'login' ? '/api/auth/login' : '/api/auth/register', {
       method: 'POST',
@@ -26,7 +46,7 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       body: JSON.stringify({
         email,
         password,
-        fullName: mode === 'register' ? String(form.get('full_name')).trim() : undefined,
+        fullName: mode === 'register' ? fullName : undefined,
       }),
     });
     const result = await response.json().catch(() => ({
@@ -35,10 +55,13 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
 
     setLoading(false);
 
-    if (!response.ok) return setError(result.error ?? 'No se pudo procesar la solicitud.');
+    if (!response.ok) {
+      setMessage({ text: result.error ?? 'No se pudo procesar la solicitud.', type: 'error' });
+      return;
+    }
 
     if (mode === 'register' && result.requiresEmailConfirmation) {
-      setError('Revisa tu correo UNI para confirmar la cuenta.');
+      setMessage({ text: 'Revisa tu correo UNI para confirmar la cuenta.', type: 'success' });
       return;
     }
 
@@ -46,43 +69,89 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   }
 
   return (
-    <form action={submit} className="space-y-4">
+    <form action={submit} className="space-y-5" noValidate>
       {mode === 'register' && (
-        <label className="block text-sm font-semibold">
-          Nombre completo
-          <input required name="full_name" className="input mt-1" />
-        </label>
+        <div>
+          <label className="block text-sm font-semibold text-slate-700" htmlFor="auth-full-name">Nombre completo</label>
+          <div className="relative mt-1.5">
+            <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" name="user" />
+            <input
+              aria-describedby={fieldErrors.fullName ? 'auth-full-name-error' : undefined}
+              aria-invalid={Boolean(fieldErrors.fullName)}
+              autoComplete="name"
+              className="input pl-11"
+              id="auth-full-name"
+              name="full_name"
+              onChange={() => setFieldErrors(current => ({ ...current, fullName: undefined }))}
+              required
+            />
+          </div>
+          {fieldErrors.fullName && <p className="mt-1.5 text-xs font-semibold text-red-700" id="auth-full-name-error">{fieldErrors.fullName}</p>}
+        </div>
       )}
 
-      <label className="block text-sm font-semibold">
-        {mode === 'register' ? 'Correo institucional UNI' : 'Correo electrónico'}
-        <input
-          required
-          type="email"
-          name="email"
-          className="input mt-1"
-          autoComplete="email"
-          placeholder={mode === 'register' ? 'tu_usuario@uni.pe' : 'tu correo registrado'}
-          pattern={mode === 'register' ? '^[^@\\s]+@uni\\.pe$' : undefined}
-          title={mode === 'register' ? 'Usa un correo institucional que termine en @uni.pe' : 'Ingresa el correo de tu cuenta'}
-        />
-      </label>
+      <div>
+        <label className="block text-sm font-semibold text-slate-700" htmlFor="auth-email">
+          {mode === 'register' ? 'Correo institucional UNI' : 'Correo electrónico'}
+        </label>
+        <div className="relative mt-1.5">
+          <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" name="mail" />
+          <input
+            aria-describedby={fieldErrors.email ? 'auth-email-error' : undefined}
+            aria-invalid={Boolean(fieldErrors.email)}
+            required
+            type="email"
+            id="auth-email"
+            name="email"
+            className="input pl-11"
+            autoComplete="email"
+            onChange={() => setFieldErrors(current => ({ ...current, email: undefined }))}
+            placeholder={mode === 'register' ? 'tu_usuario@uni.pe' : 'tu correo registrado'}
+            pattern={mode === 'register' ? '^[^@\\s]+@uni\\.pe$' : undefined}
+            title={mode === 'register' ? 'Usa un correo institucional que termine en @uni.pe' : 'Ingresa el correo de tu cuenta'}
+          />
+        </div>
+        {fieldErrors.email && <p className="mt-1.5 text-xs font-semibold text-red-700" id="auth-email-error">{fieldErrors.email}</p>}
+      </div>
 
-      <label className="block text-sm font-semibold">
-        Contraseña
-        <input
-          required
-          minLength={8}
-          type="password"
-          name="password"
-          className="input mt-1"
-          autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-        />
-      </label>
+      <div>
+        <label className="block text-sm font-semibold text-slate-700" htmlFor="auth-password">Contraseña</label>
+        <div className="relative mt-1.5">
+          <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" name="lock" />
+          <input
+            aria-describedby={fieldErrors.password ? 'auth-password-error' : undefined}
+            aria-invalid={Boolean(fieldErrors.password)}
+            required
+            minLength={8}
+            type={showPassword ? 'text' : 'password'}
+            id="auth-password"
+            name="password"
+            className="input px-11"
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            onChange={() => setFieldErrors(current => ({ ...current, password: undefined }))}
+          />
+          <button
+            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-slate-500 transition hover:bg-blue-50 hover:text-royal"
+            onClick={() => setShowPassword(current => !current)}
+            type="button"
+          >
+            <Icon className="h-5 w-5" name={showPassword ? 'eye-off' : 'eye'} />
+          </button>
+        </div>
+        {fieldErrors.password && <p className="mt-1.5 text-xs font-semibold text-red-700" id="auth-password-error">{fieldErrors.password}</p>}
+      </div>
 
-      {error && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-800">{error}</p>}
+      {message && (
+        <p
+          className={`rounded-xl border p-3 text-sm font-semibold ${message.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-800'}`}
+          role={message.type === 'error' ? 'alert' : 'status'}
+        >
+          {message.text}
+        </p>
+      )}
 
-      <button disabled={loading} className="btn-primary w-full">
+      <button disabled={loading} className="btn-primary min-h-12 w-full text-base">
         {loading ? 'Procesando…' : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta UNI'}
       </button>
     </form>

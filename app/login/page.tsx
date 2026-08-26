@@ -1,22 +1,21 @@
 import Link from 'next/link';
+import { AccessShell } from '@/components/AccessShell';
 import { AuthForm } from '@/components/AuthForm';
 
 export default function Login() {
   return (
-    <section className="mx-auto max-w-md panel">
-      <h1 className="text-2xl font-black text-ink">Bienvenido de vuelta</h1>
-      <p className="mb-6 mt-1 text-sm text-slate-600">
-        Ingresa con tu correo institucional UNI para explorar ciclos, cursos y profesores.
-      </p>
+    <AccessShell
+      description="Ingresa con tu correo institucional UNI para explorar ciclos, cursos y profesores."
+      footer={(
+        <div className="space-y-3">
+          <p>¿No tienes cuenta? <Link className="font-bold text-royal transition hover:text-ink" href="/registro">Regístrate</Link></p>
+          <p><Link className="font-bold text-royal transition hover:text-ink" href="/recuperar-contrasena">Me olvidé mi contraseña</Link></p>
+        </div>
+      )}
+      mode="login"
+      title="Bienvenido de vuelta"
+    >
       <AuthForm mode="login" />
-      <p className="mt-5 text-center text-sm">
-        ¿No tienes cuenta? <Link className="font-bold text-royal" href="/registro">Regístrate</Link>
-      </p>
-      <p className="mt-3 text-center text-sm">
-        <Link className="font-bold text-royal" href="/recuperar-contrasena">
-          Me olvidé mi contraseña
-        </Link>
-      </p>
-    </section>
+    </AccessShell>
   );
 }
