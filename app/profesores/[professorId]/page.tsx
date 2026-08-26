@@ -1,4 +1,5 @@
 import { RatingSummary } from '@/components/RatingSummary';
+import { Icon } from '@/components/ui/Icon';
 import { getCourse, getCourseProfessors, getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
@@ -140,7 +141,10 @@ export default async function ProfessorPage({
         <div className="mt-5 space-y-4">
           {reviews.map(review => (
             <article key={review.id} className="rounded-2xl bg-slate-50 p-4">
-              <p className="font-semibold text-royal">{review.recommendation === 'like' ? '✓ Lo recomienda' : '✕ No lo recomienda'}</p>
+              <p className="flex items-center gap-2 font-semibold text-royal">
+                <Icon className="h-4 w-4" name={review.recommendation === 'like' ? 'check' : 'close'} />
+                {review.recommendation === 'like' ? 'Lo recomienda' : 'No lo recomienda'}
+              </p>
               <p className="mt-2 text-slate-700">{review.comment}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {review.selected_tags.map(tag => (

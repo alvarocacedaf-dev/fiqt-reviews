@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
+import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 
@@ -57,7 +58,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
   if (profileError || (!isAdmin && countError)) {
     return (
       <section className="panel">
-        <h1 className="text-3xl font-black text-ink">Planchas 🔒</h1>
+        <h1 className="flex items-center gap-2 text-3xl font-black text-ink">Planchas <Icon className="h-7 w-7" name="lock" /></h1>
         <p className="mt-4 rounded-2xl bg-red-50 p-4 font-semibold text-red-800">
           No pudimos comprobar tus reseñas aprobadas. Inténtalo nuevamente en unos minutos.
         </p>
@@ -105,7 +106,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
       <section className="panel">
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Comunidad de planchas</p>
         <h1 className="mt-2 flex items-center gap-3 text-3xl font-black text-ink">
-          Planchas <span aria-hidden="true">{isUnlocked ? '🔓' : '🔒'}</span>
+          Planchas <Icon className="h-7 w-7" name={isUnlocked ? 'unlock' : 'lock'} />
         </h1>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
           Indica de qué cursos puedes compartir planchas y cuáles deseas conseguir. Cada vez que guardes tus

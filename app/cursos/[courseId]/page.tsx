@@ -1,4 +1,5 @@
 import { ProfessorCard } from '@/components/ProfessorCard';
+import { Icon } from '@/components/ui/Icon';
 import { getCourse, getCourseProfessors, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 
 const courseSyllabi: Record<string, { label: string; href: string }> = {
@@ -213,7 +214,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
             rel="noreferrer"
             className="mt-4 inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
           >
-            📄 {syllabus.label}
+            <Icon className="h-5 w-5" name="file" /> {syllabus.label}
           </a>
         )}
       </div>

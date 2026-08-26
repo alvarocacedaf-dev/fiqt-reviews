@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { Icon } from '@/components/ui/Icon';
 import type { Professor, Review } from '@/lib/types';
 import { RatingSummary } from './RatingSummary';
 
@@ -83,7 +84,7 @@ export function ProfessorCard({
               className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-300 px-3 py-3 text-sm font-bold text-slate-600"
               title="Aún te falta completar tus 4 primeras reseñas"
             >
-              Ver perfil 🔒
+              Ver perfil <Icon className="ml-2 h-4 w-4" name="lock" />
             </span>
           )}
           <Link className="btn-secondary px-3 text-sm" href={`/profesores/${professor.id}/resena/${courseId}`}>

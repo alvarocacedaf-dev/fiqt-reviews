@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Icon } from '@/components/ui/Icon';
 import { getTotalPages } from '@/lib/pagination';
 
 type PaginationProps = {
@@ -35,14 +36,14 @@ export function Pagination({
       </p>
       <div className="flex gap-2">
         {currentPage > 1 ? (
-          <Link className="btn-secondary" href={hrefFor(currentPage - 1)}>← Anterior</Link>
+          <Link className="btn-secondary gap-2" href={hrefFor(currentPage - 1)}><Icon name="arrow-left" /> Anterior</Link>
         ) : (
-          <span className="btn-secondary cursor-not-allowed opacity-40">← Anterior</span>
+          <span className="btn-secondary cursor-not-allowed gap-2 opacity-40"><Icon name="arrow-left" /> Anterior</span>
         )}
         {currentPage < totalPages ? (
-          <Link className="btn-secondary" href={hrefFor(currentPage + 1)}>Siguiente →</Link>
+          <Link className="btn-secondary gap-2" href={hrefFor(currentPage + 1)}>Siguiente <Icon name="arrow-right" /></Link>
         ) : (
-          <span className="btn-secondary cursor-not-allowed opacity-40">Siguiente →</span>
+          <span className="btn-secondary cursor-not-allowed gap-2 opacity-40">Siguiente <Icon name="arrow-right" /></span>
         )}
       </div>
     </nav>

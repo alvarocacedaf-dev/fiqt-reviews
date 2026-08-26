@@ -41,7 +41,7 @@ export function ConversationList({
           const isSelected = selectedThreadId === thread.id;
           const preview = lastMessage?.body
             || (lastMessage?.attachment_name
-              ? `📎 ${lastMessage.attachment_name}`
+              ? `Archivo: ${lastMessage.attachment_name}`
               : thread.kind === 'match' && thread.status === 'available'
                 ? 'Entrega de archivos pendiente'
                 : 'Conversación disponible');

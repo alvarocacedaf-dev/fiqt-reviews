@@ -10,6 +10,11 @@ export default function Loading() {
         <p className={styles.copy}>
           Estamos preparando la información. Esto puede tomar unos segundos.
         </p>
+        <div className={styles.skeletons} aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
       </section>
     </main>
   );

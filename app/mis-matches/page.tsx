@@ -6,6 +6,7 @@ import { ChatReportForm } from '@/components/ChatReportForm';
 import { FinishChatButton, OpenChatButton } from '@/components/FinishChatButton';
 import { ConversationList } from '@/components/matches/ConversationList';
 import { Pagination } from '@/components/Pagination';
+import { Icon } from '@/components/ui/Icon';
 import { getPagination } from '@/lib/pagination';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
@@ -382,7 +383,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                               />
                             )}
                             <span className="flex min-w-0 items-center gap-2 px-1">
-                              <span className="text-xl" aria-hidden="true">📎</span>
+                              <Icon className="h-5 w-5" name="attachment" />
                               <span className="min-w-0">
                                 <span className="block truncate">{message.attachment_name}</span>
                                 <span className={`block text-[10px] ${isOwn ? 'text-blue-100' : 'text-slate-500'}`}>
@@ -392,7 +393,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                             </span>
                           </a>
                         ) : (
-                          <p className="mt-2 text-xs font-bold">📎 {message.attachment_name}</p>
+                          <p className="mt-2 flex items-center gap-2 text-xs font-bold"><Icon className="h-4 w-4" name="attachment" /> {message.attachment_name}</p>
                         )
                       )}
                       <p className={`mt-1 text-right text-[10px] ${isOwn ? 'text-blue-100' : 'text-slate-400'}`}>
@@ -537,11 +538,11 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                                         rel="noreferrer"
                                         target="_blank"
                                       >
-                                        📎 {file.file_name}
+                                        <span className="flex items-center gap-2"><Icon className="h-4 w-4" name="attachment" /> {file.file_name}</span>
                                       </a>
                                     ) : (
                                       <span className="block truncate font-semibold text-slate-500">
-                                        🔒 Archivo protegido hasta completar ambas entregas
+                                        <span className="flex items-center gap-2"><Icon className="h-4 w-4" name="lock" /> Archivo protegido hasta completar ambas entregas</span>
                                       </span>
                                     )}
                                   </li>

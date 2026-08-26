@@ -41,8 +41,69 @@
       linear-gradient(135deg, #020617, #0b1120 55%, #172554);
     background-attachment: fixed;
   }
-  .panel { @apply rounded-3xl bg-white/95 p-6 shadow-card backdrop-blur; }
-  .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-royal px-4 py-2.5 font-semibold text-white transition hover:bg-[#0d2f6c] disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 font-semibold text-royal transition hover:bg-sky; }
+  .panel {
+    @apply rounded-3xl bg-white/95 p-6 shadow-card backdrop-blur;
+    animation: panel-enter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .btn-primary { @apply inline-flex items-center justify-center rounded-xl bg-royal px-4 py-2.5 font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0d2f6c] hover:shadow-lg active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-secondary { @apply inline-flex items-center justify-center rounded-xl border border-blue-200 bg-white px-4 py-2.5 font-semibold text-royal transition duration-200 hover:-translate-y-0.5 hover:bg-sky hover:shadow-md active:translate-y-0; }
   .input { @apply w-full rounded-xl border border-slate-300 px-3 py-2.5 outline-none ring-royal transition focus:ring-2; }
+
+  .progress-fill {
+    transform-origin: left;
+    animation: progress-reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes menu-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes progress-reveal {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+details[open] > div {
+  animation: menu-enter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+a.shadow-card,
+button.shadow-card,
+details.shadow-card {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+a.shadow-card:hover,
+button.shadow-card:hover,
+details.shadow-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 52px rgba(2, 19, 54, 0.24);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

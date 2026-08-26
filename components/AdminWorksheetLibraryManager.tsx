@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Icon } from '@/components/ui/Icon';
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [
@@ -410,7 +411,7 @@ export function AdminWorksheetLibraryTree({
               <details className="group/cycle" key={cycle.id}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 transition hover:bg-blue-50 [&::-webkit-details-marker]:hidden">
                   <span className="flex min-w-0 items-center gap-3">
-                    <span className="text-xl" aria-hidden="true">📁</span>
+                    <Icon className="h-5 w-5" name="folder" />
                     <span className="min-w-0">
                       <span className="block font-black text-ink">Ciclo {cycle.number}</span>
                       <span className="block text-xs text-slate-500">
@@ -434,7 +435,7 @@ export function AdminWorksheetLibraryTree({
                         <details className="group/course overflow-hidden rounded-2xl border border-slate-200 bg-white" key={course.id}>
                           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
                             <span className="flex min-w-0 items-center gap-3">
-                              <span aria-hidden="true">📂</span>
+                              <Icon className="h-4 w-4" name="folder-open" />
                               <span className="min-w-0">
                                 <span className="block truncate text-sm font-black text-ink">
                                   {course.code || 'Sin código'} — {course.name}
@@ -645,7 +646,7 @@ export function AdminWorksheetLibraryTree({
         ) : (
           <div className="grid min-h-72 place-items-center text-center">
             <div>
-              <span className="text-4xl" aria-hidden="true">📂</span>
+              <Icon className="h-10 w-10" name="folder-open" />
               <h3 className="mt-3 text-xl font-black text-ink">Selecciona una carpeta</h3>
               <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
                 Los archivos aparecerán aquí cuando abras una categoría de evaluación.

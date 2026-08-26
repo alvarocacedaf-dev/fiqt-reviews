@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
+import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
@@ -117,7 +118,7 @@ function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
         </div>
         <p className="mt-3 font-black text-white">{nextReward?.title ?? 'Todas las recompensas desbloqueadas'}</p>
         <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/15">
-          <div className="h-full rounded-full bg-gradient-to-r from-gold to-yellow-300" style={{ width: `${progress}%` }} />
+          <div className="progress-fill h-full rounded-full bg-gradient-to-r from-gold to-yellow-300" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-3 text-xs leading-5 text-blue-100">
           {nextReward
@@ -142,7 +143,7 @@ function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
                   <p className="text-sm font-black text-white">{reward.title}</p>
                   <p className="mt-0.5 text-[11px] font-bold text-blue-200">{unlocked ? 'Desbloqueado' : isNext ? 'Próximo objetivo' : 'Bloqueado'}</p>
                 </div>
-                <span className="text-sm" aria-hidden="true">{unlocked ? '✓' : '🔒'}</span>
+                <Icon className="h-4 w-4" name={unlocked ? 'check' : 'lock'} />
               </div>
             );
           })}

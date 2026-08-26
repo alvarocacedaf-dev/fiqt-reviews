@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { Icon } from '@/components/ui/Icon';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [
@@ -115,7 +116,7 @@ export function ChatComposer({
     <form className="border-t border-slate-200 bg-white p-3" onSubmit={handleSubmit} ref={formRef}>
       {fileName && (
         <div className="mb-2 flex items-center justify-between gap-3 rounded-xl bg-blue-50 px-3 py-2 text-xs font-semibold text-royal">
-          <span className="min-w-0 truncate">📎 {fileName}</span>
+          <span className="flex min-w-0 items-center gap-2 truncate"><Icon className="h-4 w-4" name="attachment" /> {fileName}</span>
           <button
             className="shrink-0 font-black text-red-700"
             onClick={() => {
@@ -134,7 +135,7 @@ export function ChatComposer({
           className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-full bg-blue-50 text-xl text-royal transition hover:bg-blue-100"
           title="Adjuntar archivo"
         >
-          <span aria-hidden="true">📎</span>
+          <Icon className="h-5 w-5" name="attachment" />
           <span className="sr-only">Adjuntar archivo</span>
           <input
             accept={ACCEPTED_EXTENSIONS.join(',')}
