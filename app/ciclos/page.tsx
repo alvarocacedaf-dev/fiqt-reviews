@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
-import { ContentHeader, ContentToolbar } from '@/components/ContentHeader';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
@@ -170,17 +169,15 @@ export default async function CyclesPage() {
   return (
     <div className={approvedReviewCount === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
     <div className="space-y-6">
-      <section className="space-y-4">
-        <ContentHeader
-          description="Selecciona el ciclo o tipo de curso que quieres consultar."
-          eyebrow="Ruta académica"
-          title="Explora por ciclo"
-        />
-        <ContentToolbar label="Filtrar por ciclo">
+      <section className="panel">
+        <p className="text-sm font-bold text-royal">RUTA ACADÉMICA</p>
+        <h1 className="mt-1 text-3xl font-black text-ink">Explora por ciclo</h1>
+        <p className="mt-2 text-slate-600">Selecciona el ciclo o tipo de curso que quieres consultar.</p>
+        <div className="mt-7">
           <CycleSelector cycles={cycles} />
-        </ContentToolbar>
+        </div>
         {!cycles.length && (
-          <p className="surface-muted border-amber-100 bg-amber-50 p-4 text-amber-900">
+          <p className="mt-6 rounded-xl bg-amber-50 p-4 text-amber-900">
             Aún no hay ciclos cargados. Ejecuta la migración y sus datos de ejemplo en Supabase.
           </p>
         )}
