@@ -12,6 +12,21 @@ async function expectNoHorizontalOverflow(page: import('@playwright/test').Page)
   ).toBeLessThanOrEqual(layout.clientWidth);
 }
 
+async function expectFooterInsideViewport(page: import('@playwright/test').Page) {
+  const footerBounds = await page.locator('footer').evaluate(footer => {
+    const signature = footer.querySelector('img');
+    const rect = signature?.getBoundingClientRect();
+    return {
+      left: rect?.left ?? 0,
+      right: rect?.right ?? 0,
+      viewportWidth: document.documentElement.clientWidth,
+    };
+  });
+
+  expect(footerBounds.left).toBeGreaterThanOrEqual(0);
+  expect(footerBounds.right).toBeLessThanOrEqual(footerBounds.viewportWidth);
+}
+
 test.describe('recorridos públicos', () => {
   test('la portada ofrece registro e inicio de sesión', async ({ page }) => {
     await page.goto('/');
@@ -51,6 +66,7 @@ test.describe('recorridos públicos', () => {
     test(`${route} no produce desplazamiento horizontal`, async ({ page }) => {
       await page.goto(route);
       await expectNoHorizontalOverflow(page);
+      await expectFooterInsideViewport(page);
     });
   }
 });

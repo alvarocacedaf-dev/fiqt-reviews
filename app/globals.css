@@ -5,6 +5,7 @@
 @layer base {
   html {
     font-synthesis: none;
+    overflow-x: clip;
     text-rendering: optimizeLegibility;
   }
 
@@ -36,6 +37,7 @@
 @layer components {
   .page-shell {
     @apply min-h-screen;
+    container-type: inline-size;
     background:
       radial-gradient(circle at top right, rgba(37, 99, 235, 0.45), transparent 35%),
       linear-gradient(135deg, #020617, #0b1120 55%, #172554);
