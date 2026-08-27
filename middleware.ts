@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 type CookieItem = { name: string; value: string; options?: Record<string, unknown> };
 
-const protectedPrefixes = ['/ciclos', '/cursos', '/profesores', '/verificacion', '/planchas', '/mis-matches', '/admin'];
+const protectedPrefixes = ['/ciclos', '/cursos', '/profesores', '/verificacion', '/planchas', '/mis-matches', '/armar-horario', '/horario', '/admin'];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });

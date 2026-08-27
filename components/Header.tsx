@@ -109,7 +109,7 @@ function LoggedInLinks({
           <NavIcon type="verified" />
           Cursos verificados
         </a>
-        <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/horario">
+        <a className="flex items-center gap-3 rounded-2xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/armar-horario">
           <Icon className="h-5 w-5" name="calendar" />
           Armar mi horario
         </a>
@@ -159,7 +159,7 @@ function LoggedInLinks({
         <NavIcon type="verified" />
         Cursos verificados
       </a>
-      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/horario">
+      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/armar-horario">
         <Icon className="h-5 w-5" name="calendar" />
         Armar mi horario
       </a>
