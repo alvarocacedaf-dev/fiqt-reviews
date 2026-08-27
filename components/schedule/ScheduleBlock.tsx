@@ -3,7 +3,7 @@ import type { ClassBlock, ScheduleConflict } from '@/lib/schedule/types';
 
 const COLORS = [
   'bg-amber-300 text-amber-950 border-amber-400',
-  'bg-sky-400 text-sky-950 border-sky-300',
+  'bg-blue-300 text-blue-950 border-blue-200',
   'bg-violet-400 text-violet-950 border-violet-300',
   'bg-emerald-400 text-emerald-950 border-emerald-300',
   'bg-rose-400 text-rose-950 border-rose-300',
