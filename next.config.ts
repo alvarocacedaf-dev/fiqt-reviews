@@ -10,6 +10,8 @@ const contentSecurityPolicy = [
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.r2.cloudflarestorage.com",
   "media-src 'self' blob: https://*.supabase.co",
+  "manifest-src 'self'",
+  "worker-src 'self'",
   "object-src 'none'",
   "frame-src 'none'",
   "frame-ancestors 'none'",
@@ -37,7 +39,20 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: 'https', hostname: '**.supabase.co' }],
   },
   async headers() {
-    return [{ source: '/(.*)', headers: securityHeaders }];
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
+      },
+      {
+        source: '/manifest.webmanifest',
+        headers: [{ key: 'Content-Type', value: 'application/manifest+json' }],
+      },
+      { source: '/(.*)', headers: securityHeaders },
+    ];
   },
 };
 

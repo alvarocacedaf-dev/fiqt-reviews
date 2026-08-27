@@ -4,6 +4,8 @@
 
 @layer base {
   html {
+    min-height: 100%;
+    background: #071a3d;
     font-synthesis: none;
     overflow-x: clip;
     text-rendering: optimizeLegibility;
@@ -11,6 +13,8 @@
 
   body {
     @apply min-h-screen bg-black text-slate-900;
+    min-height: 100dvh;
+    overscroll-behavior-y: none;
     font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
   }
 
@@ -37,6 +41,11 @@
 @layer components {
   .page-shell {
     @apply min-h-screen;
+    min-height: 100dvh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
     container-type: inline-size;
     background:
       radial-gradient(circle at top right, rgba(37, 99, 235, 0.45), transparent 35%),

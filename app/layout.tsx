@@ -1,7 +1,9 @@
 import './globals.css';
+import type { Metadata, Viewport } from 'next';
 import { Geist } from 'next/font/google';
 import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
+import { PwaRegistration } from '@/components/PwaRegistration';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -9,11 +11,41 @@ const geist = Geist({
   variable: '--font-geist',
 });
 
-export const metadata = { title: 'FIQT Reviews', description: 'Reseñas académicas independientes para FIQT.' };
+export const metadata: Metadata = {
+  title: 'FIQT Reviews',
+  description: 'Reseñas académicas independientes para FIQT.',
+  applicationName: 'FIQT Reviews',
+  manifest: '/manifest.webmanifest',
+  formatDetection: { telephone: false },
+  appleWebApp: {
+    capable: true,
+    title: 'FIQT Reviews',
+    statusBarStyle: 'black-translucent',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#071a3d',
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html className={geist.variable} lang="es">
       <body className="overflow-x-clip font-sans antialiased">
+        <PwaRegistration />
         <div className="page-shell flex min-h-screen flex-col">
           <Header />
           <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6">{children}</main>
