@@ -1,0 +1,139 @@
+'use client';
+
+import { useEffect, useRef, useState } from 'react';
+import { Icon, type IconName } from '@/components/ui/Icon';
+
+const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
+  {
+    icon: 'academic',
+    title: 'Explora la ruta académica',
+    description: 'Elige un ciclo, abre un curso y consulta sus docentes, reseñas, sílabo y materiales disponibles.',
+  },
+  {
+    icon: 'star',
+    title: 'Comparte una reseña responsable',
+    description: 'Valora tu experiencia académica. Las reseñas pasan por moderación antes de publicarse.',
+  },
+  {
+    icon: 'verification',
+    title: 'Verifica tus cursos',
+    description: 'Registra los cursos que llevas para acceder a las funciones vinculadas con tu cuenta.',
+  },
+  {
+    icon: 'calendar',
+    title: 'Arma tu horario',
+    description: 'Selecciona tus cursos y compara hasta tres combinaciones priorizadas por cruces, huecos y días de asistencia.',
+  },
+  {
+    icon: 'library',
+    title: 'Consulta materiales y planchas',
+    description: 'Encuentra archivos organizados por curso y categoría cuando tengas habilitado el beneficio correspondiente.',
+  },
+  {
+    icon: 'users',
+    title: 'Participa en la comunidad',
+    description: 'Usa los matches y chats de forma respetuosa para intercambiar material con otros estudiantes.',
+  },
+];
+
+export function PageGuideModal() {
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+      triggerRef.current?.focus();
+    };
+  }, [open]);
+
+  return (
+    <>
+      <button
+        className="surface-card-interactive mt-4 flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-royal hover:border-gold"
+        onClick={() => setOpen(true)}
+        ref={triggerRef}
+        type="button"
+      >
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
+            <Icon className="h-5 w-5" name="library" />
+          </span>
+          <span>
+            <span className="block font-black">Guía para utilizar la página</span>
+            <span className="mt-0.5 block text-xs font-medium text-slate-500">Conoce las principales funciones de FIQT Reviews.</span>
+          </span>
+        </span>
+        <Icon className="h-5 w-5" name="arrow-right" />
+      </button>
+
+      {open && (
+        <div
+          aria-labelledby="page-guide-title"
+          aria-modal="true"
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-slate-950/75 p-4 backdrop-blur-sm sm:p-6"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setOpen(false);
+          }}
+          role="dialog"
+        >
+          <section className="relative my-auto max-h-[min(860px,calc(100dvh-2rem))] w-full max-w-3xl overflow-y-auto rounded-[1.75rem] border border-white/20 bg-slate-50 shadow-2xl">
+            <header className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-slate-200 bg-white/95 px-5 py-5 backdrop-blur sm:px-7">
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-royal">FIQT Reviews</p>
+                <h2 className="mt-1 text-2xl font-black text-ink sm:text-3xl" id="page-guide-title">Guía para utilizar la página</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Un recorrido rápido por las herramientas disponibles.</p>
+              </div>
+              <button
+                aria-label="Cerrar guía"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-700 transition hover:border-royal hover:text-royal focus:outline-none focus:ring-2 focus:ring-royal"
+                onClick={() => setOpen(false)}
+                ref={closeRef}
+                type="button"
+              >
+                <Icon className="h-5 w-5" name="close" />
+              </button>
+            </header>
+
+            <div className="p-5 sm:p-7">
+              <div className="grid gap-3 sm:grid-cols-2">
+                {GUIDE_ITEMS.map((item, index) => (
+                  <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" key={item.title}>
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-royal">
+                        <Icon className="h-5 w-5" name={item.icon} />
+                      </span>
+                      <div>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-amber-600">Paso {index + 1}</p>
+                        <h3 className="mt-1 font-black text-ink">{item.title}</h3>
+                        <p className="mt-1.5 text-sm leading-6 text-slate-600">{item.description}</p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-2xl bg-[#071a3d] p-5 text-white">
+                <p className="font-black">Recuerda</p>
+                <p className="mt-1 text-sm leading-6 text-blue-100">FIQT Reviews es una comunidad estudiantil. Comparte información académica real, protege tus datos personales y mantén siempre una comunicación respetuosa.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+    </>
+  );
+}
