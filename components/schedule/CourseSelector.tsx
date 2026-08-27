@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
+import { normalizeSearchText } from '@/lib/search';
 import type { CourseSection } from '@/lib/schedule/types';
 
 type CourseOption = {
@@ -13,11 +14,11 @@ type CourseOption = {
 
 export function CourseSelector({ courses, selected, onToggle }: { courses: CourseOption[]; selected: string[]; onToggle: (courseId: string) => void }) {
   const [query, setQuery] = useState('');
-  const normalizedQuery = query.trim().toLocaleLowerCase('es-PE');
+  const normalizedQuery = normalizeSearchText(query);
   const filtered = useMemo(() => courses.filter((course) =>
     !normalizedQuery
-    || course.name.toLocaleLowerCase('es-PE').includes(normalizedQuery)
-    || course.id.toLocaleLowerCase('es-PE').includes(normalizedQuery)), [courses, normalizedQuery]);
+    || normalizeSearchText(course.name).includes(normalizedQuery)
+    || normalizeSearchText(course.id).includes(normalizedQuery)), [courses, normalizedQuery]);
 
   return (
     <section className="rounded-[1.25rem] border border-white/15 bg-white/95 p-5 shadow-card sm:p-7">
