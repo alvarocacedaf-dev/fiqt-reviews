@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
-import { createR2PresignedUrl } from '@/lib/r2';
+import { createB2PresignedUrl } from '@/lib/b2';
 
 export const runtime = 'nodejs';
 
@@ -36,8 +36,8 @@ export async function POST(request: Request) {
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
 
     const key = `course-materials/${courseId}/${context.user.id}/${randomUUID()}-${safeFileName(fileName)}`;
-    return NextResponse.json({ key, uploadUrl: createR2PresignedUrl('PUT', key, 900) });
+    return NextResponse.json({ key, uploadUrl: createB2PresignedUrl('PUT', key, 900) });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'No se pudo preparar la subida a R2.' }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'No se pudo preparar la subida a Backblaze B2.' }, { status: 500 });
   }
 }

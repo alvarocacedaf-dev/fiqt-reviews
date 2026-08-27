@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
-import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
+import { createB2PresignedUrl, deleteB2Object } from '@/lib/b2';
 
 export const runtime = 'nodejs';
 const MATERIAL_TYPES = new Set(['books', 'guided_practice', 'classes', 'other']);
@@ -25,9 +25,9 @@ export async function POST(request: Request) {
 
     const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'worksheet_upload_confirm' });
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
-    const uploadedObject = await fetch(createR2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
+    const uploadedObject = await fetch(createB2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
     const uploadedSize = Number(uploadedObject.headers.get('content-length'));
-    if (!uploadedObject.ok || uploadedSize !== fileSize) throw new Error('R2 no confirmó que el archivo se haya subido completamente.');
+    if (!uploadedObject.ok || uploadedSize !== fileSize) throw new Error('Backblaze B2 no confirmó que el archivo se haya subido completamente.');
 
     const { error } = await context.db.from('course_materials').insert({
       course_id: courseId,
@@ -39,12 +39,12 @@ export async function POST(request: Request) {
       mime_type: body.mimeType || null,
       file_size: fileSize,
       uploaded_by: context.user.id,
-      storage_provider: 'r2',
+      storage_provider: 'b2',
     });
     if (error) throw new Error(error.message);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    if (key) await deleteR2Object(key).catch(() => undefined);
+    if (key) await deleteB2Object(key).catch(() => undefined);
     return NextResponse.json({ error: error instanceof Error ? error.message : 'No se pudo registrar el archivo.' }, { status: 500 });
   }
 }

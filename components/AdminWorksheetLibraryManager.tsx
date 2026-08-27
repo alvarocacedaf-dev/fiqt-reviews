@@ -37,7 +37,7 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'supabase' | 'r2' | 'public';
+  storage_provider: 'supabase' | 'r2' | 'b2' | 'public';
   signed_url?: string | null;
 };
 
@@ -70,7 +70,7 @@ async function readApiResponse(response: Response) {
   return result;
 }
 
-async function uploadWorksheetToR2({
+async function uploadLibraryFile({
   file,
   courseId,
   title,
@@ -91,7 +91,7 @@ async function uploadWorksheetToR2({
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ courseId, fileName: file.name, fileSize: file.size }),
   }));
-  if (!prepared.key || !prepared.uploadUrl) throw new Error('R2 no devolvió una URL de subida válida.');
+  if (!prepared.key || !prepared.uploadUrl) throw new Error('El almacenamiento no devolvió una URL de subida válida.');
 
   const uploadResponse = await fetch(prepared.uploadUrl, {
     method: 'PUT',
@@ -99,7 +99,7 @@ async function uploadWorksheetToR2({
     body: file,
   });
   if (!uploadResponse.ok) {
-    throw new Error(`R2 rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
+    throw new Error(`El almacenamiento rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
   }
 
   await readApiResponse(await fetch(`${apiBase}/confirm`, {
@@ -177,7 +177,7 @@ export function AdminWorksheetUploadForm({
         }
 
         const displayTitle = title || file.name.replace(/\.[^.]+$/, '');
-        await uploadWorksheetToR2({
+        await uploadLibraryFile({
           file,
           courseId,
           title: displayTitle,
@@ -379,7 +379,7 @@ export function AdminWorksheetLibraryTree({
         }
 
         const displayTitle = uploadDraft.title.trim() || file.name.replace(/\.[^.]+$/, '');
-        await uploadWorksheetToR2({
+        await uploadLibraryFile({
           file,
           courseId: uploadDraft.courseId,
           title: displayTitle,
@@ -702,7 +702,7 @@ export function AdminWorksheetDeleteButton({
 }: {
   fileId: string;
   libraryType?: LibraryType;
-  storageProvider: 'supabase' | 'r2';
+  storageProvider: 'supabase' | 'r2' | 'b2';
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -713,7 +713,7 @@ export function AdminWorksheetDeleteButton({
     try {
       setPending(true);
       setError('');
-      if (storageProvider !== 'r2') {
+      if (storageProvider === 'supabase') {
         throw new Error('Este archivo antiguo todavía pertenece a Supabase Storage.');
       }
       const apiBase = libraryType === 'materials' ? '/api/admin/course-materials' : '/api/admin/worksheets';

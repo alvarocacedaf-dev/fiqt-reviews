@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ContentHeader } from '@/components/ContentHeader';
 import { CourseMaterialFolders, type CourseMaterialFile } from '@/components/CourseMaterialFolders';
 import { Icon } from '@/components/ui/Icon';
+import { createB2PresignedUrl, isB2Configured } from '@/lib/b2';
 import { getCourse } from '@/lib/data';
 import { getBundledMaterialsForCourse } from '@/lib/bundledCourseMaterials';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
@@ -18,7 +19,8 @@ export default async function CourseMaterialPage({ params }: { params: Promise<{
     .eq('course_id', courseId)
     .order('created_at', { ascending: false });
   const r2Configured = isR2Configured();
-  const storedFiles = ((rawFiles ?? []) as (Omit<CourseMaterialFile, 'signed_url'> & { file_path: string; storage_provider: 'r2' })[])
+  const b2Configured = isB2Configured();
+  const storedFiles = ((rawFiles ?? []) as (Omit<CourseMaterialFile, 'signed_url'> & { file_path: string; storage_provider: 'r2' | 'b2' })[])
     .map(file => ({
       id: file.id,
       title: file.title,
@@ -28,7 +30,9 @@ export default async function CourseMaterialPage({ params }: { params: Promise<{
       mime_type: file.mime_type,
       file_size: file.file_size,
       created_at: file.created_at,
-      signed_url: r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null,
+      signed_url: file.storage_provider === 'b2'
+        ? (b2Configured ? createB2PresignedUrl('GET', file.file_path, 3600) : null)
+        : (r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null),
     }));
   const bundledFiles: CourseMaterialFile[] = getBundledMaterialsForCourse(course?.code).map(material => ({
     id: `bundled:${material.id}`,
