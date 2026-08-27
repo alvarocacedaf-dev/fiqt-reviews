@@ -203,17 +203,21 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   return (
     <section>
       <ContentHeader
-        actions={syllabus && (
-          <a
-            href={syllabus.href}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
-          >
-            <Icon className="h-5 w-5" name="file" /> {syllabus.label}
-          </a>
+        description={(
+          <>
+            <p>Docentes asociados como información pública referencial. {professors.length} profesor{professors.length === 1 ? '' : 'es'} · Fuente: DIRCE UNI.</p>
+            {syllabus && (
+              <a
+                href={syllabus.href}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
+              >
+                <Icon className="h-5 w-5" name="file" /> {syllabus.label}
+              </a>
+            )}
+          </>
         )}
-        description={`Docentes asociados como información pública referencial. ${professors.length} profesor${professors.length === 1 ? '' : 'es'} · Fuente: DIRCE UNI.`}
         eyebrow={course?.code ?? 'Curso'}
         title={course?.name ?? 'Profesores'}
         tone="dark"
