@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       || !body.title?.trim()
       || !Number.isSafeInteger(fileSize)
       || fileSize < 1
-      || fileSize > 25 * 1024 * 1024
+      || fileSize > 100 * 1024 * 1024
     ) {
       return NextResponse.json({ error: 'No se pudo validar el archivo subido.' }, { status: 400 });
     }
