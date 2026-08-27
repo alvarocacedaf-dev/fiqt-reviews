@@ -28,6 +28,7 @@ const menuGroups: { label: string; links: AdminLink[] }[] = [
     links: [
       { href: '/admin/planchas', icon: 'file', label: 'Planchas de usuarios' },
       { href: '/admin/planchas-administracion', icon: 'library', label: 'Administrar planchas' },
+      { href: '/admin/materiales-cursos', icon: 'folder-open', label: 'Materiales de los cursos' },
       { href: '/admin/matches-planchas', icon: 'exchange', label: 'Matches de planchas' },
     ],
   },

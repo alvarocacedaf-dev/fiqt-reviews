@@ -23,7 +23,8 @@ type CycleOption = {
   name: string;
 };
 
-type ExamType = 'practice' | 'midterm' | 'final' | 'substitute' | 'quiz' | 'other';
+type ExamType = 'practice' | 'midterm' | 'final' | 'substitute' | 'quiz' | 'other' | 'books' | 'guided_practice' | 'classes';
+type LibraryType = 'worksheets' | 'materials';
 
 type WorksheetFile = {
   id: string;
@@ -52,6 +53,13 @@ const LEGACY_CATEGORY_LABELS: Partial<Record<ExamType, string>> = {
   other: 'Otros materiales',
 };
 
+const MATERIAL_CATEGORIES: { type: ExamType; label: string }[] = [
+  { type: 'books', label: 'Libros' },
+  { type: 'guided_practice', label: 'Prácticas dirigidas' },
+  { type: 'classes', label: 'Clases' },
+  { type: 'other', label: 'Otros' },
+];
+
 async function readApiResponse(response: Response) {
   const result = await response.json().catch(() => ({})) as {
     error?: string;
@@ -68,14 +76,17 @@ async function uploadWorksheetToR2({
   title,
   examType,
   academicTerm,
+  libraryType,
 }: {
   file: File;
   courseId: string;
   title: string;
   examType: ExamType;
   academicTerm: string;
+  libraryType: LibraryType;
 }) {
-  const prepared = await readApiResponse(await fetch('/api/admin/worksheets/upload-url', {
+  const apiBase = libraryType === 'materials' ? '/api/admin/course-materials' : '/api/admin/worksheets';
+  const prepared = await readApiResponse(await fetch(`${apiBase}/upload-url`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ courseId, fileName: file.name, fileSize: file.size }),
@@ -91,13 +102,13 @@ async function uploadWorksheetToR2({
     throw new Error(`R2 rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
   }
 
-  await readApiResponse(await fetch('/api/admin/worksheets/confirm', {
+  await readApiResponse(await fetch(`${apiBase}/confirm`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       courseId,
       title,
-      examType,
+      ...(libraryType === 'materials' ? { materialType: examType } : { examType }),
       academicTerm,
       key: prepared.key,
       fileName: file.name,
@@ -122,8 +133,10 @@ function formatBytes(value: number) {
 
 export function AdminWorksheetUploadForm({
   courses,
+  libraryType = 'worksheets',
 }: {
   courses: CourseOption[];
+  libraryType?: LibraryType;
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
@@ -170,19 +183,20 @@ export function AdminWorksheetUploadForm({
           title: displayTitle,
           examType: examType as ExamType,
           academicTerm,
+          libraryType,
         });
       }
 
       formRef.current?.reset();
       setMessage({
         type: 'success',
-        text: `${files.length} plancha${files.length === 1 ? '' : 's'} guardada${files.length === 1 ? '' : 's'} correctamente.`,
+        text: `${files.length} archivo${files.length === 1 ? '' : 's'} guardado${files.length === 1 ? '' : 's'} correctamente.`,
       });
       router.refresh();
     } catch (error) {
       setMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'No se pudieron subir las planchas.',
+        text: error instanceof Error ? error.message : 'No se pudieron subir los archivos.',
       });
     } finally {
       setPending(false);
@@ -205,14 +219,25 @@ export function AdminWorksheetUploadForm({
         </label>
 
         <label className="text-sm font-bold text-slate-700">
-          Tipo de evaluación
+          {libraryType === 'materials' ? 'Tipo de material' : 'Tipo de evaluación'}
           <select className="input mt-1" defaultValue="other" name="exam_type">
-            <option value="practice">Práctica</option>
-            <option value="quiz">Control o paso</option>
-            <option value="midterm">Examen parcial</option>
-            <option value="final">Examen final</option>
-            <option value="substitute">Examen sustitutorio</option>
-            <option value="other">Otro</option>
+            {libraryType === 'materials' ? (
+              <>
+                <option value="books">Libros</option>
+                <option value="guided_practice">Prácticas dirigidas</option>
+                <option value="classes">Clases</option>
+                <option value="other">Otros</option>
+              </>
+            ) : (
+              <>
+                <option value="practice">Práctica</option>
+                <option value="quiz">Control o paso</option>
+                <option value="midterm">Examen parcial</option>
+                <option value="final">Examen final</option>
+                <option value="substitute">Examen sustitutorio</option>
+                <option value="other">Otro</option>
+              </>
+            )}
           </select>
         </label>
 
@@ -228,7 +253,7 @@ export function AdminWorksheetUploadForm({
       </div>
 
       <label className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 p-5 text-center text-sm font-bold text-royal">
-        Selecciona una o varias planchas
+        Selecciona uno o varios {libraryType === 'materials' ? 'materiales' : 'archivos de planchas'}
         <input
           accept={ACCEPTED_EXTENSIONS.join(',')}
           className="mt-3 block w-full text-sm text-slate-600"
@@ -253,7 +278,7 @@ export function AdminWorksheetUploadForm({
       )}
 
       <button className="btn-primary justify-self-start" disabled={pending} type="submit">
-        {pending ? 'Guardando planchas…' : 'Guardar en la carpeta'}
+        {pending ? 'Guardando archivos…' : 'Guardar en la carpeta'}
       </button>
     </form>
   );
@@ -272,11 +297,13 @@ export function AdminWorksheetLibraryTree({
   courses,
   files,
   readOnly = false,
+  libraryType = 'worksheets',
 }: {
   cycles: CycleOption[];
   courses: CourseOption[];
   files: WorksheetFile[];
   readOnly?: boolean;
+  libraryType?: LibraryType;
 }) {
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -358,6 +385,7 @@ export function AdminWorksheetLibraryTree({
           title: displayTitle,
           examType: uploadDraft.examType,
           academicTerm: uploadDraft.academicTerm,
+          libraryType,
         });
       }
 
@@ -365,13 +393,13 @@ export function AdminWorksheetLibraryTree({
       setUploadDraft(null);
       setMessage({
         type: 'success',
-        text: `${savedCount} plancha${savedCount === 1 ? '' : 's'} guardada${savedCount === 1 ? '' : 's'} correctamente.`,
+        text: `${savedCount} archivo${savedCount === 1 ? '' : 's'} guardado${savedCount === 1 ? '' : 's'} correctamente.`,
       });
       router.refresh();
     } catch (error) {
       setMessage({
         type: 'error',
-        text: error instanceof Error ? error.message : 'No se pudieron subir las planchas.',
+        text: error instanceof Error ? error.message : 'No se pudieron subir los archivos.',
       });
     } finally {
       setPending(false);
@@ -381,8 +409,9 @@ export function AdminWorksheetLibraryTree({
   const selectedCourse = selectedFolder
     ? courses.find(course => course.id === selectedFolder.courseId) ?? null
     : null;
+  const folderCategories = libraryType === 'materials' ? MATERIAL_CATEGORIES : FOLDER_CATEGORIES;
   const selectedCategoryLabel = selectedFolder
-    ? FOLDER_CATEGORIES.find(category => category.type === selectedFolder.examType)?.label
+    ? folderCategories.find(category => category.type === selectedFolder.examType)?.label
       ?? LEGACY_CATEGORY_LABELS[selectedFolder.examType]
       ?? 'Archivos'
     : '';
@@ -396,7 +425,7 @@ export function AdminWorksheetLibraryTree({
         <div className="border-b border-slate-200 px-5 py-4">
           <h3 className="text-xl font-black text-ink">Biblioteca por ciclos</h3>
           <p className="mt-1 text-xs text-slate-500">
-            Despliega un ciclo, elige un curso y abre la carpeta del tipo de evaluación.
+            Despliega un ciclo, elige un curso y abre la carpeta del tipo de {libraryType === 'materials' ? 'material' : 'evaluación'}.
           </p>
         </div>
 
@@ -426,10 +455,10 @@ export function AdminWorksheetLibraryTree({
                   <div className="space-y-2">
                     {cycleCourses.map(course => {
                       const courseFiles = files.filter(file => file.course_id === course.id);
-                      const legacyCategories = (['quiz', 'other'] as ExamType[])
+                      const legacyCategories = libraryType === 'worksheets' ? (['quiz', 'other'] as ExamType[])
                         .filter(type => filesFor(course.id, type).length)
-                        .map(type => ({ type, label: LEGACY_CATEGORY_LABELS[type] ?? 'Otros materiales' }));
-                      const categories = [...FOLDER_CATEGORIES, ...legacyCategories];
+                        .map(type => ({ type, label: LEGACY_CATEGORY_LABELS[type] ?? 'Otros materiales' })) : [];
+                      const categories = [...folderCategories, ...legacyCategories];
 
                       return (
                         <details className="surface-card-interactive group/course overflow-hidden" key={course.id}>
@@ -453,7 +482,7 @@ export function AdminWorksheetLibraryTree({
                               const key = folderKey(course.id, category.type);
                               const isOpen = openCategories.includes(key);
                               const categoryFiles = filesFor(course.id, category.type);
-                              const canUpload = !readOnly && FOLDER_CATEGORIES.some(item => item.type === category.type);
+                              const canUpload = !readOnly && folderCategories.some(item => item.type === category.type);
                               const inputId = `add-${course.id}-${category.type}`;
 
                               return (
@@ -624,6 +653,7 @@ export function AdminWorksheetLibraryTree({
                       )}
                       <AdminWorksheetDeleteButton
                         fileId={file.id}
+                        libraryType={libraryType}
                         storageProvider={file.storage_provider}
                       />
                     </div>
@@ -649,7 +679,7 @@ export function AdminWorksheetLibraryTree({
               <Icon className="h-10 w-10" name="folder-open" />
               <h3 className="mt-3 text-xl font-black text-ink">Selecciona una carpeta</h3>
               <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500">
-                Los archivos aparecerán aquí cuando abras una categoría de evaluación.
+                Los archivos aparecerán aquí cuando abras una categoría de {libraryType === 'materials' ? 'material' : 'evaluación'}.
               </p>
             </div>
           </div>
@@ -661,9 +691,11 @@ export function AdminWorksheetLibraryTree({
 
 export function AdminWorksheetDeleteButton({
   fileId,
+  libraryType = 'worksheets',
   storageProvider,
 }: {
   fileId: string;
+  libraryType?: LibraryType;
   storageProvider: 'supabase' | 'r2';
 }) {
   const router = useRouter();
@@ -671,21 +703,22 @@ export function AdminWorksheetDeleteButton({
   const [error, setError] = useState('');
 
   async function removeFile() {
-    if (!window.confirm('¿Eliminar esta plancha de forma permanente?')) return;
+    if (!window.confirm(`¿Eliminar este ${libraryType === 'materials' ? 'material' : 'archivo'} de forma permanente?`)) return;
     try {
       setPending(true);
       setError('');
       if (storageProvider !== 'r2') {
         throw new Error('Este archivo antiguo todavía pertenece a Supabase Storage.');
       }
-      await readApiResponse(await fetch('/api/admin/worksheets/delete', {
+      const apiBase = libraryType === 'materials' ? '/api/admin/course-materials' : '/api/admin/worksheets';
+      await readApiResponse(await fetch(`${apiBase}/delete`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileId }),
       }));
       router.refresh();
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'No se pudo eliminar la plancha.');
+      setError(caughtError instanceof Error ? caughtError.message : 'No se pudo eliminar el archivo.');
     } finally {
       setPending(false);
     }
