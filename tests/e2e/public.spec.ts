@@ -98,7 +98,7 @@ test.describe('validación pública de APIs', () => {
 });
 
 test.describe('cabeceras HTTP de seguridad', () => {
-  test('protege todas las páginas sin bloquear Supabase ni R2', async ({ request }) => {
+  test('protege todas las páginas sin bloquear Supabase, R2 ni Backblaze B2', async ({ request }) => {
     const response = await request.get('/');
     const headers = response.headers();
     const csp = headers['content-security-policy'];
@@ -113,5 +113,6 @@ test.describe('cabeceras HTTP de seguridad', () => {
     expect(csp).toContain('https://*.supabase.co');
     expect(csp).toContain('wss://*.supabase.co');
     expect(csp).toContain('https://*.r2.cloudflarestorage.com');
+    expect(csp).toContain('https://*.backblazeb2.com');
   });
 });
