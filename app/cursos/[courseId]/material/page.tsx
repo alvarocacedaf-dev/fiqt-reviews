@@ -3,6 +3,7 @@ import { ContentHeader } from '@/components/ContentHeader';
 import { CourseMaterialFolders, type CourseMaterialFile } from '@/components/CourseMaterialFolders';
 import { Icon } from '@/components/ui/Icon';
 import { getCourse } from '@/lib/data';
+import { getBundledMaterialsForCourse } from '@/lib/bundledCourseMaterials';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
 import { createAdminClient } from '@/lib/supabase/admin';
 
@@ -17,7 +18,7 @@ export default async function CourseMaterialPage({ params }: { params: Promise<{
     .eq('course_id', courseId)
     .order('created_at', { ascending: false });
   const r2Configured = isR2Configured();
-  const files = ((rawFiles ?? []) as (Omit<CourseMaterialFile, 'signed_url'> & { file_path: string; storage_provider: 'r2' })[])
+  const storedFiles = ((rawFiles ?? []) as (Omit<CourseMaterialFile, 'signed_url'> & { file_path: string; storage_provider: 'r2' })[])
     .map(file => ({
       id: file.id,
       title: file.title,
@@ -29,6 +30,18 @@ export default async function CourseMaterialPage({ params }: { params: Promise<{
       created_at: file.created_at,
       signed_url: r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null,
     }));
+  const bundledFiles: CourseMaterialFile[] = getBundledMaterialsForCourse(course?.code).map(material => ({
+    id: `bundled:${material.id}`,
+    title: material.title,
+    material_type: material.materialType,
+    academic_term: null,
+    file_name: material.fileName,
+    mime_type: material.mimeType,
+    file_size: material.fileSize,
+    created_at: '2026-08-27T00:00:00.000Z',
+    signed_url: material.fileUrl,
+  }));
+  const files = [...storedFiles, ...bundledFiles];
 
   return (
     <section>

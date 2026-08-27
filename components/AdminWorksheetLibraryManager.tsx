@@ -37,7 +37,7 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'supabase' | 'r2';
+  storage_provider: 'supabase' | 'r2' | 'public';
   signed_url?: string | null;
 };
 
@@ -651,11 +651,17 @@ export function AdminWorksheetLibraryTree({
                       ) : (
                         <span className="rounded-xl bg-slate-200 px-3 py-2 text-xs font-bold text-slate-500">No disponible</span>
                       )}
-                      <AdminWorksheetDeleteButton
-                        fileId={file.id}
-                        libraryType={libraryType}
-                        storageProvider={file.storage_provider}
-                      />
+                      {file.storage_provider === 'public' ? (
+                        <span className="rounded-xl bg-blue-50 px-3 py-2 text-xs font-black text-royal">
+                          Incluido en la aplicación
+                        </span>
+                      ) : (
+                        <AdminWorksheetDeleteButton
+                          fileId={file.id}
+                          libraryType={libraryType}
+                          storageProvider={file.storage_provider}
+                        />
+                      )}
                     </div>
                   )}
                 </article>

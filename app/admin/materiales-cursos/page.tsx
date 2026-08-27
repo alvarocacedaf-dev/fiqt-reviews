@@ -3,6 +3,7 @@ import {
   AdminWorksheetUploadForm,
 } from '@/components/AdminWorksheetLibraryManager';
 import { requireAdmin } from '@/lib/admin';
+import { getBundledMaterialsForCourse } from '@/lib/bundledCourseMaterials';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
 
 type Cycle = { id: number; number: number; name: string };
@@ -34,7 +35,7 @@ export default async function AdminCourseMaterialsPage() {
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
-  const files = await Promise.all(((rawFiles ?? []) as MaterialFile[]).map(async file => ({
+  const storedFiles = await Promise.all(((rawFiles ?? []) as MaterialFile[]).map(async file => ({
     id: file.id,
     course_id: file.course_id,
     title: file.title,
@@ -48,6 +49,21 @@ export default async function AdminCourseMaterialsPage() {
     storage_provider: file.storage_provider,
     signed_url: r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null,
   })));
+  const bundledFiles = courses.flatMap(course => getBundledMaterialsForCourse(course.code).map(material => ({
+    id: `bundled:${course.id}:${material.id}`,
+    course_id: course.id,
+    title: material.title,
+    exam_type: material.materialType,
+    academic_term: null,
+    file_path: material.fileUrl,
+    file_name: material.fileName,
+    mime_type: material.mimeType,
+    file_size: material.fileSize,
+    created_at: '2026-08-27T00:00:00.000Z',
+    storage_provider: 'public' as const,
+    signed_url: material.fileUrl,
+  })));
+  const files = [...storedFiles, ...bundledFiles];
   const migrationMissing = filesError?.code === '42P01';
 
   return (

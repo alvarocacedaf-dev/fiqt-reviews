@@ -4,49 +4,13 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { Icon } from '@/components/ui/Icon';
 import { getCourse, getCourseProfessors, getProfessor, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
+import { getBundledMaterialForProfessor } from '@/lib/bundledCourseMaterials';
 import { createClient } from '@/lib/supabase/server';
 
 type CourseInfo = { name: string; code: string | null };
 type CourseLink = {
   course_id: string;
   courses: CourseInfo | CourseInfo[] | null;
-};
-
-type ProfessorMaterial = {
-  title: string;
-  description: string;
-  fileUrl: string;
-  fileName: string;
-  fileType: 'PDF' | 'ZIP';
-  contents: string;
-  fileSize: string;
-  downloadLabel: string;
-};
-
-const professorMaterials: Record<string, ProfessorMaterial> = {
-  'b44d0eec-61bf-4f5d-920c-070dfd18389d': {
-    title: 'Material teórico de Física III',
-    description: 'Colección de temas compartidos para complementar el estudio del curso.',
-    fileUrl: '/materiales/fisica-iii-carhuancho-material-teorico.zip',
-    fileName: 'Fisica-III-Carhuancho-material-teorico.zip',
-    fileType: 'ZIP',
-    contents: '12 documentos PDF',
-    fileSize: '27.05 MB',
-    downloadLabel: 'Descargar carpeta ZIP',
-  },
-};
-
-const professorMaterialsByName: Record<string, ProfessorMaterial> = {
-  'Huamán Pérez, Fernando': {
-    title: 'Física de Hugo Medina Guzmán',
-    description: 'Libro de consulta que reúne contenidos de Física 1, 2, 3 y 4.',
-    fileUrl: '/materiales/hugo-medina-guzman-fisica-1-2-3-4.pdf',
-    fileName: 'Hugo-Medina-Guzman-Fisica-1-2-3-4.pdf',
-    fileType: 'PDF',
-    contents: '1 documento PDF',
-    fileSize: '22.74 MB',
-    downloadLabel: 'Descargar documento PDF',
-  },
 };
 
 function getCourseInfo(link: CourseLink): CourseInfo | null {
@@ -102,7 +66,7 @@ export default async function ProfessorPage({
 
   if (!professor) return <section className="panel">Profesor no encontrado.</section>;
 
-  const material = professorMaterials[professorId] ?? professorMaterialsByName[professor.full_name];
+  const material = getBundledMaterialForProfessor(professorId, professor.full_name);
 
   return (
     <section className="space-y-6">
@@ -121,7 +85,7 @@ export default async function ProfessorPage({
               <h2 className="text-xl font-black text-ink">{material.title}</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">{material.description}</p>
               <p className="mt-2 text-xs font-bold text-slate-500">
-                Archivo {material.fileType} · {material.contents} · {material.fileSize}
+                Archivo {material.fileType} · {material.contents} · {(material.fileSize / (1024 * 1024)).toFixed(2)} MB
               </p>
             </div>
             <a
