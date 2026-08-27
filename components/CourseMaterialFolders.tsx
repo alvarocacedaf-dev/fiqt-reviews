@@ -24,11 +24,36 @@ function formatBytes(value: number) {
   return `${(value / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+const titleCollator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
+
+function materialOrder(file: CourseMaterialFile) {
+  const title = file.title.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const collection = title.includes('sears') || title.includes('zemansky')
+    ? 0
+    : title.includes('serway') ? 1 : 2;
+  const solutionManual = title.includes('solucionario') ? 1 : 0;
+  const volume = Number(title.match(/\bvol(?:umen)?\.?\s*-?\s*(\d+)/)?.[1] ?? Number.MAX_SAFE_INTEGER);
+
+  return { collection, solutionManual, volume, title };
+}
+
+function compareMaterials(left: CourseMaterialFile, right: CourseMaterialFile) {
+  const leftOrder = materialOrder(left);
+  const rightOrder = materialOrder(right);
+
+  return leftOrder.collection - rightOrder.collection
+    || leftOrder.solutionManual - rightOrder.solutionManual
+    || leftOrder.volume - rightOrder.volume
+    || titleCollator.compare(leftOrder.title, rightOrder.title);
+}
+
 export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }) {
   return (
     <div className="space-y-3">
       {CATEGORIES.map(category => {
-        const categoryFiles = files.filter(file => file.material_type === category.type);
+        const categoryFiles = files
+          .filter(file => file.material_type === category.type)
+          .sort(compareMaterials);
         return (
           <details className="group overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white shadow-sm" key={category.type}>
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 transition hover:bg-blue-50 [&::-webkit-details-marker]:hidden">
