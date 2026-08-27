@@ -176,7 +176,6 @@ export default async function CyclesPage() {
         <p className="mt-2 text-slate-600">Selecciona el ciclo o tipo de curso que quieres consultar.</p>
         <div className="mt-7">
           <CycleSelector cycles={cycles} />
-          <PageGuideModal />
         </div>
         {!cycles.length && (
           <p className="mt-6 rounded-xl bg-amber-50 p-4 text-amber-900">
@@ -184,6 +183,7 @@ export default async function CyclesPage() {
           </p>
         )}
       </section>
+      <PageGuideModal />
       {worksheetSanctions && <WorksheetSanctionNotices sanctions={worksheetSanctions} />}
     </div>
     {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} />}

@@ -63,21 +63,13 @@ export function PageGuideModal() {
   return (
     <>
       <button
-        className="surface-card-interactive mt-4 flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-royal hover:border-gold"
+        className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
         onClick={() => setOpen(true)}
         ref={triggerRef}
         type="button"
       >
-        <span className="flex min-w-0 items-center gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-50">
-            <Icon className="h-5 w-5" name="library" />
-          </span>
-          <span>
-            <span className="block font-black">Guía para utilizar la página</span>
-            <span className="mt-0.5 block text-xs font-medium text-slate-500">Conoce las principales funciones de FIQT Reviews.</span>
-          </span>
-        </span>
-        <Icon className="h-5 w-5" name="arrow-right" />
+        <Icon className="h-5 w-5" name="library" />
+        Guía para utilizar la página
       </button>
 
       {open && (
