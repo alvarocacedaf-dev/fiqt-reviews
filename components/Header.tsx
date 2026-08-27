@@ -186,7 +186,7 @@ function LoggedInLinks({
         </a>
       )}
       <form action={signOut}>
-        <button className="inline-flex items-center gap-2 font-semibold text-white transition hover:text-gold">
+        <button className="inline-flex items-center gap-1 font-semibold text-white transition hover:text-gold">
           <NavIcon type="logout" />
           Cerrar sesión
         </button>
