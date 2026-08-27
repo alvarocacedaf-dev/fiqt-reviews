@@ -5,7 +5,7 @@ import { createB2PresignedUrl } from '@/lib/b2';
 
 export const runtime = 'nodejs';
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const MAX_FILE_SIZE = 100 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip']);
 
 function safeFileName(name: string) {
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const extension = fileName?.includes('.') ? `.${fileName.split('.').pop()!.toLowerCase()}` : '';
     if (!courseId || !fileName || !Number.isSafeInteger(fileSize) || fileSize < 1) return NextResponse.json({ error: 'Los datos del archivo no son válidos.' }, { status: 400 });
     if (!ACCEPTED_EXTENSIONS.has(extension)) return NextResponse.json({ error: `El formato de “${fileName}” no está permitido.` }, { status: 400 });
-    if (fileSize > MAX_FILE_SIZE) return NextResponse.json({ error: `“${fileName}” supera el límite de 25 MB.` }, { status: 400 });
+    if (fileSize > MAX_FILE_SIZE) return NextResponse.json({ error: `“${fileName}” supera el límite de 100 MB.` }, { status: 400 });
 
     const { data: course } = await context.db.from('courses').select('id').eq('id', courseId).maybeSingle();
     if (!course) return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });

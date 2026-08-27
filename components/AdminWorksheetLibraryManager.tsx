@@ -4,7 +4,8 @@ import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
 
-const MAX_FILE_SIZE = 25 * 1024 * 1024;
+const WORKSHEET_MAX_FILE_SIZE = 25 * 1024 * 1024;
+const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [
   '.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx',
   '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip',
@@ -172,8 +173,9 @@ export function AdminWorksheetUploadForm({
         if (!ACCEPTED_EXTENSIONS.includes(extension)) {
           throw new Error(`El formato de “${file.name}” no está permitido.`);
         }
-        if (file.size > MAX_FILE_SIZE) {
-          throw new Error(`“${file.name}” supera el límite de 25 MB.`);
+        const maxFileSize = libraryType === 'materials' ? MATERIAL_MAX_FILE_SIZE : WORKSHEET_MAX_FILE_SIZE;
+        if (file.size > maxFileSize) {
+          throw new Error(`“${file.name}” supera el límite de ${libraryType === 'materials' ? '100' : '25'} MB.`);
         }
 
         const displayTitle = title || file.name.replace(/\.[^.]+$/, '');
@@ -263,7 +265,7 @@ export function AdminWorksheetUploadForm({
           type="file"
         />
         <span className="mt-2 block text-xs font-normal text-slate-500">
-          Imágenes, PDF, Office, TXT o ZIP. Máximo 25 MB por archivo.
+          Imágenes, PDF, Office, TXT o ZIP. Máximo {libraryType === 'materials' ? '100' : '25'} MB por archivo.
         </span>
       </label>
 
@@ -374,7 +376,7 @@ export function AdminWorksheetLibraryTree({
         if (!ACCEPTED_EXTENSIONS.includes(extension)) {
           throw new Error(`El formato de “${file.name}” no está permitido.`);
         }
-        if (file.size > MAX_FILE_SIZE) {
+        if (file.size > WORKSHEET_MAX_FILE_SIZE) {
           throw new Error(`“${file.name}” supera el límite de 25 MB.`);
         }
 

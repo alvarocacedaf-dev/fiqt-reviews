@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     key = body.key?.trim() ?? '';
     const fileSize = Number(body.fileSize);
     const expectedPrefix = `course-materials/${courseId}/${context.user.id}/`;
-    if (!courseId || !key.startsWith(expectedPrefix) || !body.fileName || !body.title?.trim() || !Number.isSafeInteger(fileSize) || fileSize < 1 || fileSize > 25 * 1024 * 1024) {
+    if (!courseId || !key.startsWith(expectedPrefix) || !body.fileName || !body.title?.trim() || !Number.isSafeInteger(fileSize) || fileSize < 1 || fileSize > 100 * 1024 * 1024) {
       return NextResponse.json({ error: 'No se pudo validar el archivo subido.' }, { status: 400 });
     }
     if (!MATERIAL_TYPES.has(body.materialType ?? '')) return NextResponse.json({ error: 'El tipo de material no es válido.' }, { status: 400 });
