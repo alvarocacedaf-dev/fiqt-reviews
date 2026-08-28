@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
 import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
+import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 
 export const runtime = 'nodejs';
 
@@ -14,8 +15,6 @@ type ConfirmBody = {
   mimeType?: string;
   fileSize?: number;
 };
-
-const EXAM_TYPES = new Set(['practice', 'midterm', 'final', 'substitute', 'quiz', 'other']);
 
 export async function POST(request: Request) {
   const context = await getAdminApiContext();
@@ -41,7 +40,15 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: 'No se pudo validar el archivo subido.' }, { status: 400 });
     }
-    if (!EXAM_TYPES.has(body.examType ?? '')) {
+    const { data: course } = await context.db
+      .from('courses')
+      .select('code')
+      .eq('id', courseId)
+      .maybeSingle();
+    if (!course) {
+      return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });
+    }
+    if (!isWorksheetExamTypeAllowed(course.code, body.examType ?? '')) {
       return NextResponse.json({ error: 'El tipo de evaluación no es válido.' }, { status: 400 });
     }
 

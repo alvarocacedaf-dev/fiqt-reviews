@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
+import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -48,6 +49,15 @@ const FOLDER_CATEGORIES: { type: ExamType; label: string }[] = [
   { type: 'midterm', label: 'Exámenes parciales' },
   { type: 'final', label: 'Exámenes finales' },
   { type: 'substitute', label: 'Exámenes sustitutorios' },
+];
+
+const UPLOAD_EXAM_CATEGORIES: { type: ExamType; label: string }[] = [
+  { type: 'practice', label: 'Práctica' },
+  { type: 'quiz', label: 'Control o paso' },
+  { type: 'midterm', label: 'Examen parcial' },
+  { type: 'final', label: 'Examen final' },
+  { type: 'substitute', label: 'Examen sustitutorio' },
+  { type: 'other', label: 'Otro' },
 ];
 
 const LEGACY_CATEGORY_LABELS: Partial<Record<ExamType, string>> = {
@@ -144,6 +154,21 @@ export function AdminWorksheetUploadForm({
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
+  const [selectedCourseId, setSelectedCourseId] = useState('');
+  const [selectedExamType, setSelectedExamType] = useState<ExamType>('other');
+  const selectedCourseCode = courses.find(course => course.id === selectedCourseId)?.code;
+  const availableExamCategories = UPLOAD_EXAM_CATEGORIES.filter(category => (
+    isWorksheetExamTypeAllowed(selectedCourseCode, category.type)
+  ));
+
+  useEffect(() => {
+    if (
+      libraryType === 'worksheets'
+      && !isWorksheetExamTypeAllowed(selectedCourseCode, selectedExamType)
+    ) {
+      setSelectedExamType(availableExamCategories[0]?.type ?? 'practice');
+    }
+  }, [availableExamCategories, libraryType, selectedCourseCode, selectedExamType]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -211,7 +236,13 @@ export function AdminWorksheetUploadForm({
       <div className="grid gap-4 md:grid-cols-2">
         <label className="text-sm font-bold text-slate-700">
           Carpeta del curso
-          <select className="input mt-1" name="course_id" required>
+          <select
+            className="input mt-1"
+            name="course_id"
+            onChange={event => setSelectedCourseId(event.currentTarget.value)}
+            required
+            value={selectedCourseId}
+          >
             <option value="">Selecciona un curso</option>
             {courses.map(course => (
               <option key={course.id} value={course.id}>
@@ -223,7 +254,12 @@ export function AdminWorksheetUploadForm({
 
         <label className="text-sm font-bold text-slate-700">
           {libraryType === 'materials' ? 'Tipo de material' : 'Tipo de evaluación'}
-          <select className="input mt-1" defaultValue="other" name="exam_type">
+          <select
+            className="input mt-1"
+            name="exam_type"
+            onChange={event => setSelectedExamType(event.currentTarget.value as ExamType)}
+            value={selectedExamType}
+          >
             {libraryType === 'materials' ? (
               <>
                 <option value="books">Libros</option>
@@ -232,14 +268,9 @@ export function AdminWorksheetUploadForm({
                 <option value="other">Otros</option>
               </>
             ) : (
-              <>
-                <option value="practice">Práctica</option>
-                <option value="quiz">Control o paso</option>
-                <option value="midterm">Examen parcial</option>
-                <option value="final">Examen final</option>
-                <option value="substitute">Examen sustitutorio</option>
-                <option value="other">Otro</option>
-              </>
+              availableExamCategories.map(category => (
+                <option key={category.type} value={category.type}>{category.label}</option>
+              ))
             )}
           </select>
         </label>
@@ -465,7 +496,10 @@ export function AdminWorksheetLibraryTree({
                       const legacyCategories = libraryType === 'worksheets' ? (['quiz', 'other'] as ExamType[])
                         .filter(type => filesFor(course.id, type).length)
                         .map(type => ({ type, label: LEGACY_CATEGORY_LABELS[type] ?? 'Otros materiales' })) : [];
-                      const categories = [...folderCategories, ...legacyCategories];
+                      const categories = [...folderCategories, ...legacyCategories].filter(category => (
+                        libraryType !== 'worksheets'
+                        || isWorksheetExamTypeAllowed(course.code, category.type)
+                      ));
 
                       return (
                         <details className="surface-card-interactive group/course overflow-hidden" key={course.id}>
