@@ -7,7 +7,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'academic',
     title: 'Explora la ruta académica',
-    description: 'Elige un ciclo, abre un curso y consulta sus docentes, reseñas, sílabo y materiales disponibles.',
+    description: 'El Ciclo 1 tiene activas todas las funciones de Materiales del curso y Reseñas de los profesores. En los demás ciclos, estas funciones se habilitarán progresivamente mediante Tu ruta de recompensas.',
   },
   {
     icon: 'star',
