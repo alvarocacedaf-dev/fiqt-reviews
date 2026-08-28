@@ -7,7 +7,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'academic',
     title: 'Explora la ruta académica',
-    description: 'El Ciclo 1 tiene activas todas las funciones de Materiales del curso y Reseñas de los profesores. En los demás ciclos, estas funciones se habilitarán progresivamente mediante Tu ruta de recompensas.',
+    description: 'El Ciclo 1 tiene activas todas las funciones de Materiales del curso y Reseñas de los profesores. En los demás ciclos, estas funciones se habilitarán mediante Tu ruta de recompensas.',
   },
   {
     icon: 'star',
