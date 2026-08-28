@@ -332,12 +332,16 @@ export function AdminWorksheetLibraryTree({
   files,
   readOnly = false,
   libraryType = 'worksheets',
+  folderCounts,
+  paginated = false,
 }: {
   cycles: CycleOption[];
   courses: CourseOption[];
   files: WorksheetFile[];
   readOnly?: boolean;
   libraryType?: LibraryType;
+  folderCounts?: Record<string, number>;
+  paginated?: boolean;
 }) {
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -345,6 +349,13 @@ export function AdminWorksheetLibraryTree({
   const [uploadDraft, setUploadDraft] = useState<UploadDraft | null>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
+  const [pageFiles, setPageFiles] = useState<WorksheetFile[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [folderTotal, setFolderTotal] = useState(0);
+  const [loadingPage, setLoadingPage] = useState(false);
+  const [pageError, setPageError] = useState('');
+  const pageRequestId = useRef(0);
 
   function folderKey(courseId: string, examType: ExamType) {
     return `${courseId}:${examType}`;
@@ -352,6 +363,44 @@ export function AdminWorksheetLibraryTree({
 
   function filesFor(courseId: string, examType: ExamType) {
     return files.filter(file => file.course_id === courseId && file.exam_type === examType);
+  }
+
+  function fileCountFor(courseId: string, examType: ExamType) {
+    return paginated
+      ? folderCounts?.[folderKey(courseId, examType)] ?? 0
+      : filesFor(courseId, examType).length;
+  }
+
+  async function loadPage(courseId: string, examType: ExamType, page: number) {
+    if (!paginated) return;
+    const requestId = ++pageRequestId.current;
+    try {
+      setLoadingPage(true);
+      setPageError('');
+      const response = await fetch(
+        `/api/admin/worksheets/list?courseId=${encodeURIComponent(courseId)}&examType=${encodeURIComponent(examType)}&page=${page}`,
+        { cache: 'no-store' },
+      );
+      const result = await response.json().catch(() => ({})) as {
+        error?: string;
+        files?: WorksheetFile[];
+        page?: number;
+        total?: number;
+        totalPages?: number;
+      };
+      if (!response.ok) throw new Error(result.error || 'No se pudo cargar esta página.');
+      if (requestId !== pageRequestId.current) return;
+      setPageFiles(result.files ?? []);
+      setCurrentPage(result.page ?? page);
+      setFolderTotal(result.total ?? 0);
+      setTotalPages(result.totalPages ?? 1);
+    } catch (error) {
+      if (requestId !== pageRequestId.current) return;
+      setPageFiles([]);
+      setPageError(error instanceof Error ? error.message : 'No se pudo cargar esta página.');
+    } finally {
+      if (requestId === pageRequestId.current) setLoadingPage(false);
+    }
   }
 
   function toggleCategory(courseId: string, examType: ExamType) {
@@ -365,6 +414,7 @@ export function AdminWorksheetLibraryTree({
     ));
     setSelectedFolder(isOpen ? null : { courseId, examType });
     setMessage(null);
+    if (!isOpen) void loadPage(courseId, examType, 1);
   }
 
   function selectFiles(
@@ -430,6 +480,7 @@ export function AdminWorksheetLibraryTree({
         text: `${savedCount} archivo${savedCount === 1 ? '' : 's'} guardado${savedCount === 1 ? '' : 's'} correctamente.`,
       });
       router.refresh();
+      if (paginated) void loadPage(uploadDraft.courseId, uploadDraft.examType, 1);
     } catch (error) {
       setMessage({
         type: 'error',
@@ -449,7 +500,7 @@ export function AdminWorksheetLibraryTree({
       ?? LEGACY_CATEGORY_LABELS[selectedFolder.examType]
       ?? 'Archivos'
     : '';
-  const selectedFiles = selectedFolder
+  const selectedFiles = paginated ? pageFiles : selectedFolder
     ? [...filesFor(selectedFolder.courseId, selectedFolder.examType)].sort(
       libraryType === 'worksheets' && ['practice', 'midterm', 'final', 'substitute'].includes(selectedFolder.examType)
         ? compareAssessmentWorksheetFiles
@@ -470,9 +521,13 @@ export function AdminWorksheetLibraryTree({
         <div className="divide-y divide-slate-200">
           {cycles.map(cycle => {
             const cycleCourses = courses.filter(course => course.cycle_id === cycle.id);
-            const cycleFileCount = files.filter(file => (
-              cycleCourses.some(course => course.id === file.course_id)
-            )).length;
+            const cycleFileCount = paginated
+              ? cycleCourses.reduce((sum, course) => (
+                sum + Object.entries(folderCounts ?? {}).reduce((courseSum, [key, count]) => (
+                  key.startsWith(`${course.id}:`) ? courseSum + count : courseSum
+                ), 0)
+              ), 0)
+              : files.filter(file => cycleCourses.some(course => course.id === file.course_id)).length;
 
             return (
               <details className="group/cycle" key={cycle.id}>
@@ -492,9 +547,13 @@ export function AdminWorksheetLibraryTree({
                 <div className="border-t border-slate-100 bg-slate-50 px-3 py-3 sm:px-5">
                   <div className="space-y-2">
                     {cycleCourses.map(course => {
-                      const courseFiles = files.filter(file => file.course_id === course.id);
+                      const courseFileCount = paginated
+                        ? Object.entries(folderCounts ?? {}).reduce((sum, [key, count]) => (
+                          key.startsWith(`${course.id}:`) ? sum + count : sum
+                        ), 0)
+                        : files.filter(file => file.course_id === course.id).length;
                       const legacyCategories = libraryType === 'worksheets' ? (['quiz', 'other'] as ExamType[])
-                        .filter(type => filesFor(course.id, type).length)
+                        .filter(type => fileCountFor(course.id, type))
                         .map(type => ({ type, label: LEGACY_CATEGORY_LABELS[type] ?? 'Otros materiales' })) : [];
                       const categories = [...folderCategories, ...legacyCategories].filter(category => (
                         libraryType !== 'worksheets'
@@ -511,7 +570,7 @@ export function AdminWorksheetLibraryTree({
                                   {course.code || 'Sin código'} — {course.name}
                                 </span>
                                 <span className="block text-[11px] text-slate-500">
-                                  {courseFiles.length} archivo{courseFiles.length === 1 ? '' : 's'}
+                                  {courseFileCount} archivo{courseFileCount === 1 ? '' : 's'}
                                 </span>
                               </span>
                             </span>
@@ -522,7 +581,7 @@ export function AdminWorksheetLibraryTree({
                             {categories.map(category => {
                               const key = folderKey(course.id, category.type);
                               const isOpen = openCategories.includes(key);
-                              const categoryFiles = filesFor(course.id, category.type);
+                              const categoryFileCount = fileCountFor(course.id, category.type);
                               const canUpload = !readOnly && folderCategories.some(item => item.type === category.type);
                               const inputId = `add-${course.id}-${category.type}`;
 
@@ -541,7 +600,7 @@ export function AdminWorksheetLibraryTree({
                                     <span className="min-w-0">
                                       <span className="block truncate text-xs font-black text-ink">{category.label}</span>
                                       <span className="block text-[10px] text-slate-500">
-                                        {categoryFiles.length} archivo{categoryFiles.length === 1 ? '' : 's'}
+                                        {categoryFileCount} archivo{categoryFileCount === 1 ? '' : 's'}
                                       </span>
                                     </span>
                                     <span className={`shrink-0 font-black text-royal transition ${isOpen ? 'rotate-180' : ''}`} aria-hidden="true">⌄</span>
@@ -669,7 +728,15 @@ export function AdminWorksheetLibraryTree({
             )}
 
             <div className="mt-5 space-y-3">
-              {selectedFiles.map(file => (
+              {paginated && loadingPage && (
+                <div className="rounded-2xl bg-blue-50 p-6 text-center text-sm font-bold text-royal">
+                  Cargando archivos…
+                </div>
+              )}
+              {paginated && pageError && (
+                <p className="rounded-xl bg-red-50 p-3 text-sm font-bold text-red-800">{pageError}</p>
+              )}
+              {!loadingPage && selectedFiles.map(file => (
                 <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4" key={file.id}>
                   <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h4 className="break-words text-xs font-black leading-4 text-ink">{file.title}</h4>
@@ -700,6 +767,7 @@ export function AdminWorksheetLibraryTree({
                         <AdminWorksheetDeleteButton
                           fileId={file.id}
                           libraryType={libraryType}
+                          onDeleted={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage)}
                           storageProvider={file.storage_provider}
                         />
                       )}
@@ -708,7 +776,7 @@ export function AdminWorksheetLibraryTree({
                 </article>
               ))}
 
-              {!selectedFiles.length && (
+              {!loadingPage && !pageError && !selectedFiles.length && (
                 <div className="rounded-2xl bg-slate-100 p-6 text-center">
                   <p className="font-black text-ink">Esta carpeta está vacía.</p>
                   <p className="mt-2 text-sm text-slate-500">
@@ -717,6 +785,32 @@ export function AdminWorksheetLibraryTree({
                       : 'Usa + Añadir para seleccionar sus primeros archivos.'}
                   </p>
                 </div>
+              )}
+
+              {paginated && !loadingPage && !pageError && folderTotal > 0 && (
+                <nav className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4" aria-label="Paginación de archivos">
+                  <p className="text-xs font-bold text-slate-600">
+                    Página {currentPage} de {totalPages} · {folderTotal} archivo{folderTotal === 1 ? '' : 's'}
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      className="btn-secondary px-3 py-2 text-xs"
+                      disabled={currentPage <= 1}
+                      onClick={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage - 1)}
+                      type="button"
+                    >
+                      Anterior
+                    </button>
+                    <button
+                      className="btn-secondary px-3 py-2 text-xs"
+                      disabled={currentPage >= totalPages}
+                      onClick={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage + 1)}
+                      type="button"
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                </nav>
               )}
             </div>
           </>
@@ -740,10 +834,12 @@ export function AdminWorksheetDeleteButton({
   fileId,
   libraryType = 'worksheets',
   storageProvider,
+  onDeleted,
 }: {
   fileId: string;
   libraryType?: LibraryType;
   storageProvider: 'supabase' | 'r2' | 'b2';
+  onDeleted?: () => void | Promise<void>;
 }) {
   const router = useRouter();
   const [pending, setPending] = useState(false);
@@ -763,6 +859,7 @@ export function AdminWorksheetDeleteButton({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fileId }),
       }));
+      await onDeleted?.();
       router.refresh();
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'No se pudo eliminar el archivo.');
