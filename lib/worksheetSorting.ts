@@ -10,7 +10,7 @@ const naturalSpanishCollator = new Intl.Collator('es', {
   sensitivity: 'base',
 });
 
-const ORDINAL_PRACTICE_NUMBERS: Record<string, number> = {
+const ORDINAL_ASSESSMENT_NUMBERS: Record<string, number> = {
   primera: 1,
   primer: 1,
   segunda: 2,
@@ -27,12 +27,12 @@ function searchableName(file: WorksheetSortEntry) {
   return `${file.title} ${file.file_name}`.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
-function practiceNumber(file: WorksheetSortEntry) {
+function assessmentNumber(file: WorksheetSortEntry) {
   const name = searchableName(file).trim();
   const numeric = name.match(/^(\d+)\b/);
   if (numeric) return Number(numeric[1]);
 
-  for (const [word, value] of Object.entries(ORDINAL_PRACTICE_NUMBERS)) {
+  for (const [word, value] of Object.entries(ORDINAL_ASSESSMENT_NUMBERS)) {
     if (new RegExp(`\\b${word}\\b`).test(name)) return value;
   }
   return Number.MAX_SAFE_INTEGER;
@@ -52,8 +52,8 @@ function solutionNumber(file: WorksheetSortEntry) {
   return solution[1] ? Number(solution[1]) : 1;
 }
 
-export function comparePracticeWorksheetFiles(left: WorksheetSortEntry, right: WorksheetSortEntry) {
-  return practiceNumber(left) - practiceNumber(right)
+export function compareAssessmentWorksheetFiles(left: WorksheetSortEntry, right: WorksheetSortEntry) {
+  return assessmentNumber(left) - assessmentNumber(right)
     || academicTerm(left) - academicTerm(right)
     || solutionNumber(left) - solutionNumber(right)
     || naturalSpanishCollator.compare(left.title, right.title)
