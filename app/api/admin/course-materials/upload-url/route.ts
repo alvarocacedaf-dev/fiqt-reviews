@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
     const { data: course } = await context.db.from('courses').select('id').eq('id', courseId).maybeSingle();
     if (!course) return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });
-    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'worksheet_upload_url' });
+    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'course_material_upload_url' });
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
 
     const key = `course-materials/${courseId}/${context.user.id}/${randomUUID()}-${safeFileName(fileName)}`;

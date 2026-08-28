@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     }
     if (!MATERIAL_TYPES.has(body.materialType ?? '')) return NextResponse.json({ error: 'El tipo de material no es válido.' }, { status: 400 });
 
-    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'worksheet_upload_confirm' });
+    const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'course_material_upload_confirm' });
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
     const uploadedObject = await fetch(createB2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
     const uploadedSize = Number(uploadedObject.headers.get('content-length'));
