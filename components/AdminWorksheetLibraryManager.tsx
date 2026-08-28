@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
+import { comparePracticeWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -418,7 +419,11 @@ export function AdminWorksheetLibraryTree({
       ?? 'Archivos'
     : '';
   const selectedFiles = selectedFolder
-    ? filesFor(selectedFolder.courseId, selectedFolder.examType)
+    ? [...filesFor(selectedFolder.courseId, selectedFolder.examType)].sort(
+      selectedFolder.examType === 'practice'
+        ? comparePracticeWorksheetFiles
+        : compareWorksheetTitles,
+    )
     : [];
 
   return (
