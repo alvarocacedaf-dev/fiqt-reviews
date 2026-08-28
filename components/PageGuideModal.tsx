@@ -10,14 +10,14 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
     description: 'El Ciclo 1 tiene activas todas las funciones de Materiales del curso y Reseñas de los profesores. En los demás ciclos, estas funciones se habilitarán mediante Tu ruta de recompensas.',
   },
   {
-    icon: 'star',
-    title: 'Comparte una reseña responsable',
-    description: 'Valora tu experiencia académica. Las reseñas pasan por moderación antes de publicarse.',
-  },
-  {
     icon: 'verification',
     title: 'Verifica tus cursos',
     description: 'Registra los cursos que llevas para acceder a las funciones vinculadas con tu cuenta.',
+  },
+  {
+    icon: 'star',
+    title: 'Comparte una reseña responsable',
+    description: 'Valora tu experiencia académica. Las reseñas pasan por moderación antes de publicarse.',
   },
   {
     icon: 'calendar',
