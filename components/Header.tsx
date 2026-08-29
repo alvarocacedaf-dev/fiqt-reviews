@@ -155,7 +155,7 @@ function LoggedInLinks({
         <NavIcon type="verification" />
         Verificación
       </a>
-      <a className="inline-flex translate-x-5 items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
+      <a className="inline-flex translate-x-[25px] items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
         <NavIcon type="verified" />
         Cursos verificados
       </a>
