@@ -233,6 +233,11 @@ if (email === 'alvaro.caceda.f@uni.pe') {
     <header className="relative z-50 border-b border-white/15 bg-[#071a3d]/70 text-white backdrop-blur">
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+          <img
+            alt="AIChE UNI Student Chapter"
+            className="h-7 w-20 shrink-0 rounded-md object-contain sm:h-9 sm:w-24"
+            src="/aiche-uni-student-chapter.jpeg"
+          />
           {isLoggedIn ? (
             <div className="shrink-0 text-center font-black leading-none tracking-tight">
               <span className="block text-base text-white">FIQT</span>
