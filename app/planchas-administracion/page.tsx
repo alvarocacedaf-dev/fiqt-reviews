@@ -29,24 +29,45 @@ type WorksheetFile = {
   storage_provider: 'supabase' | 'r2';
 };
 
+const FILE_BATCH_SIZE = 1000;
+
+async function loadAllWorksheetFiles(db: ReturnType<typeof createAdminClient>) {
+  const files: WorksheetFile[] = [];
+  let offset = 0;
+
+  while (true) {
+    const { data, error } = await db
+      .from('admin_worksheets')
+      .select('id,course_id,title,exam_type,academic_term,file_name,mime_type,file_size,created_at,storage_provider')
+      .order('created_at', { ascending: false })
+      .range(offset, offset + FILE_BATCH_SIZE - 1);
+
+    if (error) return { files: [], error };
+
+    const batch = (data ?? []) as WorksheetFile[];
+    files.push(...batch);
+
+    if (batch.length < FILE_BATCH_SIZE) break;
+    offset += FILE_BATCH_SIZE;
+  }
+
+  return { files, error: null };
+}
+
 export default async function PublicAdminWorksheetsPage() {
   const db = createAdminClient();
   const [
     { data: rawCycles, error: cyclesError },
     { data: rawCourses, error: coursesError },
-    { data: rawFiles, error: filesError },
+    { files, error: filesError },
   ] = await Promise.all([
     db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 10).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
-    db
-      .from('admin_worksheets')
-      .select('id,course_id,title,exam_type,academic_term,file_name,mime_type,file_size,created_at,storage_provider')
-      .order('created_at', { ascending: false }),
+    loadAllWorksheetFiles(db),
   ]);
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
-  const files = (rawFiles ?? []) as WorksheetFile[];
   const loadError = cyclesError || coursesError || filesError;
 
   return (
