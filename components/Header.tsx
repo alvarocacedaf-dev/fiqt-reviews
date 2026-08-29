@@ -235,7 +235,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
         <div className="flex min-w-0 items-center gap-3 sm:gap-4">
           <img
             alt="AIChE UNI Student Chapter"
-            className="h-7 w-20 shrink-0 rounded-md object-contain sm:h-9 sm:w-24"
+            className="h-8 w-24 shrink-0 rounded-md object-contain sm:h-10 sm:w-28"
             src="/aiche-uni-student-chapter.jpeg"
           />
           {isLoggedIn ? (
