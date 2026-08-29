@@ -5,7 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 
-const MINIMUM_APPROVED_REVIEWS = 16;
+const MINIMUM_APPROVED_REVIEWS = 10;
 
 type PageProps = {
   searchParams: Promise<{ error?: string; success?: string }>;

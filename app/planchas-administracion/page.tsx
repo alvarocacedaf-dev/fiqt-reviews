@@ -1,5 +1,7 @@
 import { AdminWorksheetLibraryTree } from '@/components/AdminWorksheetLibraryManager';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { createClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,20 +57,34 @@ async function loadAllWorksheetFiles(db: ReturnType<typeof createAdminClient>) {
 }
 
 export default async function PublicAdminWorksheetsPage() {
+  const authDb = await createClient();
+  const { data: { user } } = await authDb.auth.getUser();
+  if (!user) redirect('/login?next=/planchas-administracion');
+
   const db = createAdminClient();
   const [
     { data: rawCycles, error: cyclesError },
     { data: rawCourses, error: coursesError },
     { files, error: filesError },
+    { data: profile },
+    { count: approvedReviews },
+    { data: rawUnlocks },
   ] = await Promise.all([
     db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 10).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
     loadAllWorksheetFiles(db),
+    db.from('profiles').select('role').eq('id', user.id).single(),
+    db.from('reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
+    db.from('admin_worksheet_course_unlocks').select('course_id').eq('user_id', user.id),
   ]);
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
   const loadError = cyclesError || coursesError || filesError;
+  const reviewCount = approvedReviews ?? 0;
+  const isAdmin = profile?.role === 'admin';
+  const selectionLimit = isAdmin || reviewCount >= 24 ? courses.length : reviewCount >= 15 ? 2 : reviewCount >= 6 ? 1 : 0;
+  const selectedCourseIds = (rawUnlocks ?? []).map(item => item.course_id as string);
 
   return (
     <main className="mx-auto w-full max-w-6xl space-y-6 px-4 py-8 sm:px-6">
@@ -100,6 +116,9 @@ export default async function PublicAdminWorksheetsPage() {
             cycles={cycles}
             files={files}
             readOnly
+            selectableCourseLimit={selectionLimit}
+            selectedCourseIds={selectedCourseIds}
+            unlockAllCourses={isAdmin || reviewCount >= 24}
           />
         </section>
       )}

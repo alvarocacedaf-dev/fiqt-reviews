@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 
-const MINIMUM_APPROVED_REVIEWS = 16;
+const MINIMUM_APPROVED_REVIEWS = 10;
 
 function redirectWithMessage(type: 'error' | 'success', message: string): never {
   redirect(`/planchas?${type}=${encodeURIComponent(message)}`);

@@ -59,8 +59,8 @@ select like(lower(pg_get_functiondef(
 -- Reglas de acceso a planchas y funciones de matches/chats.
 select ok(to_regprocedure('public.has_worksheet_access(uuid)') is not null,
   'existe la regla de acceso a planchas');
-select like(pg_get_functiondef('public.has_worksheet_access(uuid)'::regprocedure), '%>= 16%',
-  'el acceso a planchas continúa exigiendo 16 reseñas aprobadas');
+select like(pg_get_functiondef('public.has_worksheet_access(uuid)'::regprocedure), '%>= 10%',
+  'el acceso a planchas exige 10 reseñas aprobadas');
 select ok(to_regprocedure('public.refresh_worksheet_matches(uuid)') is not null,
   'existe el recálculo de matches');
 select ok(to_regprocedure('public.open_chat_thread(uuid)') is not null,

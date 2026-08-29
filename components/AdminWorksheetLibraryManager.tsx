@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
+import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -334,6 +335,9 @@ export function AdminWorksheetLibraryTree({
   libraryType = 'worksheets',
   folderCounts,
   paginated = false,
+  selectableCourseLimit,
+  selectedCourseIds = [],
+  unlockAllCourses = false,
 }: {
   cycles: CycleOption[];
   courses: CourseOption[];
@@ -342,6 +346,9 @@ export function AdminWorksheetLibraryTree({
   libraryType?: LibraryType;
   folderCounts?: Record<string, number>;
   paginated?: boolean;
+  selectableCourseLimit?: number;
+  selectedCourseIds?: string[];
+  unlockAllCourses?: boolean;
 }) {
   const router = useRouter();
   const [openCategories, setOpenCategories] = useState<string[]>([]);
@@ -356,6 +363,34 @@ export function AdminWorksheetLibraryTree({
   const [loadingPage, setLoadingPage] = useState(false);
   const [pageError, setPageError] = useState('');
   const pageRequestId = useRef(0);
+  const [unlockedCourses, setUnlockedCourses] = useState(() => new Set(selectedCourseIds));
+  const [selectionError, setSelectionError] = useState('');
+  const [savingCourseId, setSavingCourseId] = useState<string | null>(null);
+
+  async function toggleCourseUnlock(courseId: string) {
+    if (unlockAllCourses || selectableCourseLimit === undefined) return;
+    const isSelected = unlockedCourses.has(courseId);
+    if (isSelected) return;
+    if (!isSelected && unlockedCourses.size >= selectableCourseLimit) {
+      setSelectionError(`Puedes seleccionar hasta ${selectableCourseLimit} curso${selectableCourseLimit === 1 ? '' : 's'} con tu nivel actual.`);
+      return;
+    }
+    const course = courses.find(item => item.id === courseId);
+    if (!window.confirm(`¿Habilitar permanentemente las descargas de ${course?.code || ''} ${course?.name || 'este curso'}?`)) return;
+    setSavingCourseId(courseId);
+    setSelectionError('');
+    const result = await toggleAdminWorksheetCourse(courseId, true);
+    setSavingCourseId(null);
+    if (result.error) {
+      setSelectionError(result.error);
+      return;
+    }
+    setUnlockedCourses(current => {
+      const next = new Set(current);
+      next.add(courseId);
+      return next;
+    });
+  }
 
   function folderKey(courseId: string, examType: ExamType) {
     return `${courseId}:${examType}`;
@@ -516,6 +551,16 @@ export function AdminWorksheetLibraryTree({
           <p className="mt-1 text-xs text-slate-500">
             Despliega un ciclo, elige un curso y abre la carpeta del tipo de {libraryType === 'materials' ? 'material' : 'evaluación'}.
           </p>
+          {selectableCourseLimit !== undefined && (
+            <p className="mt-2 text-xs font-bold text-royal">
+              {unlockAllCourses
+                ? 'Tienes habilitada la descarga de todos los cursos.'
+                : selectableCourseLimit > 0
+                  ? `Marca ${selectableCourseLimit} curso${selectableCourseLimit === 1 ? '' : 's'} para habilitar sus descargas (${unlockedCourses.size}/${selectableCourseLimit}). La elección es permanente.`
+                  : 'La selección de cursos se habilita al alcanzar 6 reseñas aprobadas.'}
+            </p>
+          )}
+          {selectionError && <p className="mt-2 rounded-lg bg-red-50 p-2 text-xs font-bold text-red-700">{selectionError}</p>}
         </div>
 
         <div className="divide-y divide-slate-200">
@@ -564,6 +609,26 @@ export function AdminWorksheetLibraryTree({
                         <details className="surface-card-interactive group/course overflow-hidden" key={course.id}>
                           <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 [&::-webkit-details-marker]:hidden">
                             <span className="flex min-w-0 items-center gap-3">
+                              {selectableCourseLimit !== undefined && (
+                                <button
+                                  aria-label={`${unlockedCourses.has(course.id) || unlockAllCourses ? 'Curso habilitado' : 'Marcar'} ${course.name}`}
+                                  aria-pressed={unlockedCourses.has(course.id) || unlockAllCourses}
+                                  className={`grid h-6 w-6 shrink-0 place-items-center rounded-full border-2 transition ${
+                                    unlockedCourses.has(course.id) || unlockAllCourses
+                                      ? 'border-royal bg-royal text-white'
+                                      : 'border-slate-300 bg-white text-transparent'
+                                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                                  disabled={unlockAllCourses || unlockedCourses.has(course.id) || selectableCourseLimit === 0 || savingCourseId === course.id}
+                                  onClick={event => {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                    void toggleCourseUnlock(course.id);
+                                  }}
+                                  type="button"
+                                >
+                                  <Icon className="h-3.5 w-3.5" name="check" />
+                                </button>
+                              )}
                               <Icon className="h-4 w-4" name="folder-open" />
                               <span className="min-w-0">
                                 <span className="block truncate text-sm font-black text-ink">
@@ -749,6 +814,21 @@ export function AdminWorksheetLibraryTree({
                       </span>
                     )}
                   </div>
+
+                  {readOnly && libraryType === 'worksheets' && (
+                    unlockAllCourses || unlockedCourses.has(file.course_id) ? (
+                      <a
+                        className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
+                        href={`/api/admin-worksheets/${file.id}/download`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Descargar
+                      </a>
+                    ) : (
+                      <p className="mt-3 text-xs font-bold text-slate-500">Marca este curso cuando tu ruta de recompensas lo permita para descargar.</p>
+                    )
+                  )}
 
                   {!readOnly && (
                     <div className="mt-3 flex items-start gap-2">

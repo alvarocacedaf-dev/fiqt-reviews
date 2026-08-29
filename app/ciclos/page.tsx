@@ -116,10 +116,11 @@ function WorksheetSanctionNotices({ sanctions }: { sanctions: WorksheetSanction[
 
 function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews: number; contributionStatus: 'pending' | 'approved' | 'rejected' | null }) {
   const rewards = [
-    { goal: 4, title: 'Acceso a las reseñas' },
-    { goal: 10, title: 'Planchas de 1 curso de la administración' },
-    { goal: 16, title: 'Acceso completo a la comunidad de planchas' },
-    { goal: 25, title: 'Planchas de 2 cursos de la administración' },
+    { goal: 3, title: 'Acceso a las reseñas' },
+    { goal: 6, title: 'Planchas de 1 curso de la administración' },
+    { goal: 10, title: 'Acceso completo a la comunidad de planchas' },
+    { goal: 15, title: 'Planchas de 2 cursos de la administración' },
+    { goal: 24, title: 'Acceso completo a la descarga de todas las planchas de todos los cursos' },
   ];
   const nextReward = rewards.find(reward => approvedReviews < reward.goal);
   const progress = nextReward ? Math.min(100, Math.round((approvedReviews / nextReward.goal) * 100)) : 100;
