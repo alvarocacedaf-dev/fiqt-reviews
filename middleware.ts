@@ -6,6 +6,14 @@ type CookieItem = { name: string; value: string; options?: Record<string, unknow
 const protectedPrefixes = ['/ciclos', '/cursos', '/profesores', '/verificacion', '/planchas', '/mis-matches', '/armar-horario', '/horario', '/admin'];
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+
+  // 1. SALIDA RÁPIDA: Seguro de vida para evitar que archivos estáticos consulten la BD.
+  // Cualquier petición a un archivo con extensión (ej. logo.svg, estilo.css) se deja pasar de inmediato.
+  if (pathname.includes('.')) {
+    return NextResponse.next({ request });
+  }
+
   let response = NextResponse.next({ request });
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -25,7 +33,7 @@ export async function middleware(request: NextRequest) {
 
   const { data } = await supabase.auth.getUser();
   const isLoggedIn = Boolean(data.user);
-  const pathname = request.nextUrl.pathname;
+  
   const isProtected = protectedPrefixes.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`));
 
   if (isProtected && !isLoggedIn) {
@@ -38,4 +46,9 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-export const config = { matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'] };
+// 2. MATCHER CORREGIDO: Le dice explícitamente a Vercel/Next.js que ignore las imágenes
+export const config = { 
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|css|js)$).*)'
+  ] 
+};
