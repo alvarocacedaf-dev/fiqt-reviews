@@ -147,7 +147,7 @@ function LoggedInLinks({
 
   return (
     <>
-      <a className="inline-flex translate-x-9 items-center gap-2 transition hover:text-gold" href="/ciclos">
+      <a className="inline-flex translate-x-[39px] items-center gap-2 transition hover:text-gold" href="/ciclos">
         <NavIcon type="academic" />
         Ruta académica
       </a>
