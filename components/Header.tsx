@@ -252,9 +252,9 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           )}
 
           {isLoggedIn && (
-            <div className="flex min-w-0 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2 py-1.5 sm:px-3">
+            <div className="flex shrink-0 items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2 py-1.5 sm:px-3">
               <UserIcon />
-              <span className="max-w-24 truncate text-xs font-bold sm:max-w-40 sm:text-sm">{userName}</span>
+              <span className="whitespace-nowrap text-xs font-bold sm:text-sm">{userName}</span>
             </div>
           )}
         </div>
