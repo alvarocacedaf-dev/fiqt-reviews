@@ -1,7 +1,7 @@
 export const SCHEDULE_DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] as const;
 
 export type Day = (typeof SCHEDULE_DAYS)[number];
-export type ClassType = 'Teoría' | 'Práctica / Laboratorio';
+export type ClassType = 'Teoría' | 'Práctica' | 'Laboratorio' | 'Práctica / Laboratorio';
 
 export type ClassBlock = {
   id: string;
