@@ -17,7 +17,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'star',
     title: 'Comparte una reseña responsable',
-    description: 'Valora tu experiencia académica. Las reseñas pasan por moderación antes de publicarse.',
+    description: 'Una vez que envíes tus cursos para verificación y sean aprobados, aparecerán en la sección Cursos verificados y podrás comenzar a reseñarlos. Todas las reseñas pasan por moderación antes de ser aprobadas y publicadas; por ello, ten en cuenta que una reseña con mensajes ofensivos o insultos hacia un profesor no será aprobada.',
   },
   {
     icon: 'calendar',
