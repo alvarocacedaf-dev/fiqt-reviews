@@ -259,7 +259,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           )}
         </div>
 
-        <div className="hidden items-center gap-4 text-sm font-semibold xl:flex">
+        <div className="hidden items-center gap-2 text-sm font-semibold xl:flex">
           {isLoggedIn ? (
             <LoggedInLinks signOut={signOut} isAdmin={isAdmin} />
           ) : (
