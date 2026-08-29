@@ -3,6 +3,7 @@ import {
   consumeAnonymousLimit,
   getAuthRateSubjects,
   isRateLimitError,
+  isSupabaseAuthRateLimitError,
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
@@ -23,7 +24,8 @@ export async function POST(request: Request) {
     }
 
     const subjects = getAuthRateSubjects(request, email);
-    await consumeAnonymousLimit('registration', subjects);
+    // El límite se aplica por correo. No se comparte entre alumnos que usan la misma red/IP.
+    await consumeAnonymousLimit('registration', subjects.slice(0, 1));
 
     const db = await createClient();
     const { data, error } = await db.auth.signUp({
@@ -35,7 +37,12 @@ export async function POST(request: Request) {
       },
     });
 
-    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    if (error) {
+      if (isSupabaseAuthRateLimitError(error)) {
+        return rateLimitResponse('Se alcanzó temporalmente el límite de creación o envío de correos. Espera unos minutos antes de volver a intentarlo.');
+      }
+      return NextResponse.json({ error: error.message }, { status: 400 });
+    }
     return NextResponse.json({ ok: true, requiresEmailConfirmation: !data.session });
   } catch (error) {
     if (isRateLimitError(error)) {

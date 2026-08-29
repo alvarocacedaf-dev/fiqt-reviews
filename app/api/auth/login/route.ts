@@ -5,6 +5,7 @@ import {
   consumeAnonymousLimit,
   getAuthRateSubjects,
   isRateLimitError,
+  isSupabaseAuthRateLimitError,
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
@@ -24,14 +25,21 @@ export async function POST(request: Request) {
     }
 
     const subjects = getAuthRateSubjects(request, email);
-    await assertAnonymousLimit('login_failure', subjects);
+    const emailSubject = subjects.slice(0, 1);
+    await assertAnonymousLimit('login_failure', emailSubject);
 
     const db = await createClient();
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[auth] ${requestId}: llamando signInWithPassword una vez`);
+    }
     const { error } = await db.auth.signInWithPassword({ email, password });
 
     if (error) {
+      if (isSupabaseAuthRateLimitError(error)) {
+        return rateLimitResponse('Hay demasiados intentos de inicio de sesión. Espera unos minutos antes de volver a intentarlo.');
+      }
       try {
-        await consumeAnonymousLimit('login_failure', subjects);
+        await consumeAnonymousLimit('login_failure', emailSubject);
       } catch (limitError) {
         if (isRateLimitError(limitError)) {
           return rateLimitResponse('Demasiados intentos incorrectos. Espera 15 minutos antes de volver a intentar.');
@@ -42,9 +50,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Correo o contraseña incorrectos.' }, { status: 400 });
     }
 
-    // Un inicio correcto limpia el contador del correo, pero no el de la IP.
-    // Así otra cuenta válida no puede reiniciar el bloqueo compartido de una IP atacante.
-    await clearAnonymousLimit('login_failure', subjects.slice(0, 1));
+    // Un inicio correcto limpia el contador individual de este correo.
+    await clearAnonymousLimit('login_failure', emailSubject);
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (isRateLimitError(error)) {

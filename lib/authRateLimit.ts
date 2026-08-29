@@ -68,6 +68,18 @@ export function isRateLimitError(error: unknown) {
   return message.toLowerCase().includes('demasiados intentos');
 }
 
+export function isSupabaseAuthRateLimitError(error: unknown) {
+  if (!error || typeof error !== 'object') return false;
+  const candidate = error as { code?: unknown; message?: unknown; status?: unknown };
+  const code = String(candidate.code ?? '').toLowerCase();
+  const message = String(candidate.message ?? '').toLowerCase();
+  return Number(candidate.status) === 429
+    || code === 'over_request_rate_limit'
+    || code === 'email_rate_limit_exceeded'
+    || message.includes('rate limit')
+    || message.includes('too many requests');
+}
+
 export function rateLimitResponse(message: string) {
   return Response.json({ error: message }, { status: 429 });
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { isUniEmail, normalizeEmail } from '@/lib/validation';
 
@@ -11,8 +11,14 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
   const [message, setMessage] = useState<{ text: string; type: 'error' | 'success' } | null>(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const submittingRef = useRef(false);
+  const manualAttemptRef = useRef(0);
 
-  async function submit(form: FormData) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submittingRef.current) return;
+
+    const form = new FormData(event.currentTarget);
     const email = normalizeEmail(form.get('email'));
     const password = String(form.get('password'));
     const fullName = mode === 'register' ? String(form.get('full_name')).trim() : '';
@@ -36,40 +42,57 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
       return;
     }
 
+    submittingRef.current = true;
     setLoading(true);
     setFieldErrors({});
     setMessage(null);
 
-    const response = await fetch(mode === 'login' ? '/api/auth/login' : '/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        password,
-        fullName: mode === 'register' ? fullName : undefined,
-      }),
-    });
-    const result = await response.json().catch(() => ({
-      error: 'No se pudo procesar la solicitud. Intenta nuevamente.',
-    }));
-
-    setLoading(false);
-
-    if (!response.ok) {
-      setMessage({ text: result.error ?? 'No se pudo procesar la solicitud.', type: 'error' });
-      return;
+    const attempt = ++manualAttemptRef.current;
+    if (process.env.NODE_ENV === 'development') {
+      console.debug(`[auth] intento manual ${attempt}: 1 solicitud a ${mode === 'login' ? 'signInWithPassword' : 'signUp'}`);
     }
 
-    if (mode === 'register' && result.requiresEmailConfirmation) {
-      setMessage({ text: 'Revisa tu correo UNI para confirmar la cuenta.', type: 'success' });
-      return;
-    }
+    try {
+      const response = await fetch(mode === 'login' ? '/api/auth/login' : '/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          fullName: mode === 'register' ? fullName : undefined,
+        }),
+      });
+      const result = await response.json().catch(() => ({
+        error: 'No se pudo procesar la solicitud. Intenta nuevamente.',
+      }));
 
-    window.location.assign('/ciclos');
+      if (!response.ok) {
+        const rateLimitMessage = mode === 'login'
+          ? 'Hay demasiados intentos de inicio de sesión. Espera unos minutos antes de volver a intentarlo.'
+          : 'Se alcanzó temporalmente el límite de creación de cuentas. Espera unos minutos antes de volver a intentarlo.';
+        setMessage({
+          text: response.status === 429 ? rateLimitMessage : result.error ?? 'No se pudo procesar la solicitud.',
+          type: 'error',
+        });
+        return;
+      }
+
+      if (mode === 'register' && result.requiresEmailConfirmation) {
+        setMessage({ text: 'Revisa tu correo UNI para confirmar la cuenta.', type: 'success' });
+        return;
+      }
+
+      window.location.assign('/ciclos');
+    } catch {
+      setMessage({ text: 'No se pudo conectar con el servicio. Revisa tu conexión e intenta nuevamente.', type: 'error' });
+    } finally {
+      submittingRef.current = false;
+      setLoading(false);
+    }
   }
 
   return (
-    <form action={submit} className="space-y-5" noValidate>
+    <form className="space-y-5" noValidate onSubmit={submit}>
       {mode === 'register' && (
         <div>
           <label className="block text-sm font-semibold text-slate-700" htmlFor="auth-full-name">Nombre completo</label>
@@ -151,8 +174,8 @@ export function AuthForm({ mode }: { mode: 'login' | 'register' }) {
         </p>
       )}
 
-      <button disabled={loading} className="btn-primary min-h-12 w-full text-base">
-        {loading ? 'Procesando…' : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta UNI'}
+      <button disabled={loading} className="btn-primary min-h-12 w-full text-base disabled:cursor-not-allowed disabled:opacity-60" type="submit">
+        {loading ? (mode === 'login' ? 'Iniciando sesión...' : 'Creando cuenta...') : mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta UNI'}
       </button>
     </form>
   );

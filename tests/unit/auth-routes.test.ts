@@ -17,6 +17,9 @@ vi.mock('@/lib/authRateLimit', () => ({
   consumeAnonymousLimit: mocks.consumeAnonymousLimit,
   getAuthRateSubjects: mocks.getAuthRateSubjects,
   isRateLimitError: () => false,
+  isSupabaseAuthRateLimitError: (error: { code?: string; status?: number } | null) => (
+    error?.status === 429 || error?.code === 'over_request_rate_limit' || error?.code === 'email_rate_limit_exceeded'
+  ),
   rateLimitResponse: (message: string) => Response.json({ error: message }, { status: 429 }),
 }));
 
@@ -71,7 +74,7 @@ describe('POST /api/auth/register', () => {
     }));
 
     expect(response.status).toBe(200);
-    expect(mocks.consumeAnonymousLimit).toHaveBeenCalledWith('registration', ['email-hash', 'ip-hash']);
+    expect(mocks.consumeAnonymousLimit).toHaveBeenCalledWith('registration', ['email-hash']);
     expect(mocks.signUp).toHaveBeenCalledWith(expect.objectContaining({
       email: 'alumno@uni.pe',
       password: 'segura123',
@@ -107,7 +110,19 @@ describe('POST /api/auth/login', () => {
 
     expect(response.status).toBe(400);
     expect(await response.json()).toEqual({ error: 'Correo o contraseña incorrectos.' });
-    expect(mocks.consumeAnonymousLimit).toHaveBeenCalledWith('login_failure', ['email-hash', 'ip-hash']);
+    expect(mocks.consumeAnonymousLimit).toHaveBeenCalledWith('login_failure', ['email-hash']);
+  });
+
+  it('traduce el 429 de Supabase sin reintentar signInWithPassword', async () => {
+    mocks.signInWithPassword.mockResolvedValueOnce({ error: { status: 429, code: 'over_request_rate_limit' } });
+    const response = await login(jsonRequest('/api/auth/login', {
+      email: 'alumno@uni.pe',
+      password: 'segura123',
+    }));
+
+    expect(response.status).toBe(429);
+    expect(mocks.signInWithPassword).toHaveBeenCalledTimes(1);
+    expect(mocks.consumeAnonymousLimit).not.toHaveBeenCalled();
   });
 });
 

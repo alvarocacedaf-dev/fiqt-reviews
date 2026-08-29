@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { AuthForm } from '@/components/AuthForm';
 
 describe('AuthForm', () => {
+  afterEach(() => vi.unstubAllGlobals());
   it('configura restricciones institucionales en el formulario de registro', () => {
     render(<AuthForm mode="register" />);
 
@@ -44,5 +45,21 @@ describe('AuthForm', () => {
     expect(screen.getByText('Ingresa tu correo electrónico.')).toBeVisible();
     expect(screen.getByText('La contraseña debe tener al menos 8 caracteres.')).toBeVisible();
     expect(screen.getByLabelText('Correo institucional UNI')).toHaveAttribute('aria-invalid', 'true');
+  });
+
+  it('envía una sola solicitud aunque el formulario se dispare dos veces rápidamente', () => {
+    const fetchMock = vi.fn(() => new Promise<Response>(() => undefined));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<AuthForm mode="login" />);
+
+    fireEvent.change(screen.getByLabelText('Correo electrónico'), { target: { value: 'alumno@uni.pe' } });
+    fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'segura123' } });
+    const form = screen.getByRole('button', { name: 'Iniciar sesión' }).closest('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form!);
+    fireEvent.submit(form!);
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Iniciando sesión...' })).toBeDisabled();
   });
 });
