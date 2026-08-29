@@ -12,7 +12,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'verification',
     title: 'Verifica tus cursos',
-    description: 'Registra los cursos que llevas para acceder a las funciones vinculadas con tu cuenta.',
+    description: 'En la opción de Verificación, registra los cursos que ya has llevado anteriormente. Estos serán los cursos que se te permitirá reseñar, junto con su respectivo profesor, lo que te ayudará a avanzar en Tu ruta de recompensas.',
   },
   {
     icon: 'star',
