@@ -147,7 +147,7 @@ function LoggedInLinks({
 
   return (
     <>
-      <a className="inline-flex translate-x-6 items-center gap-2 transition hover:text-gold" href="/ciclos">
+      <a className="inline-flex translate-x-9 items-center gap-2 transition hover:text-gold" href="/ciclos">
         <NavIcon type="academic" />
         Ruta académica
       </a>
@@ -155,11 +155,11 @@ function LoggedInLinks({
         <NavIcon type="verification" />
         Verificación
       </a>
-      <a className="inline-flex translate-x-[29px] items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
+      <a className="inline-flex translate-x-8 items-center gap-2 transition hover:text-gold" href="/cursos-verificados">
         <NavIcon type="verified" />
         Cursos verificados
       </a>
-      <a className="inline-flex translate-x-[3px] items-center gap-2 transition hover:text-gold" href="/armar-horario">
+      <a className="inline-flex translate-x-[5px] items-center gap-2 transition hover:text-gold" href="/armar-horario">
         <Icon className="h-5 w-5" name="calendar" />
         Armar mi horario
       </a>
