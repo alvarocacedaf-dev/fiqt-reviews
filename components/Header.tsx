@@ -163,7 +163,7 @@ function LoggedInLinks({
         <Icon className="h-5 w-5" name="calendar" />
         Armar mi horario
       </a>
-      <details className="group relative -ml-1">
+      <details className="group relative -ml-2">
         <summary className="inline-flex cursor-pointer list-none items-center gap-2 transition hover:text-gold [&::-webkit-details-marker]:hidden">
           Planchas
           <Icon className="h-4 w-4 transition group-open:rotate-180" name="chevron-down" />
