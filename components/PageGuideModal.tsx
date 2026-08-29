@@ -20,6 +20,11 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
     description: 'Una vez que envíes tus cursos para verificación y sean aprobados, aparecerán en la sección Cursos verificados y podrás comenzar a reseñarlos. Todas las reseñas pasan por moderación antes de ser aprobadas y publicadas; por ello, ten en cuenta que una reseña con mensajes ofensivos o insultos hacia un profesor no será aprobada.',
   },
   {
+    icon: 'unlock',
+    title: 'Tu ruta de recompensas',
+    description: 'A través de esta ruta se te irán habilitando las diferentes funciones de la página. El inicio de tu ruta es el aporte indicado en esa sección; después de realizarlo, la ruta se irá completando con tus reseñas. Este aporte permite que la página pueda almacenar los diferentes archivos de planchas y materiales de estudio. Actualmente, la página ya cuenta con más de 1000 planchas y más de 500 materiales de estudio por curso, y se espera que durante esta primera semana de lanzamiento se terminen de cargar 1000 archivos adicionales. Ten en cuenta que Tu ruta de recompensas volverá a cero en cada ciclo y que las recompensas también se actualizarán.',
+  },
+  {
     icon: 'calendar',
     title: 'Arma tu horario',
     description: 'Selecciona tus cursos y compara hasta tres combinaciones priorizadas por cruces, huecos y días de asistencia.',

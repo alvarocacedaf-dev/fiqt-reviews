@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
+import { ContributionModal } from '@/components/ContributionModal';
 import { PageGuideModal } from '@/components/PageGuideModal';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
@@ -28,6 +29,28 @@ async function getApprovedReviewCount() {
     .eq('status', 'approved');
 
   return count ?? 0;
+}
+
+async function getContributionStatus() {
+  if (!isSupabaseConfigured) return null;
+
+  const db = await createClient();
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+
+  if (!user) return null;
+
+  const { data } = await db
+    .from('contribution_submissions')
+    .select('status')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const status = data?.status;
+  return status === 'pending' || status === 'approved' || status === 'rejected' ? status : null;
 }
 
 async function getPrivateWorksheetSanctions() {
@@ -91,7 +114,7 @@ function WorksheetSanctionNotices({ sanctions }: { sanctions: WorksheetSanction[
   );
 }
 
-function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
+function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews: number; contributionStatus: 'pending' | 'approved' | 'rejected' | null }) {
   const rewards = [
     { goal: 4, title: 'Acceso a las reseñas' },
     { goal: 10, title: 'Planchas de 1 curso de la administración' },
@@ -132,6 +155,7 @@ function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
         <h3 className="text-sm font-black uppercase tracking-wider text-gold">Tu ruta de recompensas</h3>
         <p className="mt-2 text-xs leading-5 text-blue-100">Solo cuentan las reseñas aprobadas, responsables y basadas en experiencias académicas reales.</p>
         <div className="mt-3 space-y-2">
+          <ContributionModal initialStatus={contributionStatus} />
           {rewards.map(reward => {
             const unlocked = approvedReviews >= reward.goal;
             const isNext = nextReward?.goal === reward.goal;
@@ -161,9 +185,10 @@ function RewardsCard({ approvedReviews }: { approvedReviews: number }) {
 }
 
 export default async function CyclesPage() {
-  const [cycles, approvedReviewCount, worksheetSanctions] = await Promise.all([
+  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions] = await Promise.all([
     getCycles(),
     getApprovedReviewCount(),
+    getContributionStatus(),
     getPrivateWorksheetSanctions(),
   ]);
 
@@ -186,7 +211,7 @@ export default async function CyclesPage() {
       <PageGuideModal />
       {worksheetSanctions && <WorksheetSanctionNotices sanctions={worksheetSanctions} />}
     </div>
-    {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} />}
+    {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} contributionStatus={contributionStatus} />}
     </div>
   );
 }
