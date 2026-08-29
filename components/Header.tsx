@@ -151,7 +151,7 @@ function LoggedInLinks({
         <NavIcon type="academic" />
         Ruta académica
       </a>
-      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/verificacion">
+      <a className="inline-flex translate-x-[25px] items-center gap-2 transition hover:text-gold" href="/verificacion">
         <NavIcon type="verification" />
         Verificación
       </a>
