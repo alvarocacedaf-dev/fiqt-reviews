@@ -249,7 +249,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           <img
             alt="AIChE UNI Student Chapter"
             className="h-8 w-24 shrink-0 rounded-md object-contain sm:h-10 sm:w-28"
-            src="/aiche-uni-student-chapter.jpeg"
+            src="/aiche-uni-student-chapter-transparent.png"
           />
 
           {isLoggedIn && (
