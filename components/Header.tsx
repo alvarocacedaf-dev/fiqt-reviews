@@ -159,7 +159,7 @@ function LoggedInLinks({
         <NavIcon type="verified" />
         Cursos verificados
       </a>
-      <a className="inline-flex items-center gap-2 transition hover:text-gold" href="/armar-horario">
+      <a className="inline-flex translate-x-[3px] items-center gap-2 transition hover:text-gold" href="/armar-horario">
         <Icon className="h-5 w-5" name="calendar" />
         Armar mi horario
       </a>
