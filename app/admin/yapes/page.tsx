@@ -144,12 +144,19 @@ export default async function AdminYapesPage({ searchParams }: PageProps) {
                 </dl>
 
                 {item.status === 'pending' ? (
-                  <form action={moderateContribution} className="mt-4 flex flex-wrap gap-3">
-                    <input type="hidden" name="id" value={item.id} />
-                    <button className="btn-primary" name="status" value="approved">Aprobar aporte</button>
-                    <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" name="status" value="rejected">Rechazar</button>
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <form action={moderateContribution}>
+                      <input type="hidden" name="id" value={item.id} />
+                      <input type="hidden" name="status" value="approved" />
+                      <button className="btn-primary" type="submit">Aprobar aporte</button>
+                    </form>
+                    <form action={moderateContribution}>
+                      <input type="hidden" name="id" value={item.id} />
+                      <input type="hidden" name="status" value="rejected" />
+                      <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" type="submit">Rechazar</button>
+                    </form>
                     {url && <a className="btn-secondary" href={url} target="_blank" rel="noreferrer">Abrir imagen</a>}
-                  </form>
+                  </div>
                 ) : (
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <p className="text-xs text-slate-500">Revisado: {item.reviewed_at ? new Date(item.reviewed_at).toLocaleString('es-PE') : 'Sin fecha'}</p>
