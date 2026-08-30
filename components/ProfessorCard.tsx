@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Icon } from '@/components/ui/Icon';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import type { Professor, Review } from '@/lib/types';
 import { RatingSummary } from './RatingSummary';
 
@@ -68,7 +69,7 @@ export function ProfessorCard({
             </>
           ) : (
             <p className="py-3 text-center text-sm font-bold text-slate-600">
-              Aún te falta completar tus 4 primeras reseñas
+              Necesitas {REWARD_THRESHOLDS.reviews} reseñas aprobadas para desbloquear los perfiles
             </p>
           )}
         </div>
@@ -82,7 +83,7 @@ export function ProfessorCard({
             <span
               aria-disabled="true"
               className="inline-flex cursor-not-allowed items-center justify-center rounded-xl bg-slate-300 px-3 py-3 text-sm font-bold text-slate-600"
-              title="Aún te falta completar tus 4 primeras reseñas"
+              title={`Necesitas ${REWARD_THRESHOLDS.reviews} reseñas aprobadas para desbloquear los perfiles`}
             >
               Ver perfil <Icon className="ml-2 h-4 w-4" name="lock" />
             </span>

@@ -4,8 +4,9 @@ import { ContentHeader } from '@/components/ContentHeader';
 import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
-const MINIMUM_APPROVED_REVIEWS = 10;
+const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
 
 type PageProps = {
   searchParams: Promise<{ error?: string; success?: string }>;

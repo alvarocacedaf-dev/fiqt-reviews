@@ -6,6 +6,7 @@ import { getCourse, getCourseProfessors, getProfessor, getProfessorReviews, hasR
 import { demoCourseProfessors, demoCourses, isSupabaseConfigured } from '@/lib/demo';
 import { getBundledMaterialForProfessor } from '@/lib/bundledCourseMaterials';
 import { createClient } from '@/lib/supabase/server';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
 type CourseInfo = { name: string; code: string | null };
 type CourseLink = {
@@ -40,7 +41,7 @@ export default async function ProfessorPage({
     return (
       <section className="panel">
         <h1 className="text-2xl font-black text-ink">Perfil bloqueado</h1>
-        <p className="mt-2 text-slate-600">Aún te falta completar tus 4 primeras reseñas</p>
+        <p className="mt-2 text-slate-600">Necesitas {REWARD_THRESHOLDS.reviews} reseñas aprobadas para desbloquear los perfiles</p>
       </section>
     );
   }

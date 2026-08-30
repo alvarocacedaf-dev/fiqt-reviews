@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import type { Course, Cycle, Professor, Review } from '@/lib/types';
 import { demoCourseProfessors, demoCourses, demoCycles, demoProfessors, isSupabaseConfigured } from '@/lib/demo';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
 export async function hasReviewAccess(): Promise<boolean> {
   if (!isSupabaseConfigured) return false;
@@ -21,7 +22,7 @@ export async function hasReviewAccess(): Promise<boolean> {
       .eq('status', 'approved'),
   ]);
 
-  return profile?.role === 'admin' || (!countError && (count ?? 0) >= 3);
+  return profile?.role === 'admin' || (!countError && (count ?? 0) >= REWARD_THRESHOLDS.reviews);
 }
 
 export async function getCycles(): Promise<Cycle[]> { if (!isSupabaseConfigured) return demoCycles; const db = await createClient(); const { data } = await db.from('cycles').select('*').order('number'); return (data as Cycle[]) ?? []; }

@@ -6,6 +6,7 @@ import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
 import { createClient } from '@/lib/supabase/server';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import {
   getWorksheetSanctionState,
   seriousReportCategoryLabels,
@@ -116,11 +117,11 @@ function WorksheetSanctionNotices({ sanctions }: { sanctions: WorksheetSanction[
 
 function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews: number; contributionStatus: 'pending' | 'approved' | 'rejected' | null }) {
   const rewards = [
-    { goal: 3, title: 'Acceso a las reseñas' },
-    { goal: 6, title: 'Planchas de 1 curso de la administración' },
-    { goal: 10, title: 'Acceso completo a la comunidad de planchas' },
-    { goal: 15, title: 'Planchas de 2 cursos de la administración' },
-    { goal: 24, title: 'Acceso completo a la descarga de todas las planchas de todos los cursos' },
+    { goal: REWARD_THRESHOLDS.reviews, title: 'Acceso a las reseñas' },
+    { goal: REWARD_THRESHOLDS.oneAdminCourse, title: 'Planchas de 1 curso de la administración' },
+    { goal: REWARD_THRESHOLDS.worksheetsCommunity, title: 'Acceso completo a la comunidad de planchas' },
+    { goal: REWARD_THRESHOLDS.twoAdminCourses, title: 'Planchas de 2 cursos de la administración' },
+    { goal: REWARD_THRESHOLDS.allAdminCourses, title: 'Acceso completo a la descarga de todas las planchas de todos los cursos' },
   ];
   const nextReward = rewards.find(reward => approvedReviews < reward.goal);
   const progress = nextReward ? Math.min(100, Math.round((approvedReviews / nextReward.goal) * 100)) : 100;
