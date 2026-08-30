@@ -18,7 +18,7 @@ vi.mock('@/lib/authRateLimit', () => ({
   getAuthRateSubjects: mocks.getAuthRateSubjects,
   isRateLimitError: () => false,
   isSupabaseAuthRateLimitError: (error: { code?: string; status?: number } | null) => (
-    error?.status === 429 || error?.code === 'over_request_rate_limit' || error?.code === 'email_rate_limit_exceeded'
+    error?.status === 429 || error?.code === 'over_request_rate_limit' || error?.code === 'email_rate_limit_exceeded' || error?.code === 'over_email_send_rate_limit'
   ),
   rateLimitResponse: (message: string) => Response.json({ error: message }, { status: 429 }),
 }));
@@ -47,6 +47,7 @@ function jsonRequest(path: string, body: Record<string, unknown>) {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  mocks.getAuthRateSubjects.mockReturnValue(['email-hash', 'ip-hash']);
   mocks.signUp.mockResolvedValue({ data: { session: null }, error: null });
   mocks.signInWithPassword.mockResolvedValue({ error: null });
   mocks.resetPasswordForEmail.mockResolvedValue({ error: null });
@@ -80,7 +81,34 @@ describe('POST /api/auth/register', () => {
       password: 'segura123',
       options: expect.objectContaining({ data: { full_name: 'Alumno Prueba' } }),
     }));
+    expect(mocks.signUp).toHaveBeenCalledTimes(1);
     expect(await response.json()).toEqual({ ok: true, requiresEmailConfirmation: true });
+  });
+
+  it('devuelve 429 amigable cuando Supabase alcanza el límite de emails', async () => {
+    mocks.signUp.mockResolvedValueOnce({ data: { session: null }, error: { status: 429, code: 'email_rate_limit_exceeded' } });
+    const response = await register(jsonRequest('/api/auth/register', {
+      email: 'alumno@uni.pe', password: 'segura123', fullName: 'Alumno Prueba',
+    }));
+
+    expect(response.status).toBe(429);
+    expect(mocks.signUp).toHaveBeenCalledTimes(1);
+  });
+
+  it('no comparte el contador entre dos correos que usan la misma IP', async () => {
+    mocks.getAuthRateSubjects
+      .mockReturnValueOnce(['email-a-hash', 'shared-ip-hash'])
+      .mockReturnValueOnce(['email-b-hash', 'shared-ip-hash']);
+
+    await register(jsonRequest('/api/auth/register', {
+      email: 'alumno.a@uni.pe', password: 'segura123', fullName: 'Alumno A',
+    }));
+    await register(jsonRequest('/api/auth/register', {
+      email: 'alumno.b@uni.pe', password: 'segura123', fullName: 'Alumno B',
+    }));
+
+    expect(mocks.consumeAnonymousLimit).toHaveBeenNthCalledWith(1, 'registration', ['email-a-hash']);
+    expect(mocks.consumeAnonymousLimit).toHaveBeenNthCalledWith(2, 'registration', ['email-b-hash']);
   });
 });
 
@@ -98,6 +126,7 @@ describe('POST /api/auth/login', () => {
     }));
 
     expect(response.status).toBe(200);
+    expect(mocks.signInWithPassword).toHaveBeenCalledTimes(1);
     expect(mocks.clearAnonymousLimit).toHaveBeenCalledWith('login_failure', ['email-hash']);
   });
 
@@ -124,6 +153,18 @@ describe('POST /api/auth/login', () => {
     expect(mocks.signInWithPassword).toHaveBeenCalledTimes(1);
     expect(mocks.consumeAnonymousLimit).not.toHaveBeenCalled();
   });
+
+  it('mantiene separados los intentos de login de dos correos con la misma IP', async () => {
+    mocks.getAuthRateSubjects
+      .mockReturnValueOnce(['email-a-hash', 'shared-ip-hash'])
+      .mockReturnValueOnce(['email-b-hash', 'shared-ip-hash']);
+
+    await login(jsonRequest('/api/auth/login', { email: 'alumno.a@uni.pe', password: 'segura123' }));
+    await login(jsonRequest('/api/auth/login', { email: 'alumno.b@uni.pe', password: 'segura123' }));
+
+    expect(mocks.assertAnonymousLimit).toHaveBeenNthCalledWith(1, 'login_failure', ['email-a-hash']);
+    expect(mocks.assertAnonymousLimit).toHaveBeenNthCalledWith(2, 'login_failure', ['email-b-hash']);
+  });
 });
 
 describe('POST /api/auth/password-reset', () => {
@@ -143,5 +184,6 @@ describe('POST /api/auth/password-reset', () => {
       'alumno@uni.pe',
       { redirectTo: 'http://localhost/recuperar-contrasena/nueva' },
     );
+    expect(mocks.consumeAnonymousLimit).toHaveBeenCalledWith('password_recovery', ['email-hash']);
   });
 });

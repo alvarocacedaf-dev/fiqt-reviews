@@ -47,19 +47,25 @@ describe('AuthForm', () => {
     expect(screen.getByLabelText('Correo institucional UNI')).toHaveAttribute('aria-invalid', 'true');
   });
 
-  it('envía una sola solicitud aunque el formulario se dispare dos veces rápidamente', () => {
+  it.each([
+    { mode: 'login' as const, emailLabel: 'Correo electrónico', button: 'Iniciar sesión', pending: 'Iniciando sesión...' },
+    { mode: 'register' as const, emailLabel: 'Correo institucional UNI', button: 'Crear cuenta UNI', pending: 'Creando cuenta...' },
+  ])('envía una sola solicitud ante doble submit rápido en $mode', ({ mode, emailLabel, button, pending }) => {
     const fetchMock = vi.fn(() => new Promise<Response>(() => undefined));
     vi.stubGlobal('fetch', fetchMock);
-    render(<AuthForm mode="login" />);
+    render(<AuthForm mode={mode} />);
 
-    fireEvent.change(screen.getByLabelText('Correo electrónico'), { target: { value: 'alumno@uni.pe' } });
+    if (mode === 'register') {
+      fireEvent.change(screen.getByLabelText('Nombre completo'), { target: { value: 'Alumno Prueba' } });
+    }
+    fireEvent.change(screen.getByLabelText(emailLabel), { target: { value: 'alumno@uni.pe' } });
     fireEvent.change(screen.getByLabelText('Contraseña'), { target: { value: 'segura123' } });
-    const form = screen.getByRole('button', { name: 'Iniciar sesión' }).closest('form');
+    const form = screen.getByRole('button', { name: button }).closest('form');
     expect(form).not.toBeNull();
     fireEvent.submit(form!);
     fireEvent.submit(form!);
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole('button', { name: 'Iniciando sesión...' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: pending })).toBeDisabled();
   });
 });

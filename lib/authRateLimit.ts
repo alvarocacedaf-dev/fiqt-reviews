@@ -76,6 +76,7 @@ export function isSupabaseAuthRateLimitError(error: unknown) {
   return Number(candidate.status) === 429
     || code === 'over_request_rate_limit'
     || code === 'email_rate_limit_exceeded'
+    || code === 'over_email_send_rate_limit'
     || message.includes('rate limit')
     || message.includes('too many requests');
 }

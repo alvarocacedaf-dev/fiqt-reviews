@@ -3,6 +3,7 @@ import {
   consumeAnonymousLimit,
   getAuthRateSubjects,
   isRateLimitError,
+  isSupabaseAuthRateLimitError,
   rateLimitResponse,
 } from '@/lib/authRateLimit';
 import { createClient } from '@/lib/supabase/server';
@@ -21,13 +22,19 @@ export async function POST(request: Request) {
     }
 
     const subjects = getAuthRateSubjects(request, email);
-    await consumeAnonymousLimit('password_recovery', subjects);
+    // Evita que alumnos que comparten una misma red consuman el límite de los demás.
+    await consumeAnonymousLimit('password_recovery', subjects.slice(0, 1));
 
     const db = await createClient();
     const { error } = await db.auth.resetPasswordForEmail(email, {
       redirectTo: new URL('/recuperar-contrasena/nueva', request.url).toString(),
     });
-    if (error) throw error;
+    if (error) {
+      if (isSupabaseAuthRateLimitError(error)) {
+        return rateLimitResponse('Se alcanzó temporalmente el límite de envío de correos. Espera unos minutos antes de volver a intentarlo.');
+      }
+      throw error;
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {
