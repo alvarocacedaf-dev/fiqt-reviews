@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/client';
 
@@ -17,10 +17,13 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState(initialStatus);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState<'success' | 'error'>('error');
   const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -40,9 +43,13 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
     };
   }, [open]);
 
-  async function submit(formData: FormData) {
-    const file = formData.get('receipt') as File;
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submittingRef.current) return;
+
+    const file = fileRef.current?.files?.[0];
     setMessage('');
+    setMessageType('error');
 
     if (!file?.size) return setMessage('Selecciona una imagen de tu comprobante.');
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
@@ -50,43 +57,53 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
     }
     if (file.size > 5 * 1024 * 1024) return setMessage('La imagen no debe superar los 5 MB.');
 
+    submittingRef.current = true;
     setSubmitting(true);
-    const db = createClient();
-    const { data: { user } } = await db.auth.getUser();
+    setMessageType('success');
+    setMessage('Subiendo comprobante… No cierres esta ventana.');
 
-    if (!user) {
+    let uploadedPath = '';
+    try {
+      const db = createClient();
+      const { data: { user }, error: userError } = await db.auth.getUser();
+
+      if (userError || !user) throw new Error('Tu sesión venció. Inicia sesión nuevamente antes de enviar el comprobante.');
+
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uniqueId = typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      uploadedPath = `${user.id}/${uniqueId}-${safeName}`;
+      const { error: uploadError } = await db.storage
+        .from('contribution-evidence')
+        .upload(uploadedPath, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw new Error(`No se pudo subir la imagen: ${uploadError.message}`);
+
+      setMessage('Imagen cargada. Estamos registrando tu comprobante…');
+      const { error: insertError } = await db.from('contribution_submissions').insert({
+        user_id: user.id,
+        receipt_path: uploadedPath,
+        amount: 1.5,
+        status: 'pending',
+      });
+
+      if (insertError) {
+        await db.storage.from('contribution-evidence').remove([uploadedPath]);
+        throw new Error(`No se pudo registrar el comprobante: ${insertError.message}`);
+      }
+
+      formRef.current?.reset();
+      setStatus('pending');
+      setMessageType('success');
+      setMessage('Comprobante enviado. Quedó pendiente de revisión.');
+    } catch (error) {
+      setMessageType('error');
+      setMessage(error instanceof Error ? error.message : 'No se pudo enviar el comprobante. Inténtalo nuevamente.');
+    } finally {
+      submittingRef.current = false;
       setSubmitting(false);
-      return setMessage('Inicia sesión antes de enviar tu comprobante.');
     }
-
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const path = `${user.id}/${crypto.randomUUID()}-${safeName}`;
-    const { error: uploadError } = await db.storage
-      .from('contribution-evidence')
-      .upload(path, file, { cacheControl: '3600', upsert: false });
-
-    if (uploadError) {
-      setSubmitting(false);
-      return setMessage(uploadError.message);
-    }
-
-    const { error } = await db.from('contribution_submissions').insert({
-      user_id: user.id,
-      receipt_path: path,
-      amount: 1.5,
-      status: 'pending',
-    });
-
-    if (error) {
-      await db.storage.from('contribution-evidence').remove([path]);
-      setSubmitting(false);
-      return setMessage(error.message);
-    }
-
-    formRef.current?.reset();
-    setStatus('pending');
-    setMessage('Comprobante enviado. Quedó pendiente de revisión.');
-    setSubmitting(false);
   }
 
   const verified = status === 'approved';
@@ -162,18 +179,25 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
                 />
               </div>
 
+              {message && (
+                <p aria-live="polite" className={`rounded-xl p-4 text-sm font-semibold ${messageType === 'success' ? 'bg-emerald-50 text-emerald-900' : 'bg-red-50 text-red-800'}`}>
+                  {message}
+                </p>
+              )}
+
               {verified ? (
                 <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-900">Tu aporte ya fue verificado. Gracias por contribuir con FIQT Reviews.</p>
               ) : pending ? (
                 <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">Tu comprobante está pendiente de revisión. No necesitas enviarlo nuevamente.</p>
               ) : (
-                <form action={submit} className="space-y-4" ref={formRef}>
+                <form className="space-y-4" onSubmit={submit} ref={formRef}>
                   <label className="block rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 p-5 text-center font-bold text-royal">
                     Sube aquí tu comprobante
                     <input
                       accept="image/jpeg,image/png,image/webp"
                       className="mt-3 block w-full text-sm font-normal text-slate-600"
                       name="receipt"
+                      ref={fileRef}
                       required
                       type="file"
                     />
@@ -185,11 +209,6 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
                 </form>
               )}
 
-              {message && (
-                <p aria-live="polite" className={`rounded-xl p-4 text-sm font-semibold ${status === 'pending' ? 'bg-emerald-50 text-emerald-900' : 'bg-red-50 text-red-800'}`}>
-                  {message}
-                </p>
-              )}
             </div>
           </section>
         </div>
