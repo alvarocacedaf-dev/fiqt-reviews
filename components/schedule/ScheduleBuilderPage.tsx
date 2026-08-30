@@ -3,12 +3,14 @@
 import { useMemo, useState } from 'react';
 import { CourseSelector } from './CourseSelector';
 import { GeneratedScheduleList } from './GeneratedScheduleList';
-import { generateScheduleCombinations } from '@/lib/schedule/generator';
-import type { CourseSection, ScheduleGenerationResult } from '@/lib/schedule/types';
+import { LockedSectionSelector } from './LockedSectionSelector';
+import { detectConflicts, generateScheduleCombinations } from '@/lib/schedule/generator';
+import type { CourseSection, LockedSectionMap, ScheduleGenerationResult } from '@/lib/schedule/types';
 import { Icon } from '@/components/ui/Icon';
 
 export function ScheduleBuilderPage({ sections }: { sections: CourseSection[] }) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [lockedSections, setLockedSections] = useState<LockedSectionMap>({});
   const [result, setResult] = useState<ScheduleGenerationResult | null>(null);
   const [message, setMessage] = useState('');
 
@@ -23,7 +25,27 @@ export function ScheduleBuilderPage({ sections }: { sections: CourseSection[] })
   }, [sections]);
 
   function toggleCourse(courseId: string) {
-    setSelected((current) => current.includes(courseId) ? current.filter((id) => id !== courseId) : [...current, courseId]);
+    setSelected((current) => {
+      if (!current.includes(courseId)) return [...current, courseId];
+      setLockedSections((locks) => {
+        const next = { ...locks };
+        delete next[courseId];
+        return next;
+      });
+      return current.filter((id) => id !== courseId);
+    });
+    setResult(null);
+    setMessage('');
+  }
+
+  function lockSection(courseId: string, sectionId: string | null) {
+    setLockedSections((current) => ({ ...current, [courseId]: sectionId }));
+    setResult(null);
+    setMessage('');
+  }
+
+  function clearLockedSections() {
+    setLockedSections({});
     setResult(null);
     setMessage('');
   }
@@ -40,9 +62,17 @@ export function ScheduleBuilderPage({ sections }: { sections: CourseSection[] })
       setResult(null);
       return;
     }
-    const generated = generateScheduleCombinations(groups);
+    const generated = generateScheduleCombinations(groups, 600, lockedSections);
+    const lockedChoices = groups.flatMap((group) => group.filter((section) => lockedSections[section.courseId] === section.id));
+    const lockedConflicts = detectConflicts(lockedChoices.flatMap((section) => section.blocks));
     setResult(generated);
-    setMessage(generated.schedules.length === 0 ? 'No se encontraron combinaciones posibles con los cursos seleccionados.' : '');
+    setMessage(
+      generated.schedules.length === 0
+        ? 'No se encontraron horarios posibles respetando las secciones obligatorias seleccionadas. Prueba liberar una sección fija o retirar algún curso.'
+        : lockedConflicts.length > 0
+          ? 'Las secciones obligatorias seleccionadas tienen cruces entre ellas.'
+          : '',
+    );
     requestAnimationFrame(() => document.getElementById('horarios-generados')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   }
 
@@ -62,6 +92,13 @@ export function ScheduleBuilderPage({ sections }: { sections: CourseSection[] })
       </section>
 
       <CourseSelector courses={courses} onToggle={toggleCourse} selected={selected} />
+
+      <LockedSectionSelector
+        courses={courses.filter((course) => selected.includes(course.id))}
+        lockedSections={lockedSections}
+        onChange={lockSection}
+        onClear={clearLockedSections}
+      />
 
       <section className="flex flex-col gap-3 rounded-[1.25rem] border border-white/15 bg-[#0b1f46]/90 p-5 text-white shadow-card sm:flex-row sm:items-center sm:justify-between">
         <div>

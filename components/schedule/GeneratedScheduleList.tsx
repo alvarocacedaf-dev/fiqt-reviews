@@ -55,6 +55,9 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
   context.font = '24px Arial, sans-serif';
   const sections = schedule.sections.map((section) => `${section.courseId}-${section.section}`).join(' · ');
   context.fillText(fitText(context, sections, width - 120), 60, 164);
+  context.fillStyle = '#ffffff';
+  context.font = 'bold 20px Arial, sans-serif';
+  context.fillText(`Secciones fijas respetadas: ${schedule.lockedSectionIds.length}`, 60, 198);
 
   context.strokeStyle = 'rgba(255,255,255,0.18)';
   context.lineWidth = 2;
@@ -95,6 +98,7 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
     const conflict = schedule.conflicts.find((candidate) => candidate.blocks.some((item) => item.id === block.id));
     const lane = conflict?.blocks[1].id === block.id ? 1 : 0;
     const hasConflict = Boolean(conflict);
+    const isLocked = schedule.sections.some((section) => schedule.lockedSectionIds.includes(section.id) && section.blocks.some((item) => item.id === block.id));
     const availableWidth = dayWidth - 16;
     const blockWidth = hasConflict ? availableWidth / 2 - 4 : availableWidth;
     const x = leftColumn + dayIndex * dayWidth + 8 + (hasConflict ? lane * (availableWidth / 2 + 4) : 0);
@@ -119,6 +123,13 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
     if (blockHeight >= 120) {
       context.font = 'bold 16px Arial, sans-serif';
       context.fillText(`${block.startTime}–${block.endTime}`, x + 12, y + 90);
+    }
+    if (isLocked) {
+      context.fillStyle = '#082044';
+      context.font = 'bold 14px Arial, sans-serif';
+      context.textAlign = 'right';
+      context.textBaseline = 'bottom';
+      context.fillText('SECCIÓN FIJA', x + blockWidth - 10, y + blockHeight - 8);
     }
   });
 

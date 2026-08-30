@@ -1,4 +1,4 @@
-import { SCHEDULE_DAYS, type ClassBlock, type CourseSection, type Day, type GeneratedSchedule, type ScheduleConflict, type ScheduleGenerationResult } from './types';
+import { SCHEDULE_DAYS, type ClassBlock, type CourseSection, type Day, type GeneratedSchedule, type LockedSectionMap, type ScheduleConflict, type ScheduleGenerationResult } from './types';
 
 const DEFAULT_BEAM_WIDTH = 600;
 
@@ -89,7 +89,7 @@ function compareSchedules(left: GeneratedSchedule, right: GeneratedSchedule) {
     || left.id.localeCompare(right.id);
 }
 
-function buildSchedule(sections: CourseSection[]): GeneratedSchedule {
+function buildSchedule(sections: CourseSection[], lockedSections: LockedSectionMap): GeneratedSchedule {
   const blocks = sections.flatMap((section) => section.blocks);
   const conflicts = detectConflicts(blocks);
   const result = {
@@ -102,6 +102,9 @@ function buildSchedule(sections: CourseSection[]): GeneratedSchedule {
     gapMinutes: calculateGaps(blocks),
     attendanceDays: calculateAttendanceDays(blocks),
     distributionMinutes: calculateDistributionMinutes(blocks),
+    lockedSectionIds: sections
+      .filter((section) => lockedSections[section.courseId] === section.id)
+      .map((section) => section.id),
     score: 0,
   };
   result.score = scoreSchedule(result);
@@ -116,8 +119,18 @@ export function getTopSchedules(schedules: GeneratedSchedule[], limit = 3) {
   return sortSchedules(schedules).slice(0, limit);
 }
 
-export function generateScheduleCombinations(sectionGroups: CourseSection[][], beamWidth = DEFAULT_BEAM_WIDTH): ScheduleGenerationResult {
-  if (sectionGroups.length === 0 || sectionGroups.some((group) => group.length === 0)) {
+export function getCandidateSections(sections: CourseSection[], lockedSectionId?: string | null) {
+  if (lockedSectionId) return sections.filter((section) => section.id === lockedSectionId);
+  return sections.filter((section) => !section.closed && (section.availableSeats == null || section.availableSeats > 0));
+}
+
+export function generateScheduleCombinations(
+  sectionGroups: CourseSection[][],
+  beamWidth = DEFAULT_BEAM_WIDTH,
+  lockedSections: LockedSectionMap = {},
+): ScheduleGenerationResult {
+  const candidateGroups = sectionGroups.map((group) => getCandidateSections(group, lockedSections[group[0]?.courseId]));
+  if (candidateGroups.length === 0 || candidateGroups.some((group) => group.length === 0)) {
     return { schedules: [], exploredCombinations: 0, truncated: false };
   }
 
@@ -125,7 +138,7 @@ export function generateScheduleCombinations(sectionGroups: CourseSection[][], b
   let exploredCombinations = 0;
   let truncated = false;
 
-  for (const group of [...sectionGroups].sort((left, right) => left.length - right.length)) {
+  for (const group of [...candidateGroups].sort((left, right) => left.length - right.length)) {
     const next: CourseSection[][] = [];
     for (const partial of partials) {
       for (const section of group) {
@@ -137,7 +150,7 @@ export function generateScheduleCombinations(sectionGroups: CourseSection[][], b
     if (next.length > beamWidth) {
       truncated = true;
       partials = next
-        .map((sections) => ({ sections, schedule: buildSchedule(sections) }))
+        .map((sections) => ({ sections, schedule: buildSchedule(sections, lockedSections) }))
         .sort((left, right) => compareSchedules(left.schedule, right.schedule))
         .slice(0, beamWidth)
         .map((candidate) => candidate.sections);
@@ -147,7 +160,7 @@ export function generateScheduleCombinations(sectionGroups: CourseSection[][], b
   }
 
   return {
-    schedules: getTopSchedules(partials.map(buildSchedule)),
+    schedules: getTopSchedules(partials.map((sections) => buildSchedule(sections, lockedSections))),
     exploredCombinations,
     truncated,
   };

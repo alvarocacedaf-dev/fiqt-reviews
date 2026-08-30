@@ -5,6 +5,7 @@ import {
   calculateGaps,
   detectConflicts,
   generateScheduleCombinations,
+  getCandidateSections,
   getTopSchedules,
 } from '@/lib/schedule/generator';
 import type { ClassBlock, CourseSection, Day, GeneratedSchedule } from '@/lib/schedule/types';
@@ -55,7 +56,7 @@ describe('schedule generator', () => {
   });
 
   it('ordena lexicográficamente por cruces antes que por huecos', () => {
-    const base = { sections: [], blocks: [], conflicts: [], conflictMinutes: 0, attendanceDays: 1, distributionMinutes: 0, score: 0 };
+    const base = { sections: [], blocks: [], conflicts: [], conflictMinutes: 0, attendanceDays: 1, distributionMinutes: 0, lockedSectionIds: [], score: 0 };
     const schedules = [
       { ...base, id: 'sin-cruce', conflictCount: 0, gapMinutes: 600 },
       { ...base, id: 'con-cruce', conflictCount: 1, gapMinutes: 0 },
@@ -73,5 +74,39 @@ describe('schedule generator', () => {
     const result = generateScheduleCombinations(groups, 20);
     expect(result.truncated).toBe(true);
     expect(result.schedules.length).toBeLessThanOrEqual(3);
+  });
+
+  it('respeta una sección obligatoria y conserva todos sus bloques', () => {
+    const physicsA = section('FIS', 'A', [block('fis-a-1', 'FIS', 'Lunes', '08:00', '10:00')]);
+    const physicsB = section('FIS', 'B', [
+      block('fis-b-1', 'FIS', 'Martes', '08:00', '10:00'),
+      { ...block('fis-b-2', 'FIS', 'Jueves', '10:00', '12:00'), type: 'Práctica' },
+    ]);
+
+    const result = generateScheduleCombinations([[physicsA, physicsB]], 600, { FIS: physicsB.id });
+
+    expect(result.schedules).toHaveLength(1);
+    expect(result.schedules[0].sections.map((item) => item.id)).toEqual(['FIS-B']);
+    expect(result.schedules[0].blocks.map((item) => item.id)).toEqual(['fis-b-1', 'fis-b-2']);
+    expect(result.schedules[0].lockedSectionIds).toEqual(['FIS-B']);
+  });
+
+  it('excluye automáticamente secciones sin vacantes pero permite fijarlas', () => {
+    const closed = { ...section('MAT', 'A', [block('mat-a', 'MAT', 'Lunes', '08:00', '10:00')]), availableSeats: 0 };
+    const available = { ...section('MAT', 'B', [block('mat-b', 'MAT', 'Martes', '08:00', '10:00')]), availableSeats: 4 };
+
+    expect(getCandidateSections([closed, available], null).map((item) => item.id)).toEqual(['MAT-B']);
+    expect(getCandidateSections([closed, available], closed.id).map((item) => item.id)).toEqual(['MAT-A']);
+  });
+
+  it('mantiene horarios con cruces inevitables entre secciones obligatorias', () => {
+    const physics = section('FIS', 'A', [block('fis-a', 'FIS', 'Lunes', '08:00', '10:00')]);
+    const math = section('MAT', 'B', [block('mat-b', 'MAT', 'Lunes', '09:00', '11:00')]);
+
+    const result = generateScheduleCombinations([[physics], [math]], 600, { FIS: physics.id, MAT: math.id });
+
+    expect(result.schedules).toHaveLength(1);
+    expect(result.schedules[0].conflictCount).toBe(1);
+    expect(result.schedules[0].lockedSectionIds).toEqual(expect.arrayContaining(['FIS-A', 'MAT-B']));
   });
 });

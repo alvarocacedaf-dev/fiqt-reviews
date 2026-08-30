@@ -11,7 +11,17 @@ export function ConflictWarning({ schedule }: { schedule: GeneratedSchedule }) {
       <ul className="mt-1 space-y-1">
         {schedule.conflicts.map((conflict) => (
           <li key={`${conflict.day}-${conflict.startTime}-${conflict.blocks.map((block) => block.id).join('-')}`}>
-            {conflict.day} {conflict.startTime}–{conflict.endTime} — {conflict.blocks[0].courseName} se cruza con {conflict.blocks[1].courseName}.
+            {(() => {
+              const lockedBlocks = conflict.blocks.filter((block) => schedule.sections.some((section) =>
+                schedule.lockedSectionIds.includes(section.id) && section.blocks.some((item) => item.id === block.id)));
+              if (lockedBlocks.length === 2) {
+                return `Las secciones obligatorias seleccionadas tienen cruces entre ellas: ${conflict.day} ${conflict.startTime}–${conflict.endTime} — ${conflict.blocks[0].courseName} con ${conflict.blocks[1].courseName}.`;
+              }
+              if (lockedBlocks.length === 1) {
+                return `La sección fija de ${lockedBlocks[0].courseName} genera cruces con otros cursos seleccionados: ${conflict.day} ${conflict.startTime}–${conflict.endTime}.`;
+              }
+              return `${conflict.day} ${conflict.startTime}–${conflict.endTime} — ${conflict.blocks[0].courseName} se cruza con ${conflict.blocks[1].courseName}.`;
+            })()}
           </li>
         ))}
       </ul>

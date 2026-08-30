@@ -28,7 +28,14 @@ export function ScheduleGrid({ schedule }: { schedule: GeneratedSchedule }) {
             <div className="relative border-r border-white/10 last:border-r-0" key={day} style={{ height: GRID_HEIGHT }}>
               {hours.map((hour) => <div className="absolute left-0 right-0 border-t border-white/10" key={hour} style={{ top: (hour - 8) * PIXELS_PER_HOUR }} />)}
               {schedule.blocks.filter((block) => block.day === day).map((block) => (
-                <ScheduleBlock block={block} conflicts={schedule.conflicts} gridStart={GRID_START} key={block.id} pixelsPerHour={PIXELS_PER_HOUR} />
+                <ScheduleBlock
+                  block={block}
+                  conflicts={schedule.conflicts}
+                  gridStart={GRID_START}
+                  isLocked={schedule.sections.some((section) => schedule.lockedSectionIds.includes(section.id) && section.blocks.some((item) => item.id === block.id))}
+                  key={block.id}
+                  pixelsPerHour={PIXELS_PER_HOUR}
+                />
               ))}
             </div>
           ))}

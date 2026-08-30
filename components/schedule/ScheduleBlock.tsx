@@ -16,7 +16,7 @@ function colorIndex(courseId: string) {
   return [...courseId].reduce((total, character) => total + character.charCodeAt(0), 0) % COLORS.length;
 }
 
-export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour }: { block: ClassBlock; conflicts: ScheduleConflict[]; gridStart: number; pixelsPerHour: number }) {
+export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour, isLocked = false }: { block: ClassBlock; conflicts: ScheduleConflict[]; gridStart: number; pixelsPerHour: number; isLocked?: boolean }) {
   const start = timeToMinutes(block.startTime);
   const end = timeToMinutes(block.endTime);
   const conflict = conflicts.find((candidate) => candidate.blocks.some((item) => item.id === block.id));
@@ -29,12 +29,13 @@ export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour }: { 
     <article
       className={`absolute z-10 overflow-hidden rounded-xl border p-2 shadow-md ${COLORS[colorIndex(block.courseId)]} ${hasConflict ? 'ring-2 ring-red-600' : ''}`}
       style={{ top, height: height - 4, left: hasConflict ? `${2 + lane * 49}%` : '3%', width: hasConflict ? '47%' : '94%' }}
-      title={`${block.courseName} · ${block.type} · Sección ${block.section} · ${block.professorName ?? 'Profesor por confirmar'}`}
+      title={`${block.courseName} · ${block.type} · Sección ${block.section} · ${block.professorName ?? 'Profesor por confirmar'}${isLocked ? ' · Sección fija' : ''}`}
     >
       <p className="line-clamp-2 text-xs font-black leading-4">{block.courseName}</p>
       <p className="mt-0.5 truncate text-[0.66rem] font-bold">{block.type} · Sec. {block.section}</p>
       <p className="truncate text-[0.62rem] opacity-80">{block.professorName ?? 'Profesor por confirmar'}</p>
       <p className="mt-0.5 text-[0.62rem] font-bold">{block.startTime}–{block.endTime}</p>
+      {isLocked && <span className="absolute bottom-1 right-1 rounded bg-slate-950/75 px-1.5 py-0.5 text-[0.52rem] font-black uppercase tracking-wide text-white">Sección fija</span>}
     </article>
   );
 }

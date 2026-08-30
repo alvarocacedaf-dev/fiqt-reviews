@@ -23,7 +23,12 @@ export type CourseSection = {
   department: string;
   professors: string[];
   blocks: ClassBlock[];
+  capacity?: number | null;
+  availableSeats?: number | null;
+  closed?: boolean;
 };
+
+export type LockedSectionMap = Record<string, string | null>;
 
 export type ScheduleConflict = {
   day: Day;
@@ -43,6 +48,7 @@ export type GeneratedSchedule = {
   gapMinutes: number;
   attendanceDays: number;
   distributionMinutes: number;
+  lockedSectionIds: string[];
   score: number;
 };
 
