@@ -211,6 +211,11 @@ export default async function CyclesPage() {
         )}
       </section>
       <PageGuideModal />
+      {contributionStatus === 'approved' && (
+        <p className="rounded-xl border border-emerald-300/40 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100">
+          * Tu aporte fue aprobado. Sigue avanzando en la ruta de recompensas para que disfrutes de la página.
+        </p>
+      )}
       {worksheetSanctions && <WorksheetSanctionNotices sanctions={worksheetSanctions} />}
     </div>
     {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} contributionStatus={contributionStatus} />}
