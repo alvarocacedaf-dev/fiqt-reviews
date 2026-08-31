@@ -2,6 +2,7 @@ import { AdminWorksheetLibraryTree } from '@/components/AdminWorksheetLibraryMan
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,7 +84,13 @@ export default async function PublicAdminWorksheetsPage() {
   const loadError = cyclesError || coursesError || filesError;
   const reviewCount = approvedReviews ?? 0;
   const isAdmin = profile?.role === 'admin';
-  const selectionLimit = isAdmin || reviewCount >= 24 ? courses.length : reviewCount >= 15 ? 2 : reviewCount >= 6 ? 1 : 0;
+  const selectionLimit = isAdmin || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
+    ? courses.length
+    : reviewCount >= REWARD_THRESHOLDS.twoAdminCourses
+      ? 2
+      : reviewCount >= REWARD_THRESHOLDS.oneAdminCourse
+        ? 1
+        : 0;
   const selectedCourseIds = (rawUnlocks ?? []).map(item => item.course_id as string);
 
   return (
@@ -118,7 +125,7 @@ export default async function PublicAdminWorksheetsPage() {
             readOnly
             selectableCourseLimit={selectionLimit}
             selectedCourseIds={selectedCourseIds}
-            unlockAllCourses={isAdmin || reviewCount >= 24}
+            unlockAllCourses={isAdmin || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
           />
         </section>
       )}

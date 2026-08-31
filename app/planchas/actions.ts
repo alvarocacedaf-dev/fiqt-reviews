@@ -4,8 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
-const MINIMUM_APPROVED_REVIEWS = 10;
+const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
 
 function redirectWithMessage(type: 'error' | 'success', message: string): never {
   redirect(`/planchas?${type}=${encodeURIComponent(message)}`);

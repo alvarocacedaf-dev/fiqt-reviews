@@ -6,6 +6,7 @@ import { Icon } from '@/components/ui/Icon';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
+import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -558,7 +559,7 @@ export function AdminWorksheetLibraryTree({
                 ? 'Tienes habilitada la descarga de todos los cursos.'
                 : selectableCourseLimit > 0
                   ? `Marca ${selectableCourseLimit} curso${selectableCourseLimit === 1 ? '' : 's'} para habilitar sus descargas (${unlockedCourses.size}/${selectableCourseLimit}). La elección es permanente.`
-                  : 'La selección de cursos se habilita al alcanzar 6 reseñas aprobadas.'}
+                  : `La selección de cursos se habilita al alcanzar ${REWARD_THRESHOLDS.oneAdminCourse} reseñas aprobadas.`}
             </p>
           )}
           {selectionError && <p className="mt-2 rounded-lg bg-red-50 p-2 text-xs font-bold text-red-700">{selectionError}</p>}
