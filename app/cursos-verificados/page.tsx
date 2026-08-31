@@ -12,6 +12,13 @@ type VerifiedPair = {
   courses: Relation<Course>;
   professors: Relation<Professor>;
 };
+type RejectedSubmission = {
+  id: string;
+  file_url: string;
+  admin_notes: string | null;
+  created_at: string;
+  reviewed_at: string | null;
+};
 
 function first<T>(value: Relation<T>): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
@@ -22,13 +29,27 @@ export default async function VerifiedCoursesPage() {
   const { data: { user } } = await db.auth.getUser();
   if (!user) redirect('/login');
 
-  const [{ data: rawPairs, error }, { data: reviews }] = await Promise.all([
+  const [{ data: rawPairs, error }, { data: reviews }, { data: rawRejected, error: rejectedError }] = await Promise.all([
     db
       .from('verified_course_professors')
       .select('course_id,professor_id,created_at,courses(id,code,name,cycle_id),professors(id,full_name)')
       .eq('user_id', user.id),
     db.from('reviews').select('course_id,professor_id,status').eq('user_id', user.id),
+    db
+      .from('verification_submissions')
+      .select('id,file_url,admin_notes,created_at,reviewed_at')
+      .eq('user_id', user.id)
+      .eq('status', 'rejected')
+      .order('reviewed_at', { ascending: false }),
   ]);
+
+  const rejectedSubmissions = (rawRejected ?? []) as RejectedSubmission[];
+  const rejectedEvidenceUrls = Object.fromEntries(
+    await Promise.all(rejectedSubmissions.map(async submission => [
+      submission.id,
+      (await db.storage.from('verification-evidence').createSignedUrl(submission.file_url, 600)).data?.signedUrl ?? null,
+    ])),
+  );
 
   const reviewed = new Map(
     (reviews ?? []).map(review => [`${review.course_id}|${review.professor_id}`, review.status]),
@@ -50,6 +71,56 @@ export default async function VerifiedCoursesPage() {
       </p>
 
       {error && <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 font-semibold text-red-800">No se pudieron cargar tus accesos: {error.message}</p>}
+      {rejectedError && <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 font-semibold text-red-800">No se pudieron cargar tus verificaciones rechazadas: {rejectedError.message}</p>}
+
+      {!rejectedError && rejectedSubmissions.length > 0 && (
+        <section className="mt-7 space-y-4" aria-labelledby="rejected-verifications-title">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-red-700">Requieren corrección</p>
+            <h2 className="mt-1 text-2xl font-black text-ink" id="rejected-verifications-title">Verificaciones rechazadas</h2>
+          </div>
+          {rejectedSubmissions.map(submission => {
+            const evidenceUrl = rejectedEvidenceUrls[submission.id];
+            const isPdf = submission.file_url.toLowerCase().endsWith('.pdf');
+            return (
+              <article className="overflow-hidden rounded-2xl border border-red-200 bg-red-50/70" key={submission.id}>
+                <div className="grid gap-5 p-5 md:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)] md:items-start">
+                  <div className="overflow-hidden rounded-xl border border-red-100 bg-white">
+                    {evidenceUrl ? (
+                      isPdf ? (
+                        <div className="flex min-h-52 items-center justify-center p-5 text-center">
+                          <div>
+                            <p className="font-black text-ink">Documento PDF enviado</p>
+                            <a className="btn-secondary mt-4" href={evidenceUrl} rel="noreferrer" target="_blank">Abrir documento</a>
+                          </div>
+                        </div>
+                      ) : (
+                        <a href={evidenceUrl} rel="noreferrer" target="_blank" title="Abrir evidencia en tamaño completo">
+                          <img alt="Evidencia de cursos rechazada" className="max-h-80 w-full object-contain" src={evidenceUrl} />
+                        </a>
+                      )
+                    ) : (
+                      <p className="p-5 text-center text-sm font-semibold text-red-800">No se pudo generar el enlace privado de la evidencia.</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="rounded-xl border border-red-200 bg-white p-4 font-black text-red-800">
+                      Nota 1: Esta verificación de cursos ha sido rechazada.
+                    </p>
+                    <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-4 font-semibold leading-6 text-amber-950">
+                      <strong>Nota 2:</strong> {submission.admin_notes?.trim() || 'El administrador no agregó una nota adicional.'}
+                    </p>
+                    <p className="mt-3 text-xs font-semibold text-slate-500">
+                      Revisada: {submission.reviewed_at ? new Date(submission.reviewed_at).toLocaleString('es-PE') : 'fecha no disponible'}
+                    </p>
+                    <Link className="btn-primary mt-4" href="/verificacion">Enviar una nueva evidencia</Link>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </section>
+      )}
 
       <div className="mt-7 space-y-6">
         {pairs.map((pair, index) => {
