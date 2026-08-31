@@ -24,6 +24,8 @@ En el bucket abre **Settings > CORS Policy > Add CORS policy** y pega:
 [
   {
     "AllowedOrigins": [
+      "https://www.fiqtreviews.com",
+      "https://fiqtreviews.com",
       "https://fiqt-reviews.vercel.app",
       "http://localhost:3000"
     ],
