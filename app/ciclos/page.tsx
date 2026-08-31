@@ -244,6 +244,22 @@ export default async function CyclesPage() {
       <p className="w-fit rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm">
         Contador de planchas: <span className="text-gold">{worksheetFileCount.toLocaleString('es-PE')}</span>
       </p>
+      <section className="rounded-2xl border border-white/15 bg-white/10 p-5 text-white shadow-card">
+        <h2 className="text-sm font-black uppercase tracking-[0.18em] text-gold">
+          Notificaciones periódicas
+        </h2>
+        <div className="mt-4 space-y-3">
+          <p className="rounded-xl border border-white/10 bg-[#071a3d]/65 p-4 text-sm leading-6 text-blue-50">
+            Queremos agradecerles el gran recibimiento que ha tenido la página durante estos primeros dos días de lanzamiento. Aún se están cargando más planchas y materiales de estudio, además de los que ya tiene la administración.
+          </p>
+          <p className="rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm font-semibold leading-6 text-yellow-50">
+            Por ser la primera semana de lanzamiento, cuando el contador de planchas llegue a 2,000, se habilitará el acceso completo a las planchas de todos los cursos para los primeros 100 usuarios que completen los tres primeros pasos de <strong className="font-black uppercase text-gold">Tu ruta de recompensas</strong>.
+          </p>
+          <p className="rounded-xl border border-white/10 bg-[#071a3d]/65 p-4 text-sm leading-6 text-blue-50">
+            Durante esta primera semana continuaremos realizando mejoras en la página para ofrecer más beneficios a los estudiantes.
+          </p>
+        </div>
+      </section>
       {contributionStatus === 'approved' && (
         <p className="rounded-xl border border-emerald-300/40 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100">
           * Tu aporte fue aprobado. Sigue avanzando en la ruta de recompensas para que disfrutes de la página.
