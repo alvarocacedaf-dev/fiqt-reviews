@@ -32,6 +32,9 @@ function assessmentNumber(file: WorksheetSortEntry) {
   const numeric = name.match(/^(\d+)\b/);
   if (numeric) return Number(numeric[1]);
 
+  const labeledNumber = name.match(/\b(?:practica\s+calificada|practica|pc)\s*(?:n(?:ro|umero)?\.?\s*)?(\d+)\b/);
+  if (labeledNumber) return Number(labeledNumber[1]);
+
   for (const [word, value] of Object.entries(ORDINAL_ASSESSMENT_NUMBERS)) {
     if (new RegExp(`\\b${word}\\b`).test(name)) return value;
   }

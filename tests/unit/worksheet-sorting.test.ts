@@ -27,6 +27,24 @@ describe('compareAssessmentWorksheetFiles', () => {
     ]);
   });
 
+  it('reconoce el número después de “práctica calificada” y agrupa antes de ordenar por ciclo', () => {
+    const files = [
+      worksheet('PRÁCTICA CALIFICADA 3 DE CÁLCULO DIFERENCIAL 2012-2 PARTE 2'),
+      worksheet('PRÁCTICA CALIFICADA 1 DE CÁLCULO DIFERENCIAL 2025-1'),
+      worksheet('PRÁCTICA CALIFICADA 2 DE CÁLCULO DIFERENCIAL 2024-2'),
+      worksheet('PRÁCTICA CALIFICADA 1 DE CÁLCULO DIFERENCIAL 2018-2'),
+      worksheet('PRÁCTICA CALIFICADA 2 DE CÁLCULO DIFERENCIAL 2018-2 PARTE 1'),
+    ].sort(compareAssessmentWorksheetFiles);
+
+    expect(files.map(file => file.title)).toEqual([
+      'PRÁCTICA CALIFICADA 1 DE CÁLCULO DIFERENCIAL 2018-2',
+      'PRÁCTICA CALIFICADA 1 DE CÁLCULO DIFERENCIAL 2025-1',
+      'PRÁCTICA CALIFICADA 2 DE CÁLCULO DIFERENCIAL 2018-2 PARTE 1',
+      'PRÁCTICA CALIFICADA 2 DE CÁLCULO DIFERENCIAL 2024-2',
+      'PRÁCTICA CALIFICADA 3 DE CÁLCULO DIFERENCIAL 2012-2 PARTE 2',
+    ]);
+  });
+
   it('coloca el enunciado antes de sus soluciones y numera estas naturalmente', () => {
     const files = [
       worksheet('4 CUARTA PC DE INTEGRAL 2024-1 SOLUCION 5'),
