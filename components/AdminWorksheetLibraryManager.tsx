@@ -106,11 +106,18 @@ async function uploadLibraryFile({
   }));
   if (!prepared.key || !prepared.uploadUrl) throw new Error('El almacenamiento no devolvió una URL de subida válida.');
 
-  const uploadResponse = await fetch(prepared.uploadUrl, {
-    method: 'PUT',
-    headers: file.type ? { 'Content-Type': file.type } : undefined,
-    body: file,
-  });
+  let uploadResponse: Response;
+  try {
+    uploadResponse = await fetch(prepared.uploadUrl, {
+      method: 'PUT',
+      headers: file.type ? { 'Content-Type': file.type } : undefined,
+      body: file,
+    });
+  } catch {
+    throw new Error(
+      'No se pudo conectar con el almacenamiento. Verifica que el dominio actual esté autorizado en la política CORS de Cloudflare R2.',
+    );
+  }
   if (!uploadResponse.ok) {
     throw new Error(`El almacenamiento rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
   }
@@ -712,6 +719,16 @@ export function AdminWorksheetLibraryTree({
             <p className="mt-1 text-sm text-slate-600">
               {selectedCourse.code || 'Sin código'} — {selectedCourse.name}
             </p>
+
+            {readOnly && libraryType === 'worksheets' && selectedFiles.length > 0
+              && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
+              <a
+                className="btn-primary mt-4 inline-flex px-4 py-2.5 text-sm"
+                href={`/api/admin-worksheets/folder-download?courseId=${encodeURIComponent(selectedFolder.courseId)}&examType=${encodeURIComponent(selectedFolder.examType)}`}
+              >
+                Descargar carpeta ZIP
+              </a>
+            )}
 
             {!readOnly && uploadDraft
               && uploadDraft.courseId === selectedFolder.courseId
