@@ -44,6 +44,9 @@ export default function VerificationPage() {
       <p className="mt-5 rounded-2xl bg-amber-50 p-4 text-sm leading-6 text-amber-950">
         Para tu verificación, envía una imagen que demuestre que llevaste el curso con el profesor correspondiente. Sigue esta guía para obtenerla desde INTRALU.
       </p>
+      <p className="mt-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-950">
+        En cualquier momento puedes verificar tus cursos para reseñar, pero recuerda que, para aprovechar todos los beneficios de la página, tienes que seguir los pasos indicados en <strong className="font-black uppercase text-royal">Tu ruta de recompensas</strong>.
+      </p>
 
       <div className="mt-6 grid gap-5 md:grid-cols-2">
         {steps.map((step, index) => (
