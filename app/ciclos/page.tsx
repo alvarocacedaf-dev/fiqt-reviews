@@ -136,32 +136,49 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
     { goal: REWARD_THRESHOLDS.allAdminCourses, title: 'Acceso completo a la descarga de todas las planchas de todos los cursos' },
   ];
   const nextReward = rewards.find(reward => approvedReviews < reward.goal);
-  const progress = nextReward ? Math.min(100, Math.round((approvedReviews / nextReward.goal) * 100)) : 100;
+  const contributionApproved = contributionStatus === 'approved';
+  const contributionIsPending = contributionStatus === 'pending';
+  const contributionIsRejected = contributionStatus === 'rejected';
+  const progress = contributionApproved
+    ? nextReward ? Math.min(100, Math.round((approvedReviews / nextReward.goal) * 100)) : 100
+    : contributionIsPending ? 50 : 0;
   const remaining = nextReward ? nextReward.goal - approvedReviews : 0;
+  const progressTitle = contributionApproved
+    ? nextReward?.title ?? 'Todas las recompensas desbloqueadas'
+    : 'Aporte a la página';
+  const progressDescription = !contributionApproved
+    ? contributionIsPending
+      ? 'Tu comprobante está en revisión. Cuando sea aprobado, podrás comenzar a avanzar con tus reseñas.'
+      : contributionIsRejected
+        ? 'Tu comprobante fue rechazado. Envíalo nuevamente para completar el primer paso de tu ruta.'
+        : 'Este es el primer paso obligatorio. Realiza el aporte y envía tu comprobante para iniciar tu ruta de recompensas.'
+    : nextReward
+      ? `Te faltan ${remaining} reseña${remaining === 1 ? '' : 's'} aprobada${remaining === 1 ? '' : 's'} para alcanzar esta recompensa.`
+      : 'Completaste todas las metas actuales. Seguiremos buscando nuevas recompensas para reconocer tu aporte.';
 
   return (
     <aside className="rounded-3xl border border-white/15 bg-[#071a3d]/85 p-5 text-white shadow-card backdrop-blur lg:sticky lg:top-24">
       <p className="text-xs font-black uppercase tracking-[0.25em] text-gold">Programa de beneficios</p>
       <h2 className="mt-2 text-2xl font-black">Comparte tu experiencia y desbloquea beneficios</h2>
       <p className="mt-3 text-sm leading-6 text-blue-100">
-        Cada reseña aprobada ayuda a otros alumnos y te acerca a una nueva recompensa.
+        Primero completa tu aporte a la página. Después, cada reseña aprobada te acercará a una nueva recompensa.
       </p>
 
       <div className="mt-5 rounded-2xl bg-white/10 p-4">
         <div className="flex items-center justify-between gap-3 text-sm font-bold">
-          <span>{nextReward ? 'Próxima recompensa' : 'Ruta completada'}</span>
+          <span>{contributionApproved ? nextReward ? 'Próxima recompensa' : 'Ruta completada' : 'Primer paso obligatorio'}</span>
           <span className="rounded-full bg-gold px-3 py-1 text-xs font-black text-ink">
-            {approvedReviews} aprobada{approvedReviews === 1 ? '' : 's'}
+            {contributionApproved
+              ? `${approvedReviews} aprobada${approvedReviews === 1 ? '' : 's'}`
+              : contributionIsPending ? 'En revisión' : 'Paso 1'}
           </span>
         </div>
-        <p className="mt-3 font-black text-white">{nextReward?.title ?? 'Todas las recompensas desbloqueadas'}</p>
+        <p className="mt-3 font-black text-white">{progressTitle}</p>
         <div className="mt-3 h-3 overflow-hidden rounded-full bg-white/15">
           <div className="progress-fill h-full rounded-full bg-gradient-to-r from-gold to-yellow-300" style={{ width: `${progress}%` }} />
         </div>
         <p className="mt-3 text-xs leading-5 text-blue-100">
-          {nextReward
-            ? `Te faltan ${remaining} reseña${remaining === 1 ? '' : 's'} aprobada${remaining === 1 ? '' : 's'} para alcanzar esta recompensa.`
-            : 'Completaste todas las metas actuales. Seguiremos buscando nuevas recompensas para reconocer tu aporte.'}
+          {progressDescription}
         </p>
       </div>
 
@@ -171,8 +188,8 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
         <div className="mt-3 space-y-2">
           <ContributionModal initialStatus={contributionStatus} />
           {rewards.map(reward => {
-            const unlocked = approvedReviews >= reward.goal;
-            const isNext = nextReward?.goal === reward.goal;
+            const unlocked = contributionApproved && approvedReviews >= reward.goal;
+            const isNext = contributionApproved && nextReward?.goal === reward.goal;
             return (
               <div key={reward.goal} className={`flex items-center gap-3 rounded-xl border p-3 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : isNext ? 'border-gold/50 bg-gold/10' : 'border-white/10 bg-white/5'}`}>
                 <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
