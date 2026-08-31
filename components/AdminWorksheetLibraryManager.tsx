@@ -357,8 +357,6 @@ export function AdminWorksheetLibraryTree({
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const [pageFiles, setPageFiles] = useState<WorksheetFile[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [folderTotal, setFolderTotal] = useState(0);
   const [loadingPage, setLoadingPage] = useState(false);
   const [pageError, setPageError] = useState('');
@@ -406,33 +404,29 @@ export function AdminWorksheetLibraryTree({
       : filesFor(courseId, examType).length;
   }
 
-  async function loadPage(courseId: string, examType: ExamType, page: number) {
+  async function loadFolder(courseId: string, examType: ExamType) {
     if (!paginated) return;
     const requestId = ++pageRequestId.current;
     try {
       setLoadingPage(true);
       setPageError('');
       const response = await fetch(
-        `/api/admin/worksheets/list?courseId=${encodeURIComponent(courseId)}&examType=${encodeURIComponent(examType)}&page=${page}`,
+        `/api/admin/worksheets/list?courseId=${encodeURIComponent(courseId)}&examType=${encodeURIComponent(examType)}&all=true`,
         { cache: 'no-store' },
       );
       const result = await response.json().catch(() => ({})) as {
         error?: string;
         files?: WorksheetFile[];
-        page?: number;
         total?: number;
-        totalPages?: number;
       };
-      if (!response.ok) throw new Error(result.error || 'No se pudo cargar esta página.');
+      if (!response.ok) throw new Error(result.error || 'No se pudo cargar esta carpeta.');
       if (requestId !== pageRequestId.current) return;
       setPageFiles(result.files ?? []);
-      setCurrentPage(result.page ?? page);
       setFolderTotal(result.total ?? 0);
-      setTotalPages(result.totalPages ?? 1);
     } catch (error) {
       if (requestId !== pageRequestId.current) return;
       setPageFiles([]);
-      setPageError(error instanceof Error ? error.message : 'No se pudo cargar esta página.');
+      setPageError(error instanceof Error ? error.message : 'No se pudo cargar esta carpeta.');
     } finally {
       if (requestId === pageRequestId.current) setLoadingPage(false);
     }
@@ -449,7 +443,7 @@ export function AdminWorksheetLibraryTree({
     ));
     setSelectedFolder(isOpen ? null : { courseId, examType });
     setMessage(null);
-    if (!isOpen) void loadPage(courseId, examType, 1);
+    if (!isOpen) void loadFolder(courseId, examType);
   }
 
   function selectFiles(
@@ -515,7 +509,7 @@ export function AdminWorksheetLibraryTree({
         text: `${savedCount} archivo${savedCount === 1 ? '' : 's'} guardado${savedCount === 1 ? '' : 's'} correctamente.`,
       });
       router.refresh();
-      if (paginated) void loadPage(uploadDraft.courseId, uploadDraft.examType, 1);
+      if (paginated) void loadFolder(uploadDraft.courseId, uploadDraft.examType);
     } catch (error) {
       setMessage({
         type: 'error',
@@ -792,7 +786,13 @@ export function AdminWorksheetLibraryTree({
               </p>
             )}
 
-            <div className="mt-5 space-y-3">
+            {paginated && !loadingPage && !pageError && folderTotal > 0 && (
+              <p className="mt-4 text-xs font-bold text-slate-600">
+                {folderTotal} archivo{folderTotal === 1 ? '' : 's'} en esta carpeta
+              </p>
+            )}
+
+            <div className="mt-5 max-h-[70vh] space-y-3 overflow-y-auto overscroll-contain pr-2">
               {paginated && loadingPage && (
                 <div className="rounded-2xl bg-blue-50 p-6 text-center text-sm font-bold text-royal">
                   Cargando archivos…
@@ -847,7 +847,7 @@ export function AdminWorksheetLibraryTree({
                         <AdminWorksheetDeleteButton
                           fileId={file.id}
                           libraryType={libraryType}
-                          onDeleted={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage)}
+                          onDeleted={() => selectedFolder && loadFolder(selectedFolder.courseId, selectedFolder.examType)}
                           storageProvider={file.storage_provider}
                         />
                       )}
@@ -865,32 +865,6 @@ export function AdminWorksheetLibraryTree({
                       : 'Usa + Añadir para seleccionar sus primeros archivos.'}
                   </p>
                 </div>
-              )}
-
-              {paginated && !loadingPage && !pageError && folderTotal > 0 && (
-                <nav className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4" aria-label="Paginación de archivos">
-                  <p className="text-xs font-bold text-slate-600">
-                    Página {currentPage} de {totalPages} · {folderTotal} archivo{folderTotal === 1 ? '' : 's'}
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      className="btn-secondary px-3 py-2 text-xs"
-                      disabled={currentPage <= 1}
-                      onClick={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage - 1)}
-                      type="button"
-                    >
-                      Anterior
-                    </button>
-                    <button
-                      className="btn-secondary px-3 py-2 text-xs"
-                      disabled={currentPage >= totalPages}
-                      onClick={() => selectedFolder && loadPage(selectedFolder.courseId, selectedFolder.examType, currentPage + 1)}
-                      type="button"
-                    >
-                      Siguiente
-                    </button>
-                  </div>
-                </nav>
               )}
             </div>
           </>

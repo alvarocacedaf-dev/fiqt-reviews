@@ -40,6 +40,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const courseId = searchParams.get('courseId')?.trim();
   const examType = searchParams.get('examType')?.trim();
+  const includeAll = searchParams.get('all') === 'true';
   const requestedPage = Number(searchParams.get('page') ?? '1');
 
   if (!courseId || !examType || !ALLOWED_EXAM_TYPES.has(examType)) {
@@ -78,7 +79,9 @@ export async function GET(request: Request) {
     const total = allFiles.length;
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     const page = Math.min(requestedPage, totalPages);
-    const pageFiles = allFiles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const pageFiles = includeAll
+      ? allFiles
+      : allFiles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
     const files = await Promise.all(pageFiles.map(async file => {
       if (file.storage_provider === 'r2') {
         return {
