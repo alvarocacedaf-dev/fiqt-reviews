@@ -5,6 +5,7 @@ import { PageGuideModal } from '@/components/PageGuideModal';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import {
@@ -52,6 +53,17 @@ async function getContributionStatus() {
 
   const status = data?.status;
   return status === 'pending' || status === 'approved' || status === 'rejected' ? status : null;
+}
+
+async function getWorksheetFileCount() {
+  if (!isSupabaseConfigured) return 0;
+
+  const db = createAdminClient();
+  const { count, error } = await db
+    .from('admin_worksheets')
+    .select('id', { count: 'exact', head: true });
+
+  return error ? 0 : count ?? 0;
 }
 
 async function getPrivateWorksheetSanctions() {
@@ -187,11 +199,12 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
 }
 
 export default async function CyclesPage() {
-  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions] = await Promise.all([
+  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions, worksheetFileCount] = await Promise.all([
     getCycles(),
     getApprovedReviewCount(),
     getContributionStatus(),
     getPrivateWorksheetSanctions(),
+    getWorksheetFileCount(),
   ]);
 
   return (
@@ -211,6 +224,9 @@ export default async function CyclesPage() {
         )}
       </section>
       <PageGuideModal />
+      <p className="w-fit rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm">
+        Contador de planchas: <span className="text-gold">{worksheetFileCount.toLocaleString('es-PE')}</span>
+      </p>
       {contributionStatus === 'approved' && (
         <p className="rounded-xl border border-emerald-300/40 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100">
           * Tu aporte fue aprobado. Sigue avanzando en la ruta de recompensas para que disfrutes de la página.
