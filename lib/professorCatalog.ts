@@ -23,7 +23,7 @@ export const courseProfessorCatalog: CourseProfessorEntry[] = [
   { courseCode: 'BQU02', professors: ['Benites Mitma, Willman Vicente', 'Castillo Gomero, Elifio Gustavo', 'Flores Ramos, Jaime', 'Garayar Ávalos, Mario'] },
   { courseCode: 'BRC01', professors: ['Rivera Zamudio, July', 'Ruiz Gubiel, Víctor'] },
   { courseCode: 'BRN01', professors: ['Delgado Garro, Pamela', 'Ramos Balcázar, Yone'] },
-  { courseCode: 'EC618', professors: ['Carabali Gutiérrez, Félix', 'Vergara Pata, Eduardo'] },
+  { courseCode: 'EC618', professors: ['Carbajal Gutiérrez, Félix', 'Vergara Pata, Eduardo'] },
   { courseCode: 'EE103', professors: ['Vega Zapata, Eduardo'] },
   { courseCode: 'EP308', professors: ['Castillo Prado, Jorge', 'Pinglo Ramírez, Miguel'] },
   { courseCode: 'EP818', professors: ['Aguilar Loyaga, Santiago'] },
