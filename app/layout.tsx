@@ -14,12 +14,12 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: 'FIQT Reviews',
   description: 'Reseñas académicas independientes para FIQT.',
-  applicationName: 'FIQT Reviews',
+  applicationName: 'FIQT',
   manifest: '/manifest.webmanifest',
   formatDetection: { telephone: false },
   appleWebApp: {
     capable: true,
-    title: 'FIQT Reviews',
+    title: 'FIQT',
     statusBarStyle: 'black-translucent',
   },
   icons: {
