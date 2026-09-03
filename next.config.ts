@@ -35,6 +35,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Safari 17 must receive PWA metadata in the initial <head> when installing.
+  // Disable metadata streaming, not page/content streaming.
+  htmlLimitedBots: /.*/,
   images: {
     remotePatterns: [{ protocol: 'https', hostname: '**.supabase.co' }],
   },
