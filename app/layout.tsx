@@ -12,7 +12,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'FIQT Reviews',
+  title: 'FIQT',
   description: 'Reseñas académicas independientes para FIQT.',
   applicationName: 'FIQT',
   manifest: '/manifest.webmanifest',
