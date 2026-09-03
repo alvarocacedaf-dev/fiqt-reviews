@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fiqt-reviews-static-v2';
+const CACHE_NAME = 'fiqt-reviews-static-v3';
 const PRECACHE_URLS = [
   '/manifest.webmanifest',
   '/icons/icon-192.png',
