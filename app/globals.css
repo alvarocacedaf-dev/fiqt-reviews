@@ -131,6 +131,10 @@ html.pwa-standalone:not(.pwa-content-ready) .page-shell {
   visibility: hidden;
 }
 
+html.pwa-splash-skip .pwa-launch-splash {
+  display: none;
+}
+
 .pwa-launch-splash {
   position: fixed;
   inset: 0;

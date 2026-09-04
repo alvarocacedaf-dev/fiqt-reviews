@@ -6,6 +6,9 @@ import { flushSync } from 'react-dom';
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
 const SPLASH_DURATION_MS = 7000;
+const SPLASH_RETURN_AFTER_MS = 30 * 60 * 1000;
+const SESSION_KEY = 'fiqt-pwa-splash-shown';
+const HIDDEN_AT_KEY = 'fiqt-pwa-hidden-at';
 
 export function PwaLaunchSplash() {
   // Se renderiza desde el HTML inicial para que iOS no muestre un vacío negro
@@ -23,8 +26,6 @@ export function PwaLaunchSplash() {
       return;
     }
 
-    document.documentElement.classList.remove('pwa-content-ready');
-
     const clearTimer = () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -34,10 +35,13 @@ export function PwaLaunchSplash() {
       setVisible(false);
       document.body.classList.remove('pwa-splash-visible');
       document.documentElement.classList.add('pwa-content-ready');
+      document.documentElement.classList.add('pwa-splash-skip');
     };
 
     const beginSplash = (restart: boolean) => {
       clearTimer();
+      window.sessionStorage.setItem(SESSION_KEY, '1');
+      document.documentElement.classList.remove('pwa-content-ready', 'pwa-splash-skip');
       document.body.classList.add('pwa-splash-visible');
       flushSync(() => {
         setVisible(true);
@@ -48,27 +52,35 @@ export function PwaLaunchSplash() {
 
     const prepareAppSnapshot = () => {
       clearTimer();
+      window.localStorage.setItem(HIDDEN_AT_KEY, String(Date.now()));
       document.documentElement.classList.remove('pwa-content-ready');
+      document.documentElement.classList.remove('pwa-splash-skip');
       document.body.classList.add('pwa-splash-visible');
       flushSync(() => setVisible(true));
     };
 
     const handleVisibility = () => {
       if (document.visibilityState === 'hidden') prepareAppSnapshot();
-      else beginSplash(true);
+      else {
+        const hiddenAt = Number(window.localStorage.getItem(HIDDEN_AT_KEY));
+        window.localStorage.removeItem(HIDDEN_AT_KEY);
+        if (hiddenAt > 0 && Date.now() - hiddenAt >= SPLASH_RETURN_AFTER_MS) beginSplash(true);
+        else finishSplash();
+      }
     };
 
     document.addEventListener('visibilitychange', handleVisibility);
-    window.addEventListener('blur', prepareAppSnapshot);
-    window.addEventListener('pagehide', prepareAppSnapshot);
-    document.body.classList.add('pwa-splash-visible');
-    timerRef.current = window.setTimeout(finishSplash, SPLASH_DURATION_MS);
+    const hiddenAt = Number(window.localStorage.getItem(HIDDEN_AT_KEY));
+    const returningAfterLongAbsence = hiddenAt > 0 && Date.now() - hiddenAt >= SPLASH_RETURN_AFTER_MS;
+    const alreadyShown = window.sessionStorage.getItem(SESSION_KEY) === '1';
+    window.localStorage.removeItem(HIDDEN_AT_KEY);
+
+    if (!alreadyShown || returningAfterLongAbsence) beginSplash(false);
+    else finishSplash();
 
     return () => {
       clearTimer();
       document.removeEventListener('visibilitychange', handleVisibility);
-      window.removeEventListener('blur', prepareAppSnapshot);
-      window.removeEventListener('pagehide', prepareAppSnapshot);
       document.body.classList.remove('pwa-splash-visible');
       document.documentElement.classList.add('pwa-content-ready');
     };

@@ -49,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: "if(window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches){document.documentElement.classList.add('pwa-standalone')}",
+            __html: "try{if(window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches){var r=document.documentElement;r.classList.add('pwa-standalone');var h=Number(localStorage.getItem('fiqt-pwa-hidden-at'));var long=h>0&&Date.now()-h>=1800000;if(sessionStorage.getItem('fiqt-pwa-splash-shown')==='1'&&!long){r.classList.add('pwa-content-ready','pwa-splash-skip')}}}catch(e){}",
           }}
         />
         <link
