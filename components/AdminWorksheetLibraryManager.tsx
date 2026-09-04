@@ -370,9 +370,22 @@ export function AdminWorksheetLibraryTree({
   const [loadingPage, setLoadingPage] = useState(false);
   const [pageError, setPageError] = useState('');
   const pageRequestId = useRef(0);
+  const selectedFolderPanelRef = useRef<HTMLElement | null>(null);
+  const scrollToSelectedFolderRef = useRef(false);
   const [unlockedCourses, setUnlockedCourses] = useState(() => new Set(selectedCourseIds));
   const [selectionError, setSelectionError] = useState('');
   const [savingCourseId, setSavingCourseId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedFolder || !scrollToSelectedFolderRef.current) return;
+    scrollToSelectedFolderRef.current = false;
+
+    const frame = window.requestAnimationFrame(() => {
+      selectedFolderPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedFolder]);
 
   async function toggleCourseUnlock(courseId: string) {
     if (unlockAllCourses || selectableCourseLimit === undefined) return;
@@ -450,6 +463,7 @@ export function AdminWorksheetLibraryTree({
         ? current.filter(item => item !== key)
         : [key]
     ));
+    if (!isOpen) scrollToSelectedFolderRef.current = true;
     setSelectedFolder(isOpen ? null : { courseId, examType });
     setMessage(null);
     if (!isOpen) void loadFolder(courseId, examType);
@@ -713,7 +727,7 @@ export function AdminWorksheetLibraryTree({
         </div>
       </section>
 
-      <aside className="surface-card p-5 lg:sticky lg:top-4">
+      <aside className="surface-card scroll-mt-6 p-5 sm:scroll-mt-8 lg:sticky lg:top-4" ref={selectedFolderPanelRef}>
         {selectedFolder && selectedCourse ? (
           <>
             <p className="text-xs font-black uppercase tracking-[0.18em] text-royal">Carpeta seleccionada</p>
