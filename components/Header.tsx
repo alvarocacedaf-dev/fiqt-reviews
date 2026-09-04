@@ -260,23 +260,14 @@ if (email === 'alvaro.caceda.f@uni.pe') {
           )}
         </div>
 
-        <div className="hidden items-center gap-2 text-sm font-semibold xl:flex">
-          {isLoggedIn ? (
+        {isLoggedIn && (
+          <div className="hidden items-center gap-2 text-sm font-semibold xl:flex">
             <LoggedInLinks signOut={signOut} isAdmin={isAdmin} />
-          ) : (
-            <>
-              <a className="transition hover:text-gold" href="/registro">
-                Crear cuenta
-              </a>
-              <a className="transition hover:text-gold" href="/login">
-                Ingresar
-              </a>
-            </>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="xl:hidden">
-          {isLoggedIn ? (
+        {isLoggedIn && (
+          <div className="xl:hidden">
             <details className="group">
               <summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-xl border border-white/15 bg-white text-ink shadow-lg transition hover:bg-gold [&::-webkit-details-marker]:hidden">
                 <span className="sr-only">Abrir menú</span>
@@ -288,17 +279,8 @@ if (email === 'alvaro.caceda.f@uni.pe') {
               </summary>
               <LoggedInLinks signOut={signOut} isAdmin={isAdmin} variant="mobile" />
             </details>
-          ) : (
-            <div className="flex items-center gap-3 text-sm font-semibold">
-              <a className="transition hover:text-gold" href="/registro">
-                Crear cuenta
-              </a>
-              <a className="transition hover:text-gold" href="/login">
-                Ingresar
-              </a>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </nav>
     </header>
   );
