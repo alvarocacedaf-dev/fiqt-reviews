@@ -121,6 +121,16 @@ body.pwa-splash-visible {
   overflow: hidden;
 }
 
+@media (display-mode: standalone) {
+  html:not(.pwa-content-ready) .page-shell {
+    visibility: hidden;
+  }
+}
+
+html.pwa-standalone:not(.pwa-content-ready) .page-shell {
+  visibility: hidden;
+}
+
 .pwa-launch-splash {
   position: fixed;
   inset: 0;

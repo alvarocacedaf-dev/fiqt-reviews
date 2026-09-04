@@ -45,8 +45,13 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className={geist.variable} lang="es">
+    <html className={geist.variable} lang="es" suppressHydrationWarning>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "if(window.navigator.standalone||window.matchMedia('(display-mode: standalone)').matches){document.documentElement.classList.add('pwa-standalone')}",
+          }}
+        />
         <link
           rel="apple-touch-startup-image"
           href="/splash/iphone-11-portrait.png"

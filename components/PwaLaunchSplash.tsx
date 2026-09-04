@@ -23,6 +23,8 @@ export function PwaLaunchSplash() {
       return;
     }
 
+    document.documentElement.classList.remove('pwa-content-ready');
+
     const clearTimer = () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -31,6 +33,7 @@ export function PwaLaunchSplash() {
     const finishSplash = () => {
       setVisible(false);
       document.body.classList.remove('pwa-splash-visible');
+      document.documentElement.classList.add('pwa-content-ready');
     };
 
     const beginSplash = (restart: boolean) => {
@@ -45,6 +48,7 @@ export function PwaLaunchSplash() {
 
     const prepareAppSnapshot = () => {
       clearTimer();
+      document.documentElement.classList.remove('pwa-content-ready');
       document.body.classList.add('pwa-splash-visible');
       flushSync(() => setVisible(true));
     };
@@ -55,6 +59,7 @@ export function PwaLaunchSplash() {
     };
 
     document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', prepareAppSnapshot);
     window.addEventListener('pagehide', prepareAppSnapshot);
     document.body.classList.add('pwa-splash-visible');
     timerRef.current = window.setTimeout(finishSplash, SPLASH_DURATION_MS);
@@ -62,8 +67,10 @@ export function PwaLaunchSplash() {
     return () => {
       clearTimer();
       document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', prepareAppSnapshot);
       window.removeEventListener('pagehide', prepareAppSnapshot);
       document.body.classList.remove('pwa-splash-visible');
+      document.documentElement.classList.add('pwa-content-ready');
     };
   }, []);
 
