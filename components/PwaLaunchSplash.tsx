@@ -38,7 +38,7 @@ export function PwaLaunchSplash() {
   return (
     <div className="pwa-launch-splash" role="status" aria-label="Abriendo FIQT">
       <div className="pwa-launch-brand" aria-hidden="true">
-        <span className="pwa-launch-line" />
+        <span className="pwa-launch-line"><span /></span>
         <div className="pwa-launch-copy">
           <div className="pwa-launch-title">
             {'FIQT'.split('').map((letter, index) => (
@@ -46,7 +46,7 @@ export function PwaLaunchSplash() {
                 key={letter}
                 style={{ '--enter-delay': `${900 + index * 120}ms`, '--exit-delay': `${5480 + index * 90}ms` } as CSSProperties}
               >
-                {letter}
+                <span className="pwa-launch-letter-exit">{letter}</span>
               </span>
             ))}
           </div>
@@ -56,12 +56,12 @@ export function PwaLaunchSplash() {
                 key={`${letter}-${index}`}
                 style={{ '--enter-delay': `${1650 + index * 35}ms`, '--exit-delay': `${5380 + (index % 5) * 75}ms` } as CSSProperties}
               >
-                {letter === ' ' ? '\u00a0' : letter}
+                <span className="pwa-launch-letter-exit">{letter === ' ' ? '\u00a0' : letter}</span>
               </span>
             ))}
           </div>
-          <div className="pwa-launch-tagline">EXPERIENCIAS QUE ORIENTAN</div>
-          <span className="pwa-launch-rule" />
+          <div className="pwa-launch-tagline"><span>EXPERIENCIAS QUE ORIENTAN</span></div>
+          <span className="pwa-launch-rule"><span /></span>
         </div>
       </div>
     </div>

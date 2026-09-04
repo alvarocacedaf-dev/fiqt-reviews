@@ -144,10 +144,17 @@ body.pwa-splash-visible {
   width: clamp(0.55rem, 2vw, 0.85rem);
   height: clamp(7.6rem, 28vw, 10rem);
   border-radius: 999px;
-  background: #f6c241;
   transform-origin: top;
-  animation: pwa-line-enter 900ms 550ms cubic-bezier(0.22, 1, 0.36, 1) both,
-    pwa-letter-exit 520ms 5.72s ease-in-out both;
+  animation: pwa-line-enter 900ms 550ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pwa-launch-line > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: #f6c241;
+  animation: pwa-letter-exit 520ms 5.72s ease-in-out both;
 }
 
 .pwa-launch-copy {
@@ -168,8 +175,14 @@ body.pwa-splash-visible {
 .pwa-launch-title span {
   opacity: 0;
   transform: translateY(1.75rem);
-  animation: pwa-letter-enter 620ms var(--enter-delay) cubic-bezier(0.22, 1, 0.36, 1) forwards,
-    pwa-letter-exit 420ms var(--exit-delay) ease-in-out forwards;
+  animation: pwa-letter-enter 620ms var(--enter-delay) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.pwa-launch-title .pwa-launch-letter-exit {
+  display: block;
+  opacity: 1;
+  transform: none;
+  animation: pwa-letter-exit 420ms var(--exit-delay) ease-in-out both;
 }
 
 .pwa-launch-subtitle {
@@ -184,8 +197,13 @@ body.pwa-splash-visible {
 
 .pwa-launch-subtitle span {
   opacity: 0;
-  animation: pwa-subtitle-enter 480ms var(--enter-delay) ease-out forwards,
-    pwa-letter-exit 340ms var(--exit-delay) ease-in-out forwards;
+  animation: pwa-subtitle-enter 480ms var(--enter-delay) ease-out forwards;
+}
+
+.pwa-launch-subtitle .pwa-launch-letter-exit {
+  display: block;
+  opacity: 1;
+  animation: pwa-letter-exit 340ms var(--exit-delay) ease-in-out both;
 }
 
 .pwa-launch-tagline {
@@ -196,8 +214,12 @@ body.pwa-splash-visible {
   letter-spacing: 0.12em;
   text-align: center;
   opacity: 0;
-  animation: pwa-subtitle-enter 500ms 2.55s ease-out forwards,
-    pwa-letter-exit 400ms 5.28s ease-in-out forwards;
+  animation: pwa-subtitle-enter 500ms 2.55s ease-out forwards;
+}
+
+.pwa-launch-tagline > span {
+  display: block;
+  animation: pwa-letter-exit 400ms 5.28s ease-in-out both;
 }
 
 .pwa-launch-rule {
@@ -205,12 +227,18 @@ body.pwa-splash-visible {
   width: min(13rem, 58%);
   height: 0.24rem;
   margin-top: 0.8rem;
-  border-radius: 999px;
-  background: #f6c241;
   opacity: 0;
   transform: scaleX(0);
-  animation: pwa-rule-enter 500ms 2.7s ease-out forwards,
-    pwa-letter-exit 400ms 5.28s ease-in-out forwards;
+  animation: pwa-rule-enter 500ms 2.7s ease-out forwards;
+}
+
+.pwa-launch-rule > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: #f6c241;
+  animation: pwa-letter-exit 400ms 5.28s ease-in-out both;
 }
 
 @keyframes pwa-line-enter {
