@@ -20,12 +20,11 @@ export function PwaLaunchSplash() {
       return;
     }
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.body.classList.add('pwa-splash-visible');
     const timer = window.setTimeout(() => {
       setVisible(false);
       document.body.classList.remove('pwa-splash-visible');
-    }, reducedMotion ? 250 : SPLASH_DURATION_MS);
+    }, SPLASH_DURATION_MS);
 
     return () => {
       window.clearTimeout(timer);

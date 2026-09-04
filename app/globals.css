@@ -274,16 +274,12 @@ body.pwa-splash-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  body:not(.pwa-splash-visible) *,
+  body:not(.pwa-splash-visible) *::before,
+  body:not(.pwa-splash-visible) *::after {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-  }
-
-  .pwa-launch-splash {
-    animation: none !important;
   }
 }
