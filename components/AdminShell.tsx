@@ -19,6 +19,7 @@ const menuGroups: { label: string; links: AdminLink[] }[] = [
   {
     label: 'Usuarios',
     links: [
+      { href: '/admin/ranking-resenas', icon: 'star', label: 'Ranking de reseñas' },
       { href: '/admin/cuentas-verificadas', icon: 'users', label: 'Cuentas verificadas' },
       { href: '/admin/cursos-cuentas', icon: 'academic', label: 'Cursos de cuentas' },
       { href: '/admin/yapes', icon: 'attachment', label: 'Yapes' },
