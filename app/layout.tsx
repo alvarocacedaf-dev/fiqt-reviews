@@ -46,6 +46,13 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html className={geist.variable} lang="es">
+      <head>
+        <link
+          rel="apple-touch-startup-image"
+          href="/splash/iphone-11-portrait.png"
+          media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+        />
+      </head>
       <body className="overflow-x-clip font-sans antialiased">
         <PwaRegistration />
         <PwaLaunchSplash />

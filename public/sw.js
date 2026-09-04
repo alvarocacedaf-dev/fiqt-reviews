@@ -1,10 +1,11 @@
-const CACHE_NAME = 'fiqt-reviews-static-v5';
+const CACHE_NAME = 'fiqt-reviews-static-v6';
 const PRECACHE_URLS = [
   '/manifest.webmanifest',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-512-maskable.png',
   '/icons/apple-touch-icon.png',
+  '/splash/iphone-11-portrait.png',
 ];
 
 self.addEventListener('install', (event) => {
