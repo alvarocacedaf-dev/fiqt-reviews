@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { flushSync } from 'react-dom';
 
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
@@ -10,6 +11,8 @@ export function PwaLaunchSplash() {
   // Se renderiza desde el HTML inicial para que iOS no muestre un vacío negro
   // mientras React termina de hidratar la aplicación.
   const [visible, setVisible] = useState(true);
+  const [run, setRun] = useState(0);
+  const timerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const standalone = window.matchMedia('(display-mode: standalone)').matches
@@ -20,14 +23,46 @@ export function PwaLaunchSplash() {
       return;
     }
 
-    document.body.classList.add('pwa-splash-visible');
-    const timer = window.setTimeout(() => {
+    const clearTimer = () => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    };
+
+    const finishSplash = () => {
       setVisible(false);
       document.body.classList.remove('pwa-splash-visible');
-    }, SPLASH_DURATION_MS);
+    };
+
+    const beginSplash = (restart: boolean) => {
+      clearTimer();
+      document.body.classList.add('pwa-splash-visible');
+      flushSync(() => {
+        setVisible(true);
+        if (restart) setRun((current) => current + 1);
+      });
+      timerRef.current = window.setTimeout(finishSplash, SPLASH_DURATION_MS);
+    };
+
+    const prepareAppSnapshot = () => {
+      clearTimer();
+      document.body.classList.add('pwa-splash-visible');
+      flushSync(() => setVisible(true));
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') prepareAppSnapshot();
+      else beginSplash(true);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('pagehide', prepareAppSnapshot);
+    document.body.classList.add('pwa-splash-visible');
+    timerRef.current = window.setTimeout(finishSplash, SPLASH_DURATION_MS);
 
     return () => {
-      window.clearTimeout(timer);
+      clearTimer();
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('pagehide', prepareAppSnapshot);
       document.body.classList.remove('pwa-splash-visible');
     };
   }, []);
@@ -35,7 +70,7 @@ export function PwaLaunchSplash() {
   if (!visible) return null;
 
   return (
-    <div className="pwa-launch-splash" role="status" aria-label="Abriendo FIQT">
+    <div key={run} className="pwa-launch-splash" role="status" aria-label="Abriendo FIQT">
       <div className="pwa-launch-brand" aria-hidden="true">
         <span className="pwa-launch-line"><span /></span>
         <div className="pwa-launch-copy">
