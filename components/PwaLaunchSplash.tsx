@@ -7,18 +7,21 @@ type StandaloneNavigator = Navigator & { standalone?: boolean };
 const SPLASH_DURATION_MS = 7000;
 
 export function PwaLaunchSplash() {
-  const [visible, setVisible] = useState(false);
+  // Se renderiza desde el HTML inicial para que iOS no muestre un vacío negro
+  // mientras React termina de hidratar la aplicación.
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const standalone = window.matchMedia('(display-mode: standalone)').matches
       || Boolean((window.navigator as StandaloneNavigator).standalone);
 
-    if (!standalone) return;
+    if (!standalone) {
+      setVisible(false);
+      return;
+    }
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     document.body.classList.add('pwa-splash-visible');
-    setVisible(true);
-
     const timer = window.setTimeout(() => {
       setVisible(false);
       document.body.classList.remove('pwa-splash-visible');
