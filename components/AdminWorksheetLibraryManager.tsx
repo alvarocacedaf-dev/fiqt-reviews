@@ -7,6 +7,7 @@ import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/w
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { FolderDownloadButton } from '@/components/FolderDownloadButton';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -723,12 +724,9 @@ export function AdminWorksheetLibraryTree({
 
             {readOnly && libraryType === 'worksheets' && selectedFiles.length > 0
               && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
-              <a
-                className="btn-primary mt-4 inline-flex px-4 py-2.5 text-sm"
-                href={`/api/admin-worksheets/folder-download?courseId=${encodeURIComponent(selectedFolder.courseId)}&examType=${encodeURIComponent(selectedFolder.examType)}`}
-              >
-                Descargar carpeta ZIP
-              </a>
+              <FolderDownloadButton
+                url={`/api/admin-worksheets/folder-download?courseId=${encodeURIComponent(selectedFolder.courseId)}&examType=${encodeURIComponent(selectedFolder.examType)}`}
+              />
             )}
 
             {!readOnly && uploadDraft
