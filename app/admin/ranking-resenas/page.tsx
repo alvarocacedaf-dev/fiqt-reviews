@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin';
 import { getPagination } from '@/lib/pagination';
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
-type ReviewRow = { user_id: string; created_at: string };
+type ReviewRow = { user_id: string | null; created_at: string };
 type Profile = { id: string; full_name: string | null; student_code: string | null };
 type RankingEntry = {
   userId: string;
@@ -14,6 +14,7 @@ type RankingEntry = {
 };
 
 const DATABASE_PAGE_SIZE = 1000;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 async function loadApprovedReviews(db: Awaited<ReturnType<typeof requireAdmin>>['db']) {
   const rows: ReviewRow[] = [];
@@ -23,6 +24,7 @@ async function loadApprovedReviews(db: Awaited<ReturnType<typeof requireAdmin>>[
       .from('reviews')
       .select('user_id,created_at')
       .eq('status', 'approved')
+      .not('user_id', 'is', null)
       .order('created_at', { ascending: true })
       .range(from, from + DATABASE_PAGE_SIZE - 1);
 
@@ -41,6 +43,7 @@ export default async function ReviewRankingPage({ searchParams }: PageProps) {
 
   const totals = new Map<string, Omit<RankingEntry, 'profile'>>();
   for (const review of rows) {
+    if (!review.user_id || !UUID_PATTERN.test(review.user_id)) continue;
     const current = totals.get(review.user_id);
     totals.set(review.user_id, {
       userId: review.user_id,
