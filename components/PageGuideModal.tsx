@@ -27,7 +27,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'calendar',
     title: 'Arma tu horario',
-    description: 'Selecciona tus cursos y compara hasta tres combinaciones priorizadas por cruces, huecos y días de asistencia.',
+    description: 'Selecciona tus cursos y compara hasta tres combinaciones priorizadas por cruces, huecos y días de asistencia. También puedes fijar una sección específica de cualquier curso y se generarán los tres mejores horarios respetando esa elección.',
   },
   {
     icon: 'library',
