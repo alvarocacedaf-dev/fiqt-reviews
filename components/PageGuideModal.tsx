@@ -114,7 +114,7 @@ export function PageGuideModal() {
                         <Icon className="h-5 w-5" name={item.icon} />
                       </span>
                       <div>
-                        <p className="text-[11px] font-black uppercase tracking-wider text-amber-600">Paso {index + 1}</p>
+                        <p className="text-[11px] font-black uppercase tracking-wider text-amber-600">Guía {index + 1}</p>
                         <h3 className="mt-1 font-black text-ink">{item.title}</h3>
                         <p className="mt-1.5 text-sm leading-6 text-slate-600">{item.description}</p>
                       </div>
