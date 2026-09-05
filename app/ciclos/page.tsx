@@ -186,20 +186,26 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
         <h3 className="text-sm font-black uppercase tracking-wider text-gold">Tu ruta de recompensas</h3>
         <p className="mt-2 text-xs leading-5 text-blue-100">Solo cuentan las reseñas aprobadas, responsables y basadas en experiencias académicas reales.</p>
         <div className="mt-3 space-y-2">
-          <ContributionModal initialStatus={contributionStatus} />
-          {rewards.map(reward => {
+          <div>
+            <p className="mb-1 pl-1 text-[10px] font-black uppercase tracking-wider text-blue-200">Paso 1:</p>
+            <ContributionModal initialStatus={contributionStatus} />
+          </div>
+          {rewards.map((reward, index) => {
             const unlocked = contributionApproved && approvedReviews >= reward.goal;
             const isNext = contributionApproved && nextReward?.goal === reward.goal;
             return (
-              <div key={reward.goal} className={`flex items-center gap-3 rounded-xl border p-3 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : isNext ? 'border-gold/50 bg-gold/10' : 'border-white/10 bg-white/5'}`}>
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
-                  {reward.goal}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-black text-white">{reward.title}</p>
-                  <p className="mt-0.5 text-[11px] font-bold text-blue-200">{unlocked ? 'Desbloqueado' : isNext ? 'Próximo objetivo' : 'Bloqueado'}</p>
+              <div key={reward.goal}>
+                <p className="mb-1 pl-1 text-[10px] font-black uppercase tracking-wider text-blue-200">Paso {index + 2}:</p>
+                <div className={`flex items-center gap-3 rounded-xl border p-3 ${unlocked ? 'border-emerald-300/40 bg-emerald-400/15' : isNext ? 'border-gold/50 bg-gold/10' : 'border-white/10 bg-white/5'}`}>
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${unlocked ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
+                    {reward.goal}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-black text-white">{reward.title}</p>
+                    <p className="mt-0.5 text-[11px] font-bold text-blue-200">{unlocked ? 'Desbloqueado' : isNext ? 'Próximo objetivo' : 'Bloqueado'}</p>
+                  </div>
+                  <Icon className="h-4 w-4" name={unlocked ? 'check' : 'lock'} />
                 </div>
-                <Icon className="h-4 w-4" name={unlocked ? 'check' : 'lock'} />
               </div>
             );
           })}
