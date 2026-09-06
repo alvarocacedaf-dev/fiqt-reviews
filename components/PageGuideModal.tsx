@@ -31,8 +31,8 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   },
   {
     icon: 'library',
-    title: 'Consulta materiales y planchas',
-    description: 'Encuentra archivos organizados por curso y categoría cuando tengas habilitado el beneficio correspondiente.',
+    title: 'Consulta materiales de estudio',
+    description: 'En cada curso encontrarás su sílabo y la opción Materiales del curso, donde se publicarán diversos libros, archivos PDF, documentos de Word, presentaciones de PowerPoint de los profesores, prácticas dirigidas y mucho material de estudio. Así, los alumnos podrán revisar la teoría del curso, el contenido preparado por los profesores en sus PDF y ejercicios adicionales para practicar.',
   },
   {
     icon: 'users',
