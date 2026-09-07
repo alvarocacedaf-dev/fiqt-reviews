@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
 import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
-import { validateWorksheetFileName } from '@/lib/worksheetFileNaming';
+import { canonicalizeWorksheetFileName } from '@/lib/worksheetFileNaming';
 
 export const runtime = 'nodejs';
 
@@ -52,16 +52,17 @@ export async function POST(request: Request) {
     if (!isWorksheetExamTypeAllowed(course.code, body.examType ?? '')) {
       return NextResponse.json({ error: 'El tipo de evaluación no es válido.' }, { status: 400 });
     }
-    const namingError = validateWorksheetFileName({
+    const namingResult = canonicalizeWorksheetFileName({
       fileName: body.fileName,
       examType: body.examType ?? '',
       courseName: course.name,
+      courseCode: course.code,
       academicTerm: body.academicTerm ?? '',
     });
-    if (namingError) {
+    if (namingResult.error) {
       await deleteR2Object(key).catch(() => undefined);
       key = '';
-      return NextResponse.json({ error: namingError }, { status: 400 });
+      return NextResponse.json({ error: namingResult.error }, { status: 400 });
     }
 
     const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', {
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
 
     const { error } = await context.db.from('admin_worksheets').insert({
       course_id: courseId,
-      title: body.title.trim().slice(0, 160),
+      title: namingResult.title ?? body.title.trim().slice(0, 160),
       exam_type: body.examType,
       academic_term: body.academicTerm?.trim().slice(0, 20) || null,
       file_path: key,

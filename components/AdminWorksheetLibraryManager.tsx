@@ -8,7 +8,7 @@ import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
-import { validateWorksheetFileName, worksheetFileFormat } from '@/lib/worksheetFileNaming';
+import { canonicalizeWorksheetFileName, worksheetFileFormat } from '@/lib/worksheetFileNaming';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -222,15 +222,16 @@ export function AdminWorksheetUploadForm({
         if (file.size > maxFileSize) {
           throw new Error(`“${file.name}” supera el límite de 100 MB.`);
         }
-        const namingError = validateWorksheetFileName({
+        const namingResult = canonicalizeWorksheetFileName({
           fileName: file.name,
           examType,
           courseName: selectedCourseName,
+          courseCode: selectedCourseCode,
           academicTerm,
         });
-        if (namingError) throw new Error(namingError);
+        if (namingResult.error) throw new Error(namingResult.error);
 
-        const displayTitle = title || file.name.replace(/\.[^.]+$/, '');
+        const displayTitle = namingResult.title || title || file.name.replace(/\.[^.]+$/, '');
         await uploadLibraryFile({
           file,
           courseId,
