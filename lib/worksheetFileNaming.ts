@@ -13,10 +13,11 @@ function normalize(value: string) {
 
 export function worksheetFileFormat(examType: string, courseName: string, academicTerm: string) {
   const term = academicTerm.trim() || '[ciclo académico]';
-  if (examType === 'practice') return `Práctica calificada [número] de ${courseName} ${term}`;
-  if (examType === 'midterm') return `Examen parcial de ${courseName} ${term}`;
-  if (examType === 'final') return `Examen final de ${courseName} ${term}`;
-  if (examType === 'substitute') return `Examen sustitutorio de ${courseName} ${term}`;
+  const optional = ' — [sección, profesor, parte o solucionario opcional]';
+  if (examType === 'practice') return `Práctica calificada [número] de ${courseName} ${term}${optional}`;
+  if (examType === 'midterm') return `Examen parcial de ${courseName} ${term}${optional}`;
+  if (examType === 'final') return `Examen final de ${courseName} ${term}${optional}`;
+  if (examType === 'substitute') return `Examen sustitutorio de ${courseName} ${term}${optional}`;
   return null;
 }
 
@@ -46,8 +47,8 @@ export function validateWorksheetFileName({
         : 'examen sustitutorio de ';
 
   const valid = examType === 'practice'
-    ? new RegExp(`^${prefix}\\d+ de ${escapeRegExp(course)} ${escapeRegExp(term)}$`).test(actual)
-    : actual === `${prefix}${course} ${term}`;
+    ? new RegExp(`^${prefix}\\d+ de ${escapeRegExp(course)} ${escapeRegExp(term)}(?: .+)?$`).test(actual)
+    : actual === `${prefix}${course} ${term}` || actual.startsWith(`${prefix}${course} ${term} `);
 
   if (valid) return null;
   return `El archivo debe llamarse: “${worksheetFileFormat(examType, courseName, academicTerm)}”.`;
