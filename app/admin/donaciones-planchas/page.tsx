@@ -1,4 +1,5 @@
 import { AdminEmptyState } from '@/components/AdminEmptyState';
+import { ConfirmRejectDonationButton } from '@/components/ConfirmRejectDonationButton';
 import { requireAdmin } from '@/lib/admin';
 import { moderateWorksheetDonation } from './actions';
 
@@ -72,7 +73,7 @@ export default async function WorksheetDonationsAdminPage() {
                 <textarea className="input min-h-20" maxLength={500} name="note" placeholder="Nota de moderación (opcional)" />
                 <div className="flex flex-wrap gap-3">
                   <button className="btn-primary" name="status" type="submit" value="approved">Aprobar y publicar</button>
-                  <button className="rounded-xl bg-red-700 px-4 py-2.5 font-black text-white" name="status" type="submit" value="rejected">Rechazar</button>
+                  <ConfirmRejectDonationButton />
                 </div>
               </form>
             )}
