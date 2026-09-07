@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { getRewardProgress } from '@/lib/rewardProgress';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,21 +69,21 @@ export default async function PublicAdminWorksheetsPage() {
     { data: rawCourses, error: coursesError },
     { files, error: filesError },
     { data: profile },
-    { count: approvedReviews },
+    rewardProgress,
     { data: rawUnlocks },
   ] = await Promise.all([
     db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 10).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
     loadAllWorksheetFiles(db),
     db.from('profiles').select('role').eq('id', user.id).single(),
-    db.from('reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
+    getRewardProgress(user.id),
     db.from('admin_worksheet_course_unlocks').select('course_id').eq('user_id', user.id),
   ]);
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
   const loadError = cyclesError || coursesError || filesError;
-  const reviewCount = approvedReviews ?? 0;
+  const reviewCount = rewardProgress.total;
   const isAdmin = profile?.role === 'admin';
   const selectionLimit = isAdmin || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
     ? courses.length

@@ -92,6 +92,7 @@ async function uploadLibraryFile({
   examType,
   academicTerm,
   libraryType,
+  apiBaseOverride,
 }: {
   file: File;
   courseId: string;
@@ -99,8 +100,9 @@ async function uploadLibraryFile({
   examType: ExamType;
   academicTerm: string;
   libraryType: LibraryType;
+  apiBaseOverride?: string;
 }) {
-  const apiBase = libraryType === 'materials' ? '/api/admin/course-materials' : '/api/admin/worksheets';
+  const apiBase = apiBaseOverride ?? (libraryType === 'materials' ? '/api/admin/course-materials' : '/api/admin/worksheets');
   const prepared = await readApiResponse(await fetch(`${apiBase}/upload-url`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -156,9 +158,13 @@ function formatBytes(value: number) {
 export function AdminWorksheetUploadForm({
   courses,
   libraryType = 'worksheets',
+  apiBaseOverride,
+  submitLabel,
 }: {
   courses: CourseOption[];
   libraryType?: LibraryType;
+  apiBaseOverride?: string;
+  submitLabel?: string;
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
@@ -222,6 +228,7 @@ export function AdminWorksheetUploadForm({
           examType: examType as ExamType,
           academicTerm,
           libraryType,
+          apiBaseOverride,
         });
       }
 
@@ -322,7 +329,7 @@ export function AdminWorksheetUploadForm({
       )}
 
       <button className="btn-primary justify-self-start" disabled={pending} type="submit">
-        {pending ? 'Guardando archivos…' : 'Guardar en la carpeta'}
+        {pending ? 'Guardando archivos…' : submitLabel ?? 'Guardar en la carpeta'}
       </button>
     </form>
   );

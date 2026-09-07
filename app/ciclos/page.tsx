@@ -2,12 +2,14 @@ import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
 import { ContributionModal } from '@/components/ContributionModal';
 import { PageGuideModal } from '@/components/PageGuideModal';
+import { WorksheetDonationModal } from '@/components/WorksheetDonationModal';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { getRewardProgress } from '@/lib/rewardProgress';
 import {
   getWorksheetSanctionState,
   seriousReportCategoryLabels,
@@ -24,13 +26,8 @@ async function getApprovedReviewCount() {
 
   if (!user) return null;
 
-  const { count } = await db
-    .from('reviews')
-    .select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('status', 'approved');
-
-  return count ?? 0;
+  const progress = await getRewardProgress(user.id);
+  return progress.total;
 }
 
 async function getContributionStatus() {
@@ -64,6 +61,13 @@ async function getWorksheetFileCount() {
     .select('id', { count: 'exact', head: true });
 
   return error ? 0 : count ?? 0;
+}
+
+async function getDonationCourseOptions() {
+  if (!isSupabaseConfigured) return [];
+  const db = createAdminClient();
+  const { data } = await db.from('courses').select('id,code,name').order('cycle_id').order('code');
+  return (data ?? []) as { id: string; code: string | null; name: string }[];
 }
 
 async function getPrivateWorksheetSanctions() {
@@ -222,12 +226,13 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
 }
 
 export default async function CyclesPage() {
-  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions, worksheetFileCount] = await Promise.all([
+  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses] = await Promise.all([
     getCycles(),
     getApprovedReviewCount(),
     getContributionStatus(),
     getPrivateWorksheetSanctions(),
     getWorksheetFileCount(),
+    getDonationCourseOptions(),
   ]);
 
   return (
@@ -246,7 +251,10 @@ export default async function CyclesPage() {
           </p>
         )}
       </section>
-      <PageGuideModal />
+      <div className="flex w-fit flex-col items-start gap-3">
+        <PageGuideModal />
+        <WorksheetDonationModal courses={donationCourses} />
+      </div>
       <p className="w-fit rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm">
         Contador de planchas: <span className="text-gold">{worksheetFileCount.toLocaleString('es-PE')}</span>
       </p>

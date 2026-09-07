@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
 import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { getRewardProgress } from '@/lib/rewardProgress';
 import { createStoredZipStream } from '@/lib/zipStream';
 
 export const runtime = 'nodejs';
@@ -27,14 +28,14 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.redirect(new URL('/login?next=/planchas-administracion', request.url));
 
   const adminDb = createAdminClient();
-  const [{ data: profile }, { count }, { data: course }] = await Promise.all([
+  const [{ data: profile }, rewardProgress, { data: course }] = await Promise.all([
     adminDb.from('profiles').select('role').eq('id', user.id).single(),
-    adminDb.from('reviews').select('id', { count: 'exact', head: true }).eq('user_id', user.id).eq('status', 'approved'),
+    getRewardProgress(user.id),
     adminDb.from('courses').select('code,name').eq('id', courseId).single(),
   ]);
   if (!course) return NextResponse.json({ error: 'Curso no encontrado.' }, { status: 404 });
 
-  const approvedReviews = count ?? 0;
+  const approvedReviews = rewardProgress.total;
   let canDownload = profile?.role === 'admin' || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
   if (!canDownload && approvedReviews >= REWARD_THRESHOLDS.oneAdminCourse) {
     const { data: unlock } = await adminDb
