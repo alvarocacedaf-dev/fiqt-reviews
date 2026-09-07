@@ -56,7 +56,7 @@ const FOLDER_CATEGORIES: { type: ExamType; label: string }[] = [
 ];
 
 const UPLOAD_EXAM_CATEGORIES: { type: ExamType; label: string }[] = [
-  { type: 'practice', label: 'Práctica' },
+  { type: 'practice', label: 'Práctica calificada' },
   { type: 'quiz', label: 'Control o paso' },
   { type: 'midterm', label: 'Examen parcial' },
   { type: 'final', label: 'Examen final' },
@@ -168,16 +168,18 @@ export function AdminWorksheetUploadForm({
   submitLabel?: string;
 }) {
   const router = useRouter();
+  const isDonationForm = apiBaseOverride === '/api/worksheet-donations';
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState('');
-  const [selectedExamType, setSelectedExamType] = useState<ExamType>('other');
+  const [selectedExamType, setSelectedExamType] = useState<ExamType>(isDonationForm ? 'practice' : 'other');
   const [selectedAcademicTerm, setSelectedAcademicTerm] = useState('');
   const selectedCourseCode = courses.find(course => course.id === selectedCourseId)?.code;
   const selectedCourseName = courses.find(course => course.id === selectedCourseId)?.name ?? '[nombre del curso]';
   const availableExamCategories = UPLOAD_EXAM_CATEGORIES.filter(category => (
     isWorksheetExamTypeAllowed(selectedCourseCode, category.type)
+    && (!isDonationForm || ['practice', 'midterm', 'final', 'substitute'].includes(category.type))
   ));
 
   useEffect(() => {
