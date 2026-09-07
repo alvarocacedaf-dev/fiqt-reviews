@@ -114,15 +114,17 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
     context.textBaseline = 'top';
     context.font = 'bold 20px Arial, sans-serif';
     context.fillText(fitText(context, block.courseName, blockWidth - 24), x + 12, y + 10);
+    context.font = 'bold 15px Arial, sans-serif';
+    context.fillText(fitText(context, `Código: ${block.courseId}`, blockWidth - 24), x + 12, y + 37);
     context.font = 'bold 17px Arial, sans-serif';
-    context.fillText(fitText(context, `${block.type} · Sec. ${block.section}`, blockWidth - 24), x + 12, y + 38);
-    if (blockHeight >= 94) {
+    context.fillText(fitText(context, `${block.type} · Sec. ${block.section}`, blockWidth - 24), x + 12, y + 59);
+    if (blockHeight >= 116) {
       context.font = '16px Arial, sans-serif';
-      context.fillText(fitText(context, block.professorName ?? 'Profesor por confirmar', blockWidth - 24), x + 12, y + 64);
+      context.fillText(fitText(context, block.professorName ?? 'Profesor por confirmar', blockWidth - 24), x + 12, y + 85);
     }
-    if (blockHeight >= 120) {
+    if (blockHeight >= 142) {
       context.font = 'bold 16px Arial, sans-serif';
-      context.fillText(`${block.startTime}–${block.endTime}`, x + 12, y + 90);
+      context.fillText(`${block.startTime}–${block.endTime}`, x + 12, y + 111);
     }
     if (isLocked) {
       context.fillStyle = '#082044';

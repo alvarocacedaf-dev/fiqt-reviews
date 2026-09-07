@@ -29,9 +29,10 @@ export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour, isLo
     <article
       className={`absolute z-10 overflow-hidden rounded-xl border p-2 shadow-md ${COLORS[colorIndex(block.courseId)]} ${hasConflict ? 'ring-2 ring-red-600' : ''}`}
       style={{ top, height: height - 4, left: hasConflict ? `${2 + lane * 49}%` : '3%', width: hasConflict ? '47%' : '94%' }}
-      title={`${block.courseName} · ${block.type} · Sección ${block.section} · ${block.professorName ?? 'Profesor por confirmar'}${isLocked ? ' · Sección fija' : ''}`}
+      title={`${block.courseName} · Código ${block.courseId} · ${block.type} · Sección ${block.section} · ${block.professorName ?? 'Profesor por confirmar'}${isLocked ? ' · Sección fija' : ''}`}
     >
       <p className="line-clamp-2 text-xs font-black leading-4">{block.courseName}</p>
+      <p className="truncate text-[0.62rem] font-black opacity-80">Código: {block.courseId}</p>
       <p className="mt-0.5 truncate text-[0.66rem] font-bold">{block.type} · Sec. {block.section}</p>
       <p className="truncate text-[0.62rem] opacity-80">{block.professorName ?? 'Profesor por confirmar'}</p>
       <p className="mt-0.5 text-[0.62rem] font-bold">{block.startTime}–{block.endTime}</p>
