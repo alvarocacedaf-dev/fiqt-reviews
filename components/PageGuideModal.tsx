@@ -22,7 +22,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'unlock',
     title: 'Tu ruta de recompensas',
-    description: 'A través de esta ruta se te irán habilitando las diferentes funciones de la página. El inicio de tu ruta es el aporte indicado en esa sección; después de realizarlo, la ruta se irá completando con tus reseñas. Este aporte permite que la página pueda almacenar los diferentes archivos de planchas y materiales de estudio. Actualmente, la página ya cuenta con más de 1000 planchas y más de 500 materiales de estudio por curso, y se espera que durante esta primera semana de lanzamiento se terminen de cargar 1000 archivos adicionales. Ten en cuenta que Tu ruta de recompensas volverá a cero en cada ciclo y que las recompensas también se actualizarán.',
+    description: 'En Tu ruta de recompensas se habilitarán nuevas funciones a medida que realices el aporte inicial y publiques reseñas aprobadas. Este aporte ayuda a almacenar las planchas y materiales de estudio de la página. Actualmente contamos con más de 1000 planchas y 500 materiales de estudio, y durante la primera semana se añadirán 1000 archivos más. La ruta volverá a cero y sus recompensas se actualizarán en cada ciclo.',
   },
   {
     icon: 'calendar',
