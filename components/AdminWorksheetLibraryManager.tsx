@@ -324,8 +324,9 @@ export function AdminWorksheetUploadForm({
 
       {worksheetFileFormat(selectedExamType, selectedCourseName, selectedAcademicTerm) && (
         <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
-          <strong>Formato obligatorio del nombre:</strong>{' '}
+          <strong>Formato del nombre de tu archivo:</strong>{' '}
           {worksheetFileFormat(selectedExamType, selectedCourseName, selectedAcademicTerm)}
+          <strong className="mt-2 block">También se acepta el ciclo al inicio, el código oficial del curso y abreviaturas como PC o Susti.</strong>
         </p>
       )}
 
