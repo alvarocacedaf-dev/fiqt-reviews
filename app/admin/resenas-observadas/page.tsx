@@ -25,12 +25,6 @@ type ObservedReview = {
   professors: { full_name: string } | { full_name: string }[] | null;
 };
 
-type Profile = {
-  id: string;
-  full_name: string | null;
-  student_code: string | null;
-};
-
 function firstRelation<T>(relation: T | T[] | null): T | null {
   return Array.isArray(relation) ? relation[0] ?? null : relation;
 }
@@ -51,11 +45,6 @@ export default async function ObservedReviewsPage({ searchParams }: PageProps) {
     .range(pagination.from, pagination.to);
 
   const reviews = (rawReviews ?? []) as unknown as ObservedReview[];
-  const userIds = [...new Set(reviews.map(review => review.user_id))];
-  const { data: rawProfiles } = userIds.length
-    ? await db.from('profiles').select('id,full_name,student_code').in('id', userIds)
-    : { data: [] };
-  const profiles = Object.fromEntries(((rawProfiles ?? []) as Profile[]).map(profile => [profile.id, profile]));
   const reviewsByUser = reviews.reduce<Record<string, ObservedReview[]>>((groups, review) => {
     (groups[review.user_id] ??= []).push(review);
     return groups;
@@ -73,7 +62,6 @@ export default async function ObservedReviewsPage({ searchParams }: PageProps) {
       </header>
 
       {Object.entries(reviewsByUser).map(([userId, accountReviews]) => {
-        const profile = profiles[userId];
         const approvedCount = accountReviews.filter(review => review.status === 'approved').length;
         const rejectedCount = accountReviews.length - approvedCount;
         return (
@@ -81,15 +69,14 @@ export default async function ObservedReviewsPage({ searchParams }: PageProps) {
             <summary className="cursor-pointer list-none bg-slate-50 px-6 py-5">
               <p className="text-xs font-black uppercase tracking-wider text-royal">Cuenta</p>
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-2xl font-black text-ink">{profile?.full_name || 'Estudiante sin nombre'}</h2>
+                <h2 className="break-all font-mono text-lg font-black text-ink">{userId}</h2>
                 <span className="text-sm font-black text-royal">
                   <span className="group-open:hidden">Ver reseñas ↓</span>
                   <span className="hidden group-open:inline">Ocultar reseñas ↑</span>
                 </span>
               </div>
               <div className="mt-2 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600">
-                {profile?.student_code && <span>Código: {profile.student_code}</span>}
-                <span>ID: {userId}</span>
+                <span>UID de Supabase</span>
                 <span>{accountReviews.length} reseña{accountReviews.length === 1 ? '' : 's'}</span>
                 <span className="font-bold text-emerald-700">{approvedCount} aprobada{approvedCount === 1 ? '' : 's'}</span>
                 <span className="font-bold text-red-700">{rejectedCount} rechazada{rejectedCount === 1 ? '' : 's'}</span>
