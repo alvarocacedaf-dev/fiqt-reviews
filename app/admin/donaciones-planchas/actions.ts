@@ -9,9 +9,21 @@ export async function moderateWorksheetDonation(formData: FormData) {
   const donationId = String(formData.get('donation_id') ?? '');
   const status = String(formData.get('status') ?? '');
   const note = String(formData.get('note') ?? '').trim();
+  const actionCode = String(formData.get('action_code') ?? '').trim();
   if (!donationId || !['approved', 'rejected'].includes(status)) return;
 
   const { db } = await requireAdmin();
+  if (!actionCode) throw new Error('Ingresa el código del asistente o del propietario.');
+  const { data: codeData, error: codeError } = await db.rpc('verify_admin_action_code', {
+    p_code: actionCode,
+    p_scope: 'moderation',
+  });
+  const actor = Array.isArray(codeData)
+    ? codeData[0] as { code_id: string; actor_label: string } | undefined
+    : undefined;
+  if (codeError) throw new Error(`No se pudo validar el código: ${codeError.message}`);
+  if (!actor) throw new Error('El código es incorrecto o está desactivado.');
+
   const { data: donation } = status === 'rejected'
     ? await db.from('worksheet_donations').select('file_path').eq('id', donationId).maybeSingle()
     : { data: null };

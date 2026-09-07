@@ -70,6 +70,17 @@ export default async function WorksheetDonationsAdminPage() {
             {donation.status === 'pending' && (
               <form action={moderateWorksheetDonation} className="mt-5 grid gap-3">
                 <input name="donation_id" type="hidden" value={donation.id} />
+                <label className="text-sm font-bold text-slate-700">
+                  Código del asistente o propietario
+                  <input
+                    autoComplete="off"
+                    className="input mt-1"
+                    name="action_code"
+                    placeholder="Código obligatorio para aprobar o rechazar"
+                    required
+                    type="password"
+                  />
+                </label>
                 <textarea className="input min-h-20" maxLength={500} name="note" placeholder="Nota de moderación (opcional)" />
                 <div className="flex flex-wrap gap-3">
                   <button className="btn-primary" name="status" type="submit" value="approved">Aprobar y publicar</button>
