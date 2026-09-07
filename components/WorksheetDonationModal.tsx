@@ -28,14 +28,12 @@ export function WorksheetDonationModal({ courses }: { courses: CourseOption[] })
   return (
     <>
       <button
-        aria-disabled="true"
-        className="inline-flex cursor-not-allowed items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/60 shadow-sm"
-        disabled
+        className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
+        onClick={() => setOpen(true)}
         ref={triggerRef}
-        title="Disponible próximamente"
         type="button"
       >
-        <Icon className="h-5 w-5" name="lock" />
+        <Icon className="h-5 w-5" name="attachment" />
         Donar mis planchas
       </button>
 
