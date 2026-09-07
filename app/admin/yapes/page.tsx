@@ -144,19 +144,25 @@ export default async function AdminYapesPage({ searchParams }: PageProps) {
                 </dl>
 
                 {item.status === 'pending' ? (
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <form action={moderateContribution}>
+                  <form action={moderateContribution} className="mt-4 grid gap-3">
+                    <label className="text-sm font-bold text-slate-700">
+                      Código del asistente o propietario
+                      <input
+                        autoComplete="off"
+                        className="input mt-1"
+                        name="action_code"
+                        placeholder="Código obligatorio para aprobar o rechazar"
+                        required
+                        type="password"
+                      />
+                    </label>
+                    <div className="flex flex-wrap gap-3">
                       <input type="hidden" name="id" value={item.id} />
-                      <input type="hidden" name="status" value="approved" />
-                      <button className="btn-primary" type="submit">Aprobar aporte</button>
-                    </form>
-                    <form action={moderateContribution}>
-                      <input type="hidden" name="id" value={item.id} />
-                      <input type="hidden" name="status" value="rejected" />
-                      <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" type="submit">Rechazar</button>
-                    </form>
-                    {url && <a className="btn-secondary" href={url} target="_blank" rel="noreferrer">Abrir imagen</a>}
-                  </div>
+                      <button className="btn-primary" name="status" type="submit" value="approved">Aprobar aporte</button>
+                      <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" name="status" type="submit" value="rejected">Rechazar</button>
+                      {url && <a className="btn-secondary" href={url} target="_blank" rel="noreferrer">Abrir imagen</a>}
+                    </div>
+                  </form>
                 ) : (
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <p className="text-xs text-slate-500">Revisado: {item.reviewed_at ? new Date(item.reviewed_at).toLocaleString('es-PE') : 'Sin fecha'}</p>
