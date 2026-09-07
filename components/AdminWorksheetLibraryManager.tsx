@@ -239,7 +239,7 @@ export function AdminWorksheetUploadForm({
           courseId,
           title: displayTitle,
           examType: examType as ExamType,
-          academicTerm,
+          academicTerm: namingResult.academicTerm ?? academicTerm,
           libraryType,
           apiBaseOverride,
         });
@@ -547,13 +547,23 @@ export function AdminWorksheetLibraryTree({
           throw new Error(`“${file.name}” supera el límite de 100 MB.`);
         }
 
-        const displayTitle = uploadDraft.title.trim() || file.name.replace(/\.[^.]+$/, '');
+        const selectedCourse = courses.find(course => course.id === uploadDraft.courseId);
+        const namingResult = canonicalizeWorksheetFileName({
+          fileName: file.name,
+          examType: uploadDraft.examType,
+          courseName: selectedCourse?.name ?? '[nombre del curso]',
+          courseCode: selectedCourse?.code,
+          academicTerm: uploadDraft.academicTerm,
+        });
+        if (namingResult.error) throw new Error(namingResult.error);
+
+        const displayTitle = namingResult.title || uploadDraft.title.trim() || file.name.replace(/\.[^.]+$/, '');
         await uploadLibraryFile({
           file,
           courseId: uploadDraft.courseId,
           title: displayTitle,
           examType: uploadDraft.examType,
-          academicTerm: uploadDraft.academicTerm,
+          academicTerm: namingResult.academicTerm ?? uploadDraft.academicTerm,
           libraryType,
         });
       }

@@ -46,7 +46,7 @@ export async function POST(request: Request) {
       course_id: courseId,
       title: namingResult.title ?? body.title.trim().slice(0, 160),
       exam_type: body.examType,
-      academic_term: body.academicTerm?.trim().slice(0, 20) || null,
+      academic_term: namingResult.academicTerm?.slice(0, 20) || null,
       file_path: key,
       file_name: body.fileName,
       mime_type: body.mimeType || null,
