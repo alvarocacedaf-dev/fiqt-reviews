@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { DeleteRejectedVerificationButton } from '@/components/DeleteRejectedVerificationButton';
 import { createClient } from '@/lib/supabase/server';
 
 type Course = { id: string; code: string | null; name: string; cycle_id: number | null };
@@ -113,7 +114,10 @@ export default async function VerifiedCoursesPage() {
                     <p className="mt-3 text-xs font-semibold text-slate-500">
                       Revisada: {submission.reviewed_at ? new Date(submission.reviewed_at).toLocaleString('es-PE') : 'fecha no disponible'}
                     </p>
-                    <Link className="btn-primary mt-4" href="/verificacion">Enviar una nueva evidencia</Link>
+                    <div className="mt-4 flex flex-wrap items-start gap-3">
+                      <Link className="btn-primary" href="/verificacion">Enviar una nueva evidencia</Link>
+                      <DeleteRejectedVerificationButton submissionId={submission.id} />
+                    </div>
                   </div>
                 </div>
               </article>
