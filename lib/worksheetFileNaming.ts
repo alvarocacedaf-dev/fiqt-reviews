@@ -92,7 +92,6 @@ export function canonicalizeWorksheetFileName({
     ? escapeRegExp(term)
     : `(?:${escapeRegExp(term)}|${escapeRegExp(shortTerm)})`;
   const aliases = [...courseAliases(courseName, courseCode)].sort((left, right) => right.length - left.length);
-  const aliasPattern = aliases.map(escapeRegExp).join('|');
   const patterns: Record<string, RegExp> = {
     practice: new RegExp(`^(?:practica(?: calificada)?|pc)\\s+(\\d+)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
     midterm: new RegExp(`^(?:examen\\s+)?(?:parcial|ep)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
@@ -100,23 +99,32 @@ export function canonicalizeWorksheetFileName({
     substitute: new RegExp(`^(?:examen\\s+)?(?:sustitutorio|susti|sustitutorio|es)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
   };
   const prefixedPatterns: Record<string, RegExp> = {
-    practice: new RegExp(`^${termPattern}\\s+(?:practica(?: calificada)?|pc)\\s+(\\d+)(?:\\s+(.*?))?\\s+(${aliasPattern})$`),
-    midterm: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:parcial|ep)(?:\\s+(.*?))?\\s+(${aliasPattern})$`),
-    final: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:final|ef)(?:\\s+(.*?))?\\s+(${aliasPattern})$`),
-    substitute: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:sustitutorio|susti|es)(?:\\s+(.*?))?\\s+(${aliasPattern})$`),
+    practice: new RegExp(`^${termPattern}\\s+(?:practica(?: calificada)?|pc)\\s+(\\d+)\\s+(.+)$`),
+    midterm: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:parcial|ep)\\s+(.+)$`),
+    final: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:final|ef)\\s+(.+)$`),
+    substitute: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:sustitutorio|susti|es)\\s+(.+)$`),
   };
   const regularMatch = actual.match(patterns[examType]);
   const prefixedMatch = actual.match(prefixedPatterns[examType]);
-  const courseToken = regularMatch?.[examType === 'practice' ? 2 : 1]
-    ?? prefixedMatch?.[examType === 'practice' ? 3 : 2];
-  if ((!regularMatch && !prefixedMatch) || !courseToken || !courseAliases(courseName, courseCode).has(courseToken)) {
+  const prefixedRemainder = prefixedMatch?.[examType === 'practice' ? 2 : 1] ?? '';
+  const matchedAlias = aliases.find(alias => new RegExp(`(?:^|\\s)${escapeRegExp(alias)}(?:$|\\s)`).test(prefixedRemainder));
+  const regularCourseToken = regularMatch?.[examType === 'practice' ? 2 : 1];
+  if (
+    (!regularMatch && !prefixedMatch)
+    || (regularMatch && (!regularCourseToken || !courseAliases(courseName, courseCode).has(regularCourseToken)))
+    || (prefixedMatch && !matchedAlias)
+  ) {
     return { title: null, error: `El archivo debe llamarse: “${worksheetFileFormat(examType, courseName, resolvedAcademicTerm)}”. También se acepta el ciclo al inicio, el código oficial del curso y abreviaturas como PC o Susti.` };
   }
 
   const rawStem = fileName.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/_compressed$/i, '').trim();
   const rawTerm = rawStem.match(/\b(?:19|20)\d{2}\s*[-–_ ]\s*(?:[0-3]|I{1,3})\b/i);
   const regularExtra = rawTerm ? rawStem.slice((rawTerm.index ?? 0) + rawTerm[0].length).replace(/^[\s—–,:;-]+/, '').trim() : '';
-  const prefixedExtra = prefixedMatch?.[examType === 'practice' ? 2 : 1]?.trim() ?? '';
+  const prefixedExtra = matchedAlias
+    ? prefixedRemainder
+      .replace(new RegExp(`(?:^|\\s)${escapeRegExp(matchedAlias)}(?:$|\\s)`), ' ')
+      .trim()
+    : '';
   const extra = prefixedMatch ? prefixedExtra : regularExtra;
   const practiceNumber = regularMatch?.[1] ?? prefixedMatch?.[1];
   const base = examType === 'practice'

@@ -47,4 +47,15 @@ describe('canonicalizeWorksheetFileName', () => {
       title: 'Examen parcial de Física II 2025-1 — con sol', error: null, academicTerm: '2025-1',
     });
   });
+
+  it('acepta el código del curso antes de los detalles adicionales', () => {
+    expect(canonicalizeWorksheetFileName({
+      ...base,
+      academicTerm: '',
+      fileName: '23-1 PARCIAL BFI02 CON SOL_.pdf',
+      examType: 'midterm',
+    })).toEqual({
+      title: 'Examen parcial de Física II 2023-1 — con sol', error: null, academicTerm: '2023-1',
+    });
+  });
 });
