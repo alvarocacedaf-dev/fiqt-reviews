@@ -338,12 +338,12 @@ export default async function AdminChatReportsPage({ searchParams }: PageProps) 
                       </fieldset>
 
                       <label className="grid gap-2 text-sm font-black text-ink">
-                        Código del asistente:
+                        Código del asistente o propietario:
                         <input
                           autoComplete="off"
                           className="input"
                           name="action_code"
-                          placeholder="Código del asistente"
+                          placeholder="Código del asistente o propietario"
                           required
                           type="password"
                         />

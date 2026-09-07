@@ -13,7 +13,7 @@ const validResolutions = new Set(['founded', 'unfounded']);
 async function verifyAssistantCode(db: AdminDb, form: FormData) {
   const code = String(form.get('action_code') || '').trim();
   if (!code) {
-    return { ok: false as const, message: 'Ingresa el código del asistente.' };
+    return { ok: false as const, message: 'Ingresa el código del asistente o del propietario.' };
   }
 
   const { data, error } = await db.rpc('verify_admin_action_code', {
