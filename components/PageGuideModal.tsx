@@ -37,7 +37,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'users',
     title: 'Participa en la comunidad',
-    description: 'Usa los matches y chats de forma respetuosa para intercambiar material con otros estudiantes.',
+    description: 'Como puedes visualizar en Tu ruta de recompensas, cuando completes el paso 3 con cinco reseñas aprobadas se habilitarán las secciones Planchas y Match de planchas. En la sección Planchas podrás indicar de qué cursos tienes planchas y de cuáles quisieras conseguirlas. La página buscará coincidencias en su base de datos y, cuando encuentre a un usuario que quiera lo que tú tienes y tenga lo que tú buscas, habilitará un chat con esa persona en la sección Match de planchas para que puedan realizar el intercambio.',
   },
 ];
 
