@@ -39,6 +39,11 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
     title: 'Participa en la comunidad',
     description: 'Como puedes visualizar en Tu ruta de recompensas, cuando completes el paso 3 con cinco reseñas aprobadas se habilitarán las secciones Planchas y Match de planchas. En la sección Planchas podrás indicar de qué cursos tienes planchas y de cuáles quisieras conseguirlas. La página buscará coincidencias en su base de datos y, cuando encuentre a un usuario que quiera lo que tú tienes y tenga lo que tú buscas, habilitará un chat con esa persona en la sección Match de planchas para que puedan realizar el intercambio.',
   },
+  {
+    icon: 'library',
+    title: 'Planchas de la administración',
+    description: 'En la sección Planchas de la administración verás todas las planchas de todos los cursos que la página tiene hasta el momento. Gracias a la administración y a la propia comunidad de usuarios, estas planchas irán aumentando constantemente. Si encuentras cursos cuyas planchas deseas, también podrás intercambiar planchas con la administración en la sección Match de planchas, donde siempre tendrás un chat con la administración para hacerlo.',
+  },
 ];
 
 export function PageGuideModal() {
