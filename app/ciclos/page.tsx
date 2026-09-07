@@ -259,7 +259,7 @@ export default async function CyclesPage() {
             Queremos agradecerles el gran recibimiento que ha tenido la página durante estos primeros dos días de lanzamiento. Aún se están cargando más planchas y materiales de estudio, además de los que ya tiene la administración.
           </p>
           <p className="rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm font-semibold leading-6 text-yellow-50">
-            Por ser la primera semana de lanzamiento, cuando el contador de planchas llegue a 2,000, se habilitará el acceso completo a las planchas de todos los cursos para los primeros 100 usuarios que completen los tres primeros pasos de <strong className="font-black uppercase text-gold">Tu ruta de recompensas</strong>.
+            Por ser la primera semana de lanzamiento, cuando el contador de planchas llegue a 2,000, se habilitará el acceso completo a las planchas de todos los cursos para los primeros 50 usuarios que completen los tres primeros pasos de <strong className="font-black uppercase text-gold">Tu ruta de recompensas</strong>.
           </p>
           <p className="rounded-xl border border-white/10 bg-[#071a3d]/65 p-4 text-sm leading-6 text-blue-50">
             Durante esta primera semana continuaremos realizando mejoras en la página para ofrecer más beneficios a los estudiantes.
