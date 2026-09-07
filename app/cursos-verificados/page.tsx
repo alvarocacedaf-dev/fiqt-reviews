@@ -70,6 +70,9 @@ export default async function VerifiedCoursesPage() {
       <p className="mt-2 max-w-2xl text-slate-600">
         Aquí aparecen únicamente los cursos y profesores que fueron comprobados con tu evidencia. Puedes crear una reseña para cada combinación aprobada.
       </p>
+      <p className="mt-3 max-w-3xl text-slate-600">
+        En cualquier momento puedes reseñar los profesores que ya se te han sido aprobados, pero recuerda que, para aprovechar todos los beneficios de la página, tienes que seguir los pasos indicados en <strong>Tu ruta de recompensas</strong>.
+      </p>
 
       {error && <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 font-semibold text-red-800">No se pudieron cargar tus accesos: {error.message}</p>}
       {rejectedError && <p className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 font-semibold text-red-800">No se pudieron cargar tus verificaciones rechazadas: {rejectedError.message}</p>}
