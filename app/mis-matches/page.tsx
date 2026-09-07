@@ -247,7 +247,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Planchas</p>
         <h1 className="mt-1 text-3xl font-black text-ink">Mis matches</h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          Conversa con administración o coordina el intercambio con las personas que hicieron match contigo.
+          Conversa con la administración o coordina el intercambio con las personas que hicieron match contigo.
         </p>
         <p className="mt-1 text-xs font-semibold leading-5 text-amber-800">
           A excepción del chat anclado con la administración, todos los demás chats que generes se eliminarán
@@ -324,8 +324,8 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                   <div className="mx-auto w-full max-w-xl rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center">
                     <p className="text-sm font-black text-amber-950">Entrega previa obligatoria</p>
                     <p className="mt-2 text-sm leading-6 text-amber-900">
-                      Antes de iniciar el chat debes enviar tus archivos que intercambiarás. La otra persona no podrá
-                      descargar estos archivos a menos que también envíe sus archivos que intercambiará.
+                      Antes de iniciar el chat debes enviar los archivos que vas a intercambiar. La otra persona no podrá
+                      descargar estos archivos a menos que también envíe los archivos que va a intercambiar.
                     </p>
                     <div className="mt-3 flex justify-center gap-2 text-xs font-black">
                       <span className={`rounded-full px-3 py-1 ${
@@ -450,7 +450,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
                 <div className="border-t border-slate-200 bg-amber-50 p-4 text-center">
                   <p className="text-sm font-black text-amber-900">Esperando al estudiante</p>
                   <p className="mt-1 text-xs text-amber-800">
-                    El estudiante debe abrir este chat antes de que administración pueda enviar mensajes.
+                    El estudiante debe abrir este chat antes de que la administración pueda enviar mensajes.
                   </p>
                 </div>
               ) : (

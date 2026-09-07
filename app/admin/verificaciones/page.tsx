@@ -125,7 +125,7 @@ export default async function AdminVerifications() {
                 <input type="hidden" name="id" value={item.id} />
                 <div>
                   <h3 className="font-black text-ink">Cursos y profesores autorizados</h3>
-                  <p className="mt-1 text-sm text-slate-600">Marca cada profesor que el estudiante llevó en su curso.</p>
+                  <p className="mt-1 text-sm text-slate-600">Marca a cada profesor con quien el estudiante llevó el curso.</p>
                   <div className="surface-muted mt-3 max-h-72 space-y-2 overflow-y-auto bg-white p-3">
                     {professorCourses.map(link => (
                       <label key={`${link.course_id}-${link.professor_id}`} className="flex cursor-pointer items-start gap-3 rounded-xl p-3 hover:bg-blue-50">

@@ -32,7 +32,7 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   {
     icon: 'library',
     title: 'Consulta materiales de estudio',
-    description: 'En cada curso encontrarás su sílabo y materiales de estudio, como libros, archivos PDF de los profesores, power points y prácticas dirigidas. Así podrás repasar la teoría, revisar el contenido de los profesores y practicar con ejercicios adicionales.',
+    description: 'En cada curso encontrarás su sílabo y materiales de estudio, como libros, archivos PDF de los profesores, presentaciones de PowerPoint y prácticas dirigidas. Así podrás repasar la teoría, revisar el contenido de los profesores y practicar con ejercicios adicionales.',
   },
   {
     icon: 'users',

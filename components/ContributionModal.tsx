@@ -165,7 +165,7 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
             <div className="space-y-5 p-5 sm:p-7">
               <div className="rounded-2xl border border-blue-100 bg-white p-5 text-sm leading-6 text-slate-700 shadow-sm">
                 <p>Para iniciar tu ruta de recompensas, deberás aportar <strong>S/ 1.50</strong> a través de este QR.</p>
-                <p className="mt-3">Esto permite que la página pueda almacenar las más de 2000 planchas que se proyecta tener durante esta primera semana. Posteriormente, se espera que esta cantidad continúe creciendo con el paso del tiempo.</p>
+                <p className="mt-3">Esto permite que la página almacene las más de 2000 planchas proyectadas para esta primera semana. Posteriormente, se espera que esta cantidad continúe creciendo con el paso del tiempo.</p>
               </div>
 
               <div className="mx-auto max-w-sm overflow-hidden rounded-2xl border border-purple-200 bg-purple-700 shadow-card">

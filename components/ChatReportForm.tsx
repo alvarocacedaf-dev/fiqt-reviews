@@ -49,7 +49,7 @@ export function ChatReportForm({
     }
 
     if (files.length === 0) {
-      setError('tienes que adjuntar al menos una foto');
+      setError('Tienes que adjuntar al menos una foto.');
       return;
     }
 
