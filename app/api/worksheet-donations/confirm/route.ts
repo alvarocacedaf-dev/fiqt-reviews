@@ -3,6 +3,7 @@ import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
+import { validateWorksheetFileName } from '@/lib/worksheetFileNaming';
 
 export const runtime = 'nodejs';
 
@@ -23,8 +24,19 @@ export async function POST(request: Request) {
     }
 
     const adminDb = createAdminClient();
-    const { data: course } = await adminDb.from('courses').select('code').eq('id', courseId).maybeSingle();
+    const { data: course } = await adminDb.from('courses').select('code,name').eq('id', courseId).maybeSingle();
     if (!course || !isWorksheetExamTypeAllowed(course.code, body.examType ?? '')) return NextResponse.json({ error: 'El curso o tipo de evaluación no es válido.' }, { status: 400 });
+    const namingError = validateWorksheetFileName({
+      fileName: body.fileName,
+      examType: body.examType ?? '',
+      courseName: course.name,
+      academicTerm: body.academicTerm ?? '',
+    });
+    if (namingError) {
+      await deleteR2Object(key).catch(() => undefined);
+      key = '';
+      return NextResponse.json({ error: namingError }, { status: 400 });
+    }
     const uploadedObject = await fetch(createR2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
     if (!uploadedObject.ok || Number(uploadedObject.headers.get('content-length')) !== fileSize) throw new Error('No se confirmó la carga completa del archivo.');
 

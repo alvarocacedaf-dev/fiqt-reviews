@@ -8,6 +8,7 @@ import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
+import { validateWorksheetFileName, worksheetFileFormat } from '@/lib/worksheetFileNaming';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -172,7 +173,9 @@ export function AdminWorksheetUploadForm({
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [selectedExamType, setSelectedExamType] = useState<ExamType>('other');
+  const [selectedAcademicTerm, setSelectedAcademicTerm] = useState('');
   const selectedCourseCode = courses.find(course => course.id === selectedCourseId)?.code;
+  const selectedCourseName = courses.find(course => course.id === selectedCourseId)?.name ?? '[nombre del curso]';
   const availableExamCategories = UPLOAD_EXAM_CATEGORIES.filter(category => (
     isWorksheetExamTypeAllowed(selectedCourseCode, category.type)
   ));
@@ -219,6 +222,13 @@ export function AdminWorksheetUploadForm({
         if (file.size > maxFileSize) {
           throw new Error(`“${file.name}” supera el límite de 100 MB.`);
         }
+        const namingError = validateWorksheetFileName({
+          fileName: file.name,
+          examType,
+          courseName: selectedCourseName,
+          academicTerm,
+        });
+        if (namingError) throw new Error(namingError);
 
         const displayTitle = title || file.name.replace(/\.[^.]+$/, '');
         await uploadLibraryFile({
@@ -294,7 +304,13 @@ export function AdminWorksheetUploadForm({
 
         <label className="text-sm font-bold text-slate-700">
           Ciclo académico
-          <input className="input mt-1" maxLength={20} name="academic_term" placeholder="Ejemplo: 2026-1" />
+          <input
+            className="input mt-1"
+            maxLength={20}
+            name="academic_term"
+            onChange={event => setSelectedAcademicTerm(event.currentTarget.value)}
+            placeholder="Ejemplo: 2026-1"
+          />
         </label>
 
         <label className="text-sm font-bold text-slate-700">
@@ -302,6 +318,13 @@ export function AdminWorksheetUploadForm({
           <input className="input mt-1" maxLength={160} name="title" placeholder="Opcional si subes un solo archivo" />
         </label>
       </div>
+
+      {worksheetFileFormat(selectedExamType, selectedCourseName, selectedAcademicTerm) && (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
+          <strong>Formato obligatorio del nombre:</strong>{' '}
+          {worksheetFileFormat(selectedExamType, selectedCourseName, selectedAcademicTerm)}
+        </p>
+      )}
 
       <label className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 p-5 text-center text-sm font-bold text-royal">
         Selecciona uno o varios {libraryType === 'materials' ? 'materiales' : 'archivos de planchas'}

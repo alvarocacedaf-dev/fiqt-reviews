@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
 import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
+import { validateWorksheetFileName } from '@/lib/worksheetFileNaming';
 
 export const runtime = 'nodejs';
 
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
     }
     const { data: course } = await context.db
       .from('courses')
-      .select('code')
+      .select('code,name')
       .eq('id', courseId)
       .maybeSingle();
     if (!course) {
@@ -50,6 +51,17 @@ export async function POST(request: Request) {
     }
     if (!isWorksheetExamTypeAllowed(course.code, body.examType ?? '')) {
       return NextResponse.json({ error: 'El tipo de evaluación no es válido.' }, { status: 400 });
+    }
+    const namingError = validateWorksheetFileName({
+      fileName: body.fileName,
+      examType: body.examType ?? '',
+      courseName: course.name,
+      academicTerm: body.academicTerm ?? '',
+    });
+    if (namingError) {
+      await deleteR2Object(key).catch(() => undefined);
+      key = '';
+      return NextResponse.json({ error: namingError }, { status: 400 });
     }
 
     const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', {
