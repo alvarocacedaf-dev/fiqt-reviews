@@ -28,7 +28,8 @@ export async function POST(request: Request) {
     const uploadedObject = await fetch(createR2PresignedUrl('HEAD', key, 300), { method: 'HEAD' });
     if (!uploadedObject.ok || Number(uploadedObject.headers.get('content-length')) !== fileSize) throw new Error('No se confirmó la carga completa del archivo.');
 
-    const { error } = await adminDb.from('admin_worksheets').insert({
+    const { error } = await adminDb.from('worksheet_donations').insert({
+      user_id: user.id,
       course_id: courseId,
       title: body.title.trim().slice(0, 160),
       exam_type: body.examType,
@@ -37,11 +38,10 @@ export async function POST(request: Request) {
       file_name: body.fileName,
       mime_type: body.mimeType || null,
       file_size: fileSize,
-      uploaded_by: user.id,
-      storage_provider: 'r2',
+      status: 'pending',
     });
     if (error) throw new Error(error.message);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, message: 'La plancha fue enviada para revisión.' });
   } catch (error) {
     if (key) await deleteR2Object(key).catch(() => undefined);
     return NextResponse.json({ error: error instanceof Error ? error.message : 'No se pudo registrar la donación.' }, { status: 500 });
