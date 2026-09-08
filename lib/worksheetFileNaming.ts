@@ -92,6 +92,27 @@ export function canonicalizeWorksheetFileName({
     ? escapeRegExp(term)
     : `(?:${escapeRegExp(term)}|${escapeRegExp(shortTerm)})`;
   const aliases = [...courseAliases(courseName, courseCode)].sort((left, right) => right.length - left.length);
+  const normalizedCourseCode = normalize(courseCode ?? '');
+  function courseReference(text: string) {
+    if (normalizedCourseCode) {
+      const codeWithSection = new RegExp(`(?:^|\\s)${escapeRegExp(normalizedCourseCode)}([a-z])(?=$|\\s)`);
+      const sectionMatch = text.match(codeWithSection);
+      if (sectionMatch) {
+        return {
+          extra: text.replace(codeWithSection, ' ').trim(),
+          section: `SECCIÓN ${sectionMatch[1].toUpperCase()}`,
+        };
+      }
+    }
+
+    for (const alias of aliases) {
+      const aliasPattern = new RegExp(`(?:^|\\s)${escapeRegExp(alias)}(?=$|\\s)`);
+      if (aliasPattern.test(text)) {
+        return { extra: text.replace(aliasPattern, ' ').trim(), section: '' };
+      }
+    }
+    return null;
+  }
   const patterns: Record<string, RegExp> = {
     practice: new RegExp(`^(?:practica(?: calificada)?|pc)\\s+(\\d+)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
     midterm: new RegExp(`^(?:examen\\s+)?(?:parcial|ep)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
@@ -106,13 +127,19 @@ export function canonicalizeWorksheetFileName({
   };
   const regularMatch = actual.match(patterns[examType]);
   const prefixedMatch = actual.match(prefixedPatterns[examType]);
+  const ordinalMatch = examType === 'practice'
+    ? actual.match(new RegExp(`^(\\d+)(?:ra|da|ta|ro|do|to)?\\s+(?:practica(?: calificada)?|pc)\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`))
+    : null;
   const prefixedRemainder = prefixedMatch?.[examType === 'practice' ? 2 : 1] ?? '';
-  const matchedAlias = aliases.find(alias => new RegExp(`(?:^|\\s)${escapeRegExp(alias)}(?:$|\\s)`).test(prefixedRemainder));
   const regularCourseToken = regularMatch?.[examType === 'practice' ? 2 : 1];
+  const regularReference = regularCourseToken ? courseReference(regularCourseToken) : null;
+  const prefixedReference = prefixedMatch ? courseReference(prefixedRemainder) : null;
+  const ordinalReference = ordinalMatch ? courseReference(ordinalMatch[2]) : null;
   if (
-    (!regularMatch && !prefixedMatch)
-    || (regularMatch && (!regularCourseToken || !courseAliases(courseName, courseCode).has(regularCourseToken)))
-    || (prefixedMatch && !matchedAlias)
+    (!regularMatch && !prefixedMatch && !ordinalMatch)
+    || (regularMatch && !regularReference)
+    || (prefixedMatch && !prefixedReference)
+    || (ordinalMatch && !ordinalReference)
   ) {
     return { title: null, error: `El archivo debe llamarse: “${worksheetFileFormat(examType, courseName, resolvedAcademicTerm)}”. También se acepta el ciclo al inicio, el código oficial del curso y abreviaturas como PC o Susti.` };
   }
@@ -120,13 +147,12 @@ export function canonicalizeWorksheetFileName({
   const rawStem = fileName.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/_compressed$/i, '').trim();
   const rawTerm = rawStem.match(/\b(?:19|20)\d{2}\s*[-–_ ]\s*(?:[0-3]|I{1,3})\b/i);
   const regularExtra = rawTerm ? rawStem.slice((rawTerm.index ?? 0) + rawTerm[0].length).replace(/^[\s—–,:;-]+/, '').trim() : '';
-  const prefixedExtra = matchedAlias
-    ? prefixedRemainder
-      .replace(new RegExp(`(?:^|\\s)${escapeRegExp(matchedAlias)}(?:$|\\s)`), ' ')
-      .trim()
-    : '';
-  const extra = prefixedMatch ? prefixedExtra : regularExtra;
-  const practiceNumber = regularMatch?.[1] ?? prefixedMatch?.[1];
+  const reference = ordinalReference ?? prefixedReference ?? regularReference;
+  const detectedDetails = [reference?.extra, reference?.section].filter(Boolean).join(' ');
+  const extra = ordinalMatch || prefixedMatch
+    ? detectedDetails
+    : [detectedDetails, regularExtra].filter(Boolean).join(' ');
+  const practiceNumber = regularMatch?.[1] ?? prefixedMatch?.[1] ?? ordinalMatch?.[1];
   const base = examType === 'practice'
     ? `Práctica calificada ${practiceNumber} de ${courseName} ${resolvedAcademicTerm}`
     : `${examType === 'midterm' ? 'Examen parcial' : examType === 'final' ? 'Examen final' : 'Examen sustitutorio'} de ${courseName} ${resolvedAcademicTerm}`;

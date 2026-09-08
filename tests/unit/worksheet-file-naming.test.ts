@@ -58,4 +58,32 @@ describe('canonicalizeWorksheetFileName', () => {
       title: 'Examen parcial de Física II 2023-1 — con sol', error: null, academicTerm: '2023-1',
     });
   });
+
+  it('acepta el ordinal antes de PC y una sección unida al código', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Matemáticas Básicas',
+      courseCode: 'BMA04',
+      academicTerm: '',
+      fileName: '1ra PC BMA04B 25-2.pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 1 de Matemáticas Básicas 2025-2 — SECCIÓN B',
+      error: null,
+      academicTerm: '2025-2',
+    });
+  });
+
+  it('acepta 2da como número de práctica', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Matemáticas Básicas',
+      courseCode: 'BMA04',
+      academicTerm: '',
+      fileName: '2da PC BMA04B 25-2.pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 2 de Matemáticas Básicas 2025-2 — SECCIÓN B',
+      error: null,
+      academicTerm: '2025-2',
+    });
+  });
 });
