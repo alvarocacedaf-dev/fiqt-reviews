@@ -86,4 +86,32 @@ describe('canonicalizeWorksheetFileName', () => {
       academicTerm: '2025-2',
     });
   });
+
+  it('conserva SOLUCIONARIO después del ciclo y descarta el DE gramatical', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Física II',
+      courseCode: 'BFI02',
+      academicTerm: '',
+      fileName: '2 PC DE FÍSICA 2 2018-1 SOLUCIONARIO.pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 2 de Física II 2018-1 — SOLUCIONARIO',
+      error: null,
+      academicTerm: '2018-1',
+    });
+  });
+
+  it('normaliza una práctica sin detalles posteriores al ciclo', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Física II',
+      courseCode: 'BFI02',
+      academicTerm: '',
+      fileName: '5 PC DE FÍSICA 2 2018-1.pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 5 de Física II 2018-1',
+      error: null,
+      academicTerm: '2018-1',
+    });
+  });
 });

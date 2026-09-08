@@ -145,11 +145,15 @@ export function canonicalizeWorksheetFileName({
   }
 
   const rawStem = fileName.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/_compressed$/i, '').trim();
-  const rawTerm = rawStem.match(/\b(?:19|20)\d{2}\s*[-–_ ]\s*(?:[0-3]|I{1,3})\b/i);
+  const rawTerm = rawStem.match(/\b(?:(?:19|20)?\d{2})\s*[-–_ ]\s*(?:[0-3]|I{1,3})\b/i);
   const regularExtra = rawTerm ? rawStem.slice((rawTerm.index ?? 0) + rawTerm[0].length).replace(/^[\s—–,:;-]+/, '').trim() : '';
   const reference = ordinalReference ?? prefixedReference ?? regularReference;
-  const detectedDetails = [reference?.extra, reference?.section].filter(Boolean).join(' ');
-  const extra = ordinalMatch || prefixedMatch
+  const referenceExtra = reference?.extra
+    .replace(/^(?:de|del)\b\s*/i, '')
+    .replace(/\s*\b(?:de|del)$/i, '')
+    .trim();
+  const detectedDetails = [referenceExtra, reference?.section].filter(Boolean).join(' ');
+  const extra = prefixedMatch
     ? detectedDetails
     : [detectedDetails, regularExtra].filter(Boolean).join(' ');
   const practiceNumber = regularMatch?.[1] ?? prefixedMatch?.[1] ?? ordinalMatch?.[1];
