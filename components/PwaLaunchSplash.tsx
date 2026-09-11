@@ -50,17 +50,12 @@ export function PwaLaunchSplash() {
       timerRef.current = window.setTimeout(finishSplash, SPLASH_DURATION_MS);
     };
 
-    const prepareAppSnapshot = () => {
-      clearTimer();
+    const rememberHiddenAt = () => {
       window.localStorage.setItem(HIDDEN_AT_KEY, String(Date.now()));
-      document.documentElement.classList.remove('pwa-content-ready');
-      document.documentElement.classList.remove('pwa-splash-skip');
-      document.body.classList.add('pwa-splash-visible');
-      flushSync(() => setVisible(true));
     };
 
     const handleVisibility = () => {
-      if (document.visibilityState === 'hidden') prepareAppSnapshot();
+      if (document.visibilityState === 'hidden') rememberHiddenAt();
       else {
         const hiddenAt = Number(window.localStorage.getItem(HIDDEN_AT_KEY));
         window.localStorage.removeItem(HIDDEN_AT_KEY);
