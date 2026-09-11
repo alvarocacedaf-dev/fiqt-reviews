@@ -240,10 +240,11 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     alreadyReportedSelectedChat = Boolean(existingReport);
   }
   const dataError = threadsError || profilesError || previewsError || selectedMessagesError || exchangeError;
+  const showMobileConversation = Boolean(requestedThread);
 
   return (
     <div className="space-y-4">
-      <header className="panel py-5">
+      <header className={`${showMobileConversation ? 'hidden lg:block' : ''} panel py-5`}>
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Planchas</p>
         <h1 className="mt-1 text-3xl font-black text-ink">Mis matches</h1>
         <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -267,9 +268,11 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
         </p>
       )}
 
-      <section className="grid min-h-[680px] overflow-hidden rounded-3xl bg-white shadow-card lg:grid-cols-[280px_minmax(0,1fr)_270px]">
+      <section className="grid min-h-[70dvh] overflow-hidden rounded-3xl bg-white shadow-card lg:min-h-[680px] lg:grid-cols-[280px_minmax(0,1fr)_270px]">
         <ConversationList
+          className={showMobileConversation ? 'hidden lg:block' : 'block'}
           currentUserId={user.id}
+          currentPage={pagination.page}
           isAdmin={isAdmin}
           lastMessageByThread={lastMessageByThread}
           profiles={profiles}
@@ -280,11 +283,18 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
           totalThreads={threadsCount ?? threads.length}
         />
 
-        <div className="flex min-h-[620px] min-w-0 flex-col border-b border-slate-200 lg:border-b-0 lg:border-r">
+        <div className={`${showMobileConversation ? 'flex' : 'hidden lg:flex'} min-h-[70dvh] min-w-0 flex-col border-b border-slate-200 lg:min-h-[620px] lg:border-b-0 lg:border-r`}>
           {selectedThread ? (
             <>
               <header className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 bg-white px-5 py-4">
                 <div className="flex min-w-0 items-center gap-3">
+                  <a
+                    aria-label="Volver a los chats"
+                    className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-royal transition hover:bg-blue-50 lg:hidden"
+                    href={`/mis-matches?page=${pagination.page}`}
+                  >
+                    <Icon className="h-5 w-5" name="arrow-left" />
+                  </a>
                   <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-full font-black ${
                     selectedThread.kind === 'support'
                       ? 'bg-gold text-ink'
@@ -484,7 +494,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        <aside className="bg-white p-5">
+        <aside className="hidden bg-white p-5 lg:block">
           {selectedThread ? (
             <>
               <div className="text-center">
@@ -612,13 +622,15 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
           )}
         </aside>
       </section>
-      <Pagination
-        currentPage={pagination.page}
-        pageSize={pagination.pageSize}
-        pathname="/mis-matches"
-        searchParams={{ chat: query.chat, error: query.error, success: query.success }}
-        totalItems={threadsCount ?? 0}
-      />
+      <div className={showMobileConversation ? 'hidden lg:block' : ''}>
+        <Pagination
+          currentPage={pagination.page}
+          pageSize={pagination.pageSize}
+          pathname="/mis-matches"
+          searchParams={{ chat: query.chat, error: query.error, success: query.success }}
+          totalItems={threadsCount ?? 0}
+        />
+      </div>
     </div>
   );
 }
