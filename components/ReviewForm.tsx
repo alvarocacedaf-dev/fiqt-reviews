@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { containsForbiddenReviewLanguage } from '@/lib/validation';
+import { isReviewAcademicTerm, REVIEW_ACADEMIC_TERMS } from '@/lib/reviewAcademicTerms';
 
 const positiveTags = [
   'Explica claro',
@@ -129,6 +130,11 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
   async function submit(form: FormData) {
     setMessage('');
     const comment = String(form.get('comment') || '').trim();
+    const academicTerm = String(form.get('academic_term') || '').trim();
+
+    if (!isReviewAcademicTerm(academicTerm)) {
+      return setMessage('Selecciona el ciclo académico en el que llevaste el curso con este profesor.');
+    }
 
     if (containsForbiddenReviewLanguage(comment)) {
       return setMessage('Tu reseña debe enfocarse en la experiencia académica y mantener un lenguaje respetuoso.');
@@ -162,6 +168,7 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
       user_id: user.id,
       professor_id: professorId,
       course_id: courseId,
+      academic_term: academicTerm,
       recommendation: form.get('recommendation'),
       selected_tags: selectedTags,
       comment,
@@ -176,6 +183,16 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
       <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-950">
         Solo puedes reseñar si este curso fue verificado en tu cuenta. La reseña será revisada antes de hacerse pública.
       </p>
+
+      <label className="block rounded-2xl border border-slate-200 bg-white p-5 font-black text-ink">
+        ¿En qué ciclo llevaste el curso con este profesor? <span className="text-red-600">*</span>
+        <select className="input mt-3" defaultValue="" name="academic_term" required>
+          <option disabled value="">Selecciona un ciclo académico</option>
+          {REVIEW_ACADEMIC_TERMS.map(term => (
+            <option key={term} value={term}>{term}</option>
+          ))}
+        </select>
+      </label>
 
       <div className="space-y-4">
         {ratingQuestions.map(item => <RatingQuestion item={item} key={item.key} />)}

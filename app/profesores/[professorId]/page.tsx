@@ -137,6 +137,11 @@ export default async function ProfessorPage({
                   {review.recommendation === 'like' ? 'Recomendada' : 'No recomendada'}
                 </StatusBadge>
               </div>
+              {review.academic_term && (
+                <p className="mt-3 text-sm font-semibold text-slate-600">
+                  Reseña basada en el ciclo: <span className="text-royal">{review.academic_term}</span>
+                </p>
+              )}
               <p className="mt-2 text-slate-700">{review.comment}</p>
               <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-3">
                 {review.selected_tags.map(tag => (
