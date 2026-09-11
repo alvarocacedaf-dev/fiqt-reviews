@@ -35,6 +35,21 @@ export default async function ProfessorPage({
   ]);
   const isFirstCycleProfile = contextCourse?.cycle_id === 1
     && contextProfessors.some(professor => professor.id === professorId);
+  const hasValidCourseContext = Boolean(
+    courseId
+    && contextCourse
+    && contextProfessors.some(professor => professor.id === professorId),
+  );
+
+  if (!hasValidCourseContext || !courseId || !contextCourse) {
+    return (
+      <section className="panel">
+        <h1 className="text-2xl font-black text-ink">Curso no disponible</h1>
+        <p className="mt-2 text-slate-600">Abre el perfil del profesor desde el curso específico que deseas consultar.</p>
+      </section>
+    );
+  }
+
   const canViewReviews = hasGeneralReviewAccess || isFirstCycleProfile;
 
   if (!canViewReviews) {
@@ -46,7 +61,10 @@ export default async function ProfessorPage({
     );
   }
 
-  const [professor, reviews] = await Promise.all([getProfessor(professorId), getProfessorReviews(professorId)]);
+  const [professor, reviews] = await Promise.all([
+    getProfessor(professorId),
+    getProfessorReviews(professorId, courseId),
+  ]);
   let links: CourseLink[] = [];
 
   if (isSupabaseConfigured) {
@@ -73,7 +91,12 @@ export default async function ProfessorPage({
     <section className="space-y-6">
       <ContentHeader
         actions={<div className="surface-muted min-w-48 bg-white p-3"><RatingSummary reviews={reviews} /></div>}
-        description={<>Cursos asociados: {courseNames || 'Por asignar'}<span className="mt-1 block text-xs text-slate-500">Información pública referencial · Fuente: DIRCE UNI</span></>}
+        description={
+          <>
+            Curso consultado: <strong>{contextCourse.code ?? 'SIN CÓDIGO'} — {contextCourse.name}</strong>
+            <span className="mt-1 block text-xs text-slate-500">Cursos asociados: {courseNames || 'Por asignar'} · Fuente: DIRCE UNI</span>
+          </>
+        }
         eyebrow="Perfil docente"
         title={professor.full_name}
       />
@@ -101,7 +124,7 @@ export default async function ProfessorPage({
       )}
 
       <div className="panel">
-        <h2 className="text-xl font-black text-ink">Reseñas aprobadas</h2>
+        <h2 className="text-xl font-black text-ink">Reseñas aprobadas de {contextCourse.name}</h2>
         <div className="mt-5 space-y-4">
           {reviews.map(review => (
             <article key={review.id} className="surface-card-interactive p-4">
@@ -122,7 +145,7 @@ export default async function ProfessorPage({
               </div>
             </article>
           ))}
-          {!reviews.length && <p className="text-slate-500">Todavía no hay reseñas aprobadas para este docente.</p>}
+          {!reviews.length && <p className="text-slate-500">Todavía no hay reseñas aprobadas para este docente en {contextCourse.name}.</p>}
         </div>
       </div>
     </section>

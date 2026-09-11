@@ -196,7 +196,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   ]);
   const canViewReviews = hasGeneralReviewAccess || course?.cycle_id === 1;
   const rows = canViewReviews
-    ? await Promise.all(professors.map(async professor => [professor.id, await getProfessorReviews(professor.id)] as const))
+    ? await Promise.all(professors.map(async professor => [professor.id, await getProfessorReviews(professor.id, courseId)] as const))
     : [];
   const reviews = Object.fromEntries(rows);
   const syllabus = course?.code ? courseSyllabi[course.code] : null;
