@@ -144,7 +144,7 @@ html.pwa-splash-skip .pwa-launch-splash {
   min-height: 100dvh;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   background: #09234f;
-  animation: pwa-splash-finish 7s linear both;
+  animation: pwa-splash-finish 6s linear both;
 }
 
 .pwa-launch-brand {
@@ -168,7 +168,7 @@ html.pwa-splash-skip .pwa-launch-splash {
   height: 100%;
   border-radius: inherit;
   background: #f6c241;
-  animation: pwa-letter-exit 520ms 5.72s ease-in-out both;
+  animation: pwa-letter-exit 520ms 5.32s ease-in-out both;
 }
 
 .pwa-launch-copy {
@@ -233,7 +233,7 @@ html.pwa-splash-skip .pwa-launch-splash {
 
 .pwa-launch-tagline > span {
   display: block;
-  animation: pwa-letter-exit 400ms 5.28s ease-in-out both;
+  animation: pwa-letter-exit 400ms 4.88s ease-in-out both;
 }
 
 .pwa-launch-rule {
@@ -252,7 +252,7 @@ html.pwa-splash-skip .pwa-launch-splash {
   height: 100%;
   border-radius: 999px;
   background: #f6c241;
-  animation: pwa-letter-exit 400ms 5.28s ease-in-out both;
+  animation: pwa-letter-exit 400ms 4.88s ease-in-out both;
 }
 
 @keyframes pwa-line-enter {

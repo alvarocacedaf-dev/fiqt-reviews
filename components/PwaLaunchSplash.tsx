@@ -5,7 +5,7 @@ import { flushSync } from 'react-dom';
 
 type StandaloneNavigator = Navigator & { standalone?: boolean };
 
-const SPLASH_DURATION_MS = 7000;
+const SPLASH_DURATION_MS = 6000;
 const SPLASH_RETURN_AFTER_MS = 30 * 60 * 1000;
 const SESSION_KEY = 'fiqt-pwa-splash-shown';
 const HIDDEN_AT_KEY = 'fiqt-pwa-hidden-at';
@@ -92,7 +92,7 @@ export function PwaLaunchSplash() {
             {'FIQT'.split('').map((letter, index) => (
               <span
                 key={letter}
-                style={{ '--enter-delay': `${900 + index * 120}ms`, '--exit-delay': `${5480 + index * 90}ms` } as CSSProperties}
+                style={{ '--enter-delay': `${900 + index * 120}ms`, '--exit-delay': `${5080 + index * 90}ms` } as CSSProperties}
               >
                 <span className="pwa-launch-letter-exit">{letter}</span>
               </span>
@@ -102,7 +102,7 @@ export function PwaLaunchSplash() {
             {'Reviews/Planchas'.split('').map((letter, index) => (
               <span
                 key={`${letter}-${index}`}
-                style={{ '--enter-delay': `${1650 + index * 35}ms`, '--exit-delay': `${5380 + (index % 5) * 75}ms` } as CSSProperties}
+                style={{ '--enter-delay': `${1650 + index * 35}ms`, '--exit-delay': `${4980 + (index % 5) * 75}ms` } as CSSProperties}
               >
                 <span className="pwa-launch-letter-exit">{letter === ' ' ? '\u00a0' : letter}</span>
               </span>
