@@ -114,5 +114,7 @@ test.describe('cabeceras HTTP de seguridad', () => {
     expect(csp).toContain('wss://*.supabase.co');
     expect(csp).toContain('https://*.r2.cloudflarestorage.com');
     expect(csp).toContain('https://*.backblazeb2.com');
+    expect(csp).toContain("media-src 'self' blob: https://*.supabase.co https://*.r2.cloudflarestorage.com https://*.backblazeb2.com");
+    expect(csp).toContain('frame-src https://www.youtube-nocookie.com');
   });
 });
