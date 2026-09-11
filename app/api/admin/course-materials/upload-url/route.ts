@@ -5,8 +5,10 @@ import { createB2PresignedUrl } from '@/lib/b2';
 
 export const runtime = 'nodejs';
 
-const MAX_FILE_SIZE = 100 * 1024 * 1024;
-const ACCEPTED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip']);
+const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
+const VIDEO_MAX_FILE_SIZE = 1024 * 1024 * 1024;
+const VIDEO_EXTENSIONS = new Set(['.mp4', '.webm', '.m4v']);
+const ACCEPTED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip', ...VIDEO_EXTENSIONS]);
 
 function safeFileName(name: string) {
   const extension = name.includes('.') ? `.${name.split('.').pop()!.toLowerCase()}` : '';
@@ -28,7 +30,8 @@ export async function POST(request: Request) {
     const extension = fileName?.includes('.') ? `.${fileName.split('.').pop()!.toLowerCase()}` : '';
     if (!courseId || !fileName || !Number.isSafeInteger(fileSize) || fileSize < 1) return NextResponse.json({ error: 'Los datos del archivo no son válidos.' }, { status: 400 });
     if (!ACCEPTED_EXTENSIONS.has(extension)) return NextResponse.json({ error: `El formato de “${fileName}” no está permitido.` }, { status: 400 });
-    if (fileSize > MAX_FILE_SIZE) return NextResponse.json({ error: `“${fileName}” supera el límite de 100 MB.` }, { status: 400 });
+    const maxFileSize = VIDEO_EXTENSIONS.has(extension) ? VIDEO_MAX_FILE_SIZE : MATERIAL_MAX_FILE_SIZE;
+    if (fileSize > maxFileSize) return NextResponse.json({ error: `“${fileName}” supera el límite de ${VIDEO_EXTENSIONS.has(extension) ? '1 GB' : '100 MB'}.` }, { status: 400 });
 
     const { data: course } = await context.db.from('courses').select('id').eq('id', courseId).maybeSingle();
     if (!course) return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });
@@ -36,7 +39,7 @@ export async function POST(request: Request) {
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });
 
     const key = `course-materials/${courseId}/${context.user.id}/${randomUUID()}-${safeFileName(fileName)}`;
-    return NextResponse.json({ key, uploadUrl: createB2PresignedUrl('PUT', key, 900) });
+    return NextResponse.json({ key, uploadUrl: createB2PresignedUrl('PUT', key, VIDEO_EXTENSIONS.has(extension) ? 7200 : 900) });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : 'No se pudo preparar la subida a Backblaze B2.' }, { status: 500 });
   }

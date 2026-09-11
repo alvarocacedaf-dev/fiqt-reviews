@@ -16,6 +16,9 @@ export async function POST(request: Request) {
     if (findError || !file) return NextResponse.json({ error: 'No se encontró el material.' }, { status: 404 });
     if (file.storage_provider === 'b2') await deleteB2Object(file.file_path);
     else if (file.storage_provider === 'r2') await deleteR2Object(file.file_path);
+    else if (file.storage_provider === 'youtube') {
+      // Los enlaces de YouTube no tienen un objeto de almacenamiento que eliminar.
+    }
     else return NextResponse.json({ error: 'El proveedor de este archivo no es compatible.' }, { status: 409 });
     const { error: deleteError } = await context.db.from('course_materials').delete().eq('id', file.id);
     if (deleteError) throw new Error(deleteError.message);

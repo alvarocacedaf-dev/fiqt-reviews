@@ -3,7 +3,8 @@ import { getAdminApiContext } from '@/lib/adminApi';
 import { createB2PresignedUrl, deleteB2Object } from '@/lib/b2';
 
 export const runtime = 'nodejs';
-const MATERIAL_TYPES = new Set(['books', 'guided_practice', 'classes', 'other']);
+const MATERIAL_TYPES = new Set(['books', 'guided_practice', 'classes', 'videos', 'other']);
+const VIDEO_EXTENSIONS = new Set(['mp4', 'webm', 'm4v']);
 
 type ConfirmBody = { courseId?: string; title?: string; materialType?: string; academicTerm?: string; key?: string; fileName?: string; mimeType?: string; fileSize?: number };
 
@@ -18,10 +19,14 @@ export async function POST(request: Request) {
     key = body.key?.trim() ?? '';
     const fileSize = Number(body.fileSize);
     const expectedPrefix = `course-materials/${courseId}/${context.user.id}/`;
-    if (!courseId || !key.startsWith(expectedPrefix) || !body.fileName || !body.title?.trim() || !Number.isSafeInteger(fileSize) || fileSize < 1 || fileSize > 100 * 1024 * 1024) {
+    const extension = body.fileName?.split('.').pop()?.toLowerCase() ?? '';
+    const isVideo = body.materialType === 'videos' && VIDEO_EXTENSIONS.has(extension);
+    const maxFileSize = isVideo ? 1024 * 1024 * 1024 : 100 * 1024 * 1024;
+    if (!courseId || !key.startsWith(expectedPrefix) || !body.fileName || !body.title?.trim() || !Number.isSafeInteger(fileSize) || fileSize < 1 || fileSize > maxFileSize) {
       return NextResponse.json({ error: 'No se pudo validar el archivo subido.' }, { status: 400 });
     }
     if (!MATERIAL_TYPES.has(body.materialType ?? '')) return NextResponse.json({ error: 'El tipo de material no es válido.' }, { status: 400 });
+    if (body.materialType === 'videos' && !isVideo) return NextResponse.json({ error: 'Los videos deben estar en formato MP4, WebM o M4V.' }, { status: 400 });
 
     const { error: rateLimitError } = await context.db.rpc('consume_action_rate_limit', { p_action: 'course_material_upload_confirm' });
     if (rateLimitError) return NextResponse.json({ error: rateLimitError.message }, { status: 429 });

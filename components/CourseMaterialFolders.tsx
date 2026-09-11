@@ -1,9 +1,10 @@
 import { Icon } from '@/components/ui/Icon';
+import { getYouTubeEmbedUrl } from '@/lib/youtube';
 
 export type CourseMaterialFile = {
   id: string;
   title: string;
-  material_type: 'books' | 'guided_practice' | 'classes' | 'other';
+  material_type: 'books' | 'guided_practice' | 'classes' | 'videos' | 'other';
   academic_term: string | null;
   file_name: string;
   mime_type: string | null;
@@ -16,6 +17,7 @@ const CATEGORIES: { type: CourseMaterialFile['material_type']; label: string; de
   { type: 'books', label: 'Libros', description: 'Libros y textos de consulta del curso.' },
   { type: 'guided_practice', label: 'Prácticas dirigidas', description: 'Ejercicios, problemas y prácticas desarrolladas.' },
   { type: 'classes', label: 'Clases', description: 'Diapositivas, separatas y apuntes de clase.' },
+  { type: 'videos', label: 'Videos de clases', description: 'Clases grabadas que puedes reproducir en la página.' },
   { type: 'other', label: 'Otros', description: 'Material complementario y archivos adicionales.' },
 ];
 
@@ -72,11 +74,31 @@ export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }
             <div className="border-t border-slate-200 bg-slate-50 p-4 sm:p-5">
               {categoryFiles.length ? (
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {categoryFiles.map(file => (
-                    <article className="rounded-2xl border border-slate-200 bg-white p-4" key={file.id}>
+                  {categoryFiles.map(file => {
+                    const youtubeEmbedUrl = file.material_type === 'videos' && file.signed_url
+                      ? getYouTubeEmbedUrl(file.signed_url)
+                      : null;
+                    return (
+                    <article className={file.material_type === 'videos' ? 'rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2' : 'rounded-2xl border border-slate-200 bg-white p-4'} key={file.id}>
                       <h3 className="break-words text-sm font-black text-ink">{file.title}</h3>
-                      <p className="mt-1 text-xs text-slate-500">{formatBytes(file.file_size)}{file.academic_term ? ` · ${file.academic_term}` : ''}</p>
-                      {file.signed_url ? (
+                      <p className="mt-1 text-xs text-slate-500">{youtubeEmbedUrl ? 'YouTube' : formatBytes(file.file_size)}{file.academic_term ? ` · ${file.academic_term}` : ''}</p>
+                      {youtubeEmbedUrl ? (
+                        <div className="mt-3 aspect-video overflow-hidden rounded-xl bg-black">
+                          <iframe
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            className="h-full w-full"
+                            loading="lazy"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            src={youtubeEmbedUrl}
+                            title={file.title}
+                          />
+                        </div>
+                      ) : file.material_type === 'videos' && file.signed_url ? (
+                        <video className="mt-3 aspect-video w-full rounded-xl bg-black" controls playsInline preload="metadata" src={file.signed_url}>
+                          Tu navegador no puede reproducir este video.
+                        </video>
+                      ) : file.signed_url ? (
                         <a className="btn-secondary mt-3 gap-2 px-3 py-2 text-xs" href={file.signed_url} rel="noreferrer" target="_blank">
                           <Icon className="h-4 w-4" name="file" /> Abrir archivo
                         </a>
@@ -84,7 +106,8 @@ export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }
                         <span className="mt-3 inline-block rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-500">No disponible</span>
                       )}
                     </article>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="rounded-xl bg-white p-5 text-center text-sm text-slate-500">Todavía no se agregaron archivos en esta carpeta.</p>

@@ -13,14 +13,14 @@ type MaterialFile = {
   id: string;
   course_id: string;
   title: string;
-  material_type: 'books' | 'guided_practice' | 'classes' | 'other';
+  material_type: 'books' | 'guided_practice' | 'classes' | 'videos' | 'other';
   academic_term: string | null;
   file_path: string;
   file_name: string;
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'r2' | 'b2';
+  storage_provider: 'r2' | 'b2' | 'youtube';
 };
 
 export default async function AdminCourseMaterialsPage() {
@@ -50,8 +50,10 @@ export default async function AdminCourseMaterialsPage() {
     created_at: file.created_at,
     storage_provider: file.storage_provider,
     signed_url: file.storage_provider === 'b2'
-      ? (b2Configured ? createB2PresignedUrl('GET', file.file_path, 3600) : null)
-      : (r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null),
+      ? (b2Configured ? createB2PresignedUrl('GET', file.file_path, file.material_type === 'videos' ? 14400 : 3600) : null)
+      : file.storage_provider === 'youtube'
+        ? file.file_path
+        : (r2Configured ? createR2PresignedUrl('GET', file.file_path, 3600) : null),
   })));
   const bundledFiles = courses.flatMap(course => getBundledMaterialsForCourse(course.code).map(material => ({
     id: `bundled:${course.id}:${material.id}`,
@@ -94,7 +96,7 @@ export default async function AdminCourseMaterialsPage() {
           )}
           <section className="panel">
             <h2 className="text-2xl font-black text-ink">Agregar materiales</h2>
-            <p className="mt-2 text-sm text-slate-600">Selecciona el curso y clasifica cada archivo como libro, práctica dirigida, clase u otro.</p>
+            <p className="mt-2 text-sm text-slate-600">Selecciona el curso y agrega libros, prácticas, clases, videos subidos directamente o enlaces de YouTube.</p>
             <div className="mt-5"><AdminWorksheetUploadForm courses={courses} libraryType="materials" /></div>
           </section>
 

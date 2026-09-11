@@ -12,9 +12,11 @@ import { canonicalizeWorksheetFileName, worksheetFileFormat } from '@/lib/worksh
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
+const VIDEO_MAX_FILE_SIZE = 1024 * 1024 * 1024;
+const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.m4v'];
 const ACCEPTED_EXTENSIONS = [
   '.jpg', '.jpeg', '.png', '.webp', '.pdf', '.doc', '.docx',
-  '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip',
+  '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.zip', ...VIDEO_EXTENSIONS,
 ];
 
 type CourseOption = {
@@ -30,7 +32,7 @@ type CycleOption = {
   name: string;
 };
 
-type ExamType = 'practice' | 'midterm' | 'final' | 'substitute' | 'quiz' | 'other' | 'books' | 'guided_practice' | 'classes';
+type ExamType = 'practice' | 'midterm' | 'final' | 'substitute' | 'quiz' | 'other' | 'books' | 'guided_practice' | 'classes' | 'videos';
 type LibraryType = 'worksheets' | 'materials';
 
 type WorksheetFile = {
@@ -44,7 +46,7 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'supabase' | 'r2' | 'b2' | 'public';
+  storage_provider: 'supabase' | 'r2' | 'b2' | 'youtube' | 'public';
   signed_url?: string | null;
 };
 
@@ -73,6 +75,7 @@ const MATERIAL_CATEGORIES: { type: ExamType; label: string }[] = [
   { type: 'books', label: 'Libros' },
   { type: 'guided_practice', label: 'Prácticas dirigidas' },
   { type: 'classes', label: 'Clases' },
+  { type: 'videos', label: 'Videos de clases' },
   { type: 'other', label: 'Otros' },
 ];
 
@@ -175,6 +178,7 @@ export function AdminWorksheetUploadForm({
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [selectedExamType, setSelectedExamType] = useState<ExamType>(isDonationForm ? 'practice' : 'other');
   const [selectedAcademicTerm, setSelectedAcademicTerm] = useState('');
+  const [videoSource, setVideoSource] = useState<'file' | 'youtube'>('file');
   const selectedCourseCode = courses.find(course => course.id === selectedCourseId)?.code;
   const selectedCourseName = courses.find(course => course.id === selectedCourseId)?.name ?? '[nombre del curso]';
   const availableExamCategories = UPLOAD_EXAM_CATEGORIES.filter(category => (
@@ -200,10 +204,11 @@ export function AdminWorksheetUploadForm({
     const title = String(form.get('title') ?? '').trim();
     const examType = String(form.get('exam_type') ?? 'other');
     const academicTerm = String(form.get('academic_term') ?? '').trim();
+    const youtubeUrl = String(form.get('youtube_url') ?? '').trim();
     const files = form.getAll('files').filter((value): value is File => value instanceof File && value.size > 0);
 
-    if (!courseId || !files.length) {
-      setMessage({ type: 'error', text: 'Selecciona un curso y al menos un archivo.' });
+    if (!courseId || (!files.length && !(libraryType === 'materials' && selectedExamType === 'videos' && videoSource === 'youtube' && youtubeUrl))) {
+      setMessage({ type: 'error', text: 'Selecciona un curso y agrega un archivo o enlace de YouTube.' });
       return;
     }
     if (title && files.length > 1) {
@@ -215,14 +220,36 @@ export function AdminWorksheetUploadForm({
       setPending(true);
       setMessage(null);
 
+      if (libraryType === 'materials' && selectedExamType === 'videos' && videoSource === 'youtube') {
+        if (!title) throw new Error('Escribe un título para el video de YouTube.');
+        await readApiResponse(await fetch('/api/admin/course-materials/youtube', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ courseId, title, academicTerm, youtubeUrl }),
+        }));
+        formRef.current?.reset();
+        setMessage({ type: 'success', text: 'El video de YouTube se agregó correctamente.' });
+        router.refresh();
+        return;
+      }
+
       for (const file of files) {
         const extension = file.name.includes('.') ? `.${file.name.split('.').pop()!.toLowerCase()}` : '';
         if (!ACCEPTED_EXTENSIONS.includes(extension)) {
           throw new Error(`El formato de “${file.name}” no está permitido.`);
         }
-        const maxFileSize = libraryType === 'materials' ? MATERIAL_MAX_FILE_SIZE : WORKSHEET_MAX_FILE_SIZE;
+        const isVideoFile = VIDEO_EXTENSIONS.includes(extension);
+        if (libraryType === 'materials' && selectedExamType === 'videos' && !isVideoFile) {
+          throw new Error('Los videos deben estar en formato MP4, WebM o M4V.');
+        }
+        if (libraryType === 'materials' && selectedExamType !== 'videos' && isVideoFile) {
+          throw new Error('Selecciona “Videos de clases” para subir un video.');
+        }
+        const maxFileSize = libraryType === 'materials' && selectedExamType === 'videos'
+          ? VIDEO_MAX_FILE_SIZE
+          : libraryType === 'materials' ? MATERIAL_MAX_FILE_SIZE : WORKSHEET_MAX_FILE_SIZE;
         if (file.size > maxFileSize) {
-          throw new Error(`“${file.name}” supera el límite de 100 MB.`);
+          throw new Error(`“${file.name}” supera el límite de ${selectedExamType === 'videos' ? '1 GB' : '100 MB'}.`);
         }
         const namingResult = canonicalizeWorksheetFileName({
           fileName: file.name,
@@ -295,6 +322,7 @@ export function AdminWorksheetUploadForm({
                 <option value="books">Libros</option>
                 <option value="guided_practice">Prácticas dirigidas</option>
                 <option value="classes">Clases</option>
+                <option value="videos">Videos de clases</option>
                 <option value="other">Otros</option>
               </>
             ) : (
@@ -322,6 +350,28 @@ export function AdminWorksheetUploadForm({
         </label>
       </div>
 
+      {libraryType === 'materials' && selectedExamType === 'videos' && (
+        <fieldset className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <legend className="px-1 text-sm font-black text-ink">Origen del video</legend>
+          <div className="flex flex-wrap gap-5 text-sm text-slate-700">
+            <label className="flex items-center gap-2">
+              <input checked={videoSource === 'file'} onChange={() => setVideoSource('file')} type="radio" />
+              Subir video directamente
+            </label>
+            <label className="flex items-center gap-2">
+              <input checked={videoSource === 'youtube'} onChange={() => setVideoSource('youtube')} type="radio" />
+              Agregar enlace de YouTube
+            </label>
+          </div>
+          {videoSource === 'youtube' && (
+            <label className="mt-4 block text-sm font-bold text-slate-700">
+              Enlace de YouTube
+              <input className="input mt-1" name="youtube_url" placeholder="https://www.youtube.com/watch?v=..." required type="url" />
+            </label>
+          )}
+        </fieldset>
+      )}
+
       {worksheetFileFormat(selectedExamType, selectedCourseName, selectedAcademicTerm) && (
         <p className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-950">
           <strong>Formato del nombre de tu archivo:</strong>{' '}
@@ -330,6 +380,7 @@ export function AdminWorksheetUploadForm({
         </p>
       )}
 
+      {!(libraryType === 'materials' && selectedExamType === 'videos' && videoSource === 'youtube') && (
       <label className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50 p-5 text-center text-sm font-bold text-royal">
         Selecciona uno o varios {libraryType === 'materials' ? 'materiales' : 'archivos de planchas'}
         <input
@@ -341,9 +392,12 @@ export function AdminWorksheetUploadForm({
           type="file"
         />
         <span className="mt-2 block text-xs font-normal text-slate-500">
-          Imágenes, PDF, Office, TXT o ZIP. Máximo 100 MB por archivo.
+          {selectedExamType === 'videos'
+            ? 'MP4, WebM o M4V. Máximo 1 GB por video. Se recomienda MP4 con H.264 y audio AAC.'
+            : 'Imágenes, PDF, Office, TXT o ZIP. Máximo 100 MB por archivo.'}
         </span>
       </label>
+      )}
 
       {message && (
         <p className={`rounded-xl p-3 text-sm font-bold ${
@@ -544,8 +598,14 @@ export function AdminWorksheetLibraryTree({
         if (!ACCEPTED_EXTENSIONS.includes(extension)) {
           throw new Error(`El formato de “${file.name}” no está permitido.`);
         }
-        if (file.size > WORKSHEET_MAX_FILE_SIZE) {
-          throw new Error(`“${file.name}” supera el límite de 100 MB.`);
+        const maxFileSize = libraryType === 'materials' && uploadDraft.examType === 'videos'
+          ? VIDEO_MAX_FILE_SIZE
+          : WORKSHEET_MAX_FILE_SIZE;
+        if (uploadDraft.examType === 'videos' && !VIDEO_EXTENSIONS.includes(extension)) {
+          throw new Error('Los videos deben estar en formato MP4, WebM o M4V.');
+        }
+        if (file.size > maxFileSize) {
+          throw new Error(`“${file.name}” supera el límite de ${uploadDraft.examType === 'videos' ? '1 GB' : '100 MB'}.`);
         }
 
         const selectedCourse = courses.find(course => course.id === uploadDraft.courseId);
@@ -741,7 +801,7 @@ export function AdminWorksheetLibraryTree({
                                         + Añadir
                                       </label>
                                       <input
-                                        accept={ACCEPTED_EXTENSIONS.join(',')}
+                                        accept={category.type === 'videos' ? VIDEO_EXTENSIONS.join(',') : ACCEPTED_EXTENSIONS.filter(extension => !VIDEO_EXTENSIONS.includes(extension)).join(',')}
                                         className="sr-only"
                                         id={inputId}
                                         multiple
@@ -966,7 +1026,7 @@ export function AdminWorksheetDeleteButton({
 }: {
   fileId: string;
   libraryType?: LibraryType;
-  storageProvider: 'supabase' | 'r2' | 'b2';
+  storageProvider: 'supabase' | 'r2' | 'b2' | 'youtube';
   onDeleted?: () => void | Promise<void>;
 }) {
   const router = useRouter();
