@@ -85,7 +85,7 @@ async function getPrivateWorksheetSanctions() {
     getWorksheetSanctionState(db),
   ]);
 
-  if (profile?.role === 'admin' || sanctionState.error) return [];
+  if (profile?.role === 'owner' || sanctionState.error) return [];
   return sanctionState.sanctions;
 }
 

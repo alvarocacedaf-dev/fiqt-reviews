@@ -19,7 +19,7 @@ async function requireWorksheetChatAccess(
     getWorksheetSanctionState(db),
   ]);
 
-  if (profile?.role !== 'admin' && sanctionState.isPermanentlyBlocked) {
+  if (profile?.role !== 'owner' && sanctionState.isPermanentlyBlocked) {
     redirect('/ciclos');
   }
 

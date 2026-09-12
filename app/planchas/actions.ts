@@ -34,7 +34,7 @@ export async function saveWorksheetPreferences(form: FormData) {
     getWorksheetSanctionState(db),
   ]);
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === 'owner';
 
   if (profileError) redirectWithMessage('error', 'No se pudo comprobar tu tipo de cuenta.');
   if (!isAdmin && sanctionState.isPermanentlyBlocked) {

@@ -217,7 +217,7 @@ if (email === 'alvaro.caceda.f@uni.pe') {
   userName = displayNameFromUniEmail(user.email);
 }
       const { data: profile } = await db.from('profiles').select('role').eq('id', user.id).single();
-      isAdmin = profile?.role === 'admin';
+      isAdmin = profile?.role === 'admin' || profile?.role === 'owner';
     }
   }
 

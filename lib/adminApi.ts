@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { isAdministrationRole } from '@/lib/admin';
 
 export async function getAdminApiContext() {
   const db = await createClient();
@@ -6,9 +7,9 @@ export async function getAdminApiContext() {
   if (!user) return { error: 'Debes iniciar sesión.', status: 401 } as const;
 
   const { data: profile } = await db.from('profiles').select('role').eq('id', user.id).single();
-  if (profile?.role !== 'admin') {
+  if (!isAdministrationRole(profile?.role)) {
     return { error: 'No tienes permisos de administrador.', status: 403 } as const;
   }
 
-  return { db, user } as const;
+  return { db, user, role: profile.role, isOwner: profile.role === 'owner' } as const;
 }

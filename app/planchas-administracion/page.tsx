@@ -84,8 +84,8 @@ export default async function PublicAdminWorksheetsPage() {
   const courses = (rawCourses ?? []) as Course[];
   const loadError = cyclesError || coursesError || filesError;
   const reviewCount = rewardProgress.total;
-  const isAdmin = profile?.role === 'admin';
-  const selectionLimit = isAdmin || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
+  const isOwner = profile?.role === 'owner';
+  const selectionLimit = isOwner || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
     ? courses.length
     : reviewCount >= REWARD_THRESHOLDS.twoAdminCourses
       ? 2
@@ -126,7 +126,7 @@ export default async function PublicAdminWorksheetsPage() {
             readOnly
             selectableCourseLimit={selectionLimit}
             selectedCourseIds={selectedCourseIds}
-            unlockAllCourses={isAdmin || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
+            unlockAllCourses={isOwner || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
           />
         </section>
       )}

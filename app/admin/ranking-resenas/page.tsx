@@ -1,6 +1,6 @@
 import { AdminEmptyState } from '@/components/AdminEmptyState';
 import { Pagination } from '@/components/Pagination';
-import { requireAdmin } from '@/lib/admin';
+import { requireAdmin, requireOwner } from '@/lib/admin';
 import { getPagination } from '@/lib/pagination';
 
 type PageProps = { searchParams: Promise<{ page?: string }> };
@@ -38,7 +38,7 @@ async function loadApprovedReviews(db: Awaited<ReturnType<typeof requireAdmin>>[
 export default async function ReviewRankingPage({ searchParams }: PageProps) {
   const query = await searchParams;
   const pagination = getPagination(query.page);
-  const { db } = await requireAdmin();
+  const { db } = await requireOwner();
   const { rows, error } = await loadApprovedReviews(db);
 
   const totals = new Map<string, Omit<RankingEntry, 'profile'>>();

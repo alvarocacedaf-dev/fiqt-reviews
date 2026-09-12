@@ -425,6 +425,7 @@ type UploadDraft = {
 };
 
 export function AdminWorksheetLibraryTree({
+  canManageFiles = true,
   cycles,
   courses,
   files,
@@ -436,6 +437,7 @@ export function AdminWorksheetLibraryTree({
   selectedCourseIds = [],
   unlockAllCourses = false,
 }: {
+  canManageFiles?: boolean;
   cycles: CycleOption[];
   courses: CourseOption[];
   files: WorksheetFile[];
@@ -964,7 +966,7 @@ export function AdminWorksheetLibraryTree({
                     )
                   )}
 
-                  {!readOnly && (
+                  {!readOnly && canManageFiles && (
                     <div className="mt-3 flex items-start gap-2">
                       {file.signed_url ? (
                         <a className="btn-secondary px-3 py-2 text-xs" href={file.signed_url} rel="noreferrer" target="_blank">

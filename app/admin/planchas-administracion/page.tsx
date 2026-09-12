@@ -54,7 +54,7 @@ async function loadFolderCounts(db: Awaited<ReturnType<typeof requireAdmin>>['db
 }
 
 export default async function AdminWorksheetsPage() {
-  const { db } = await requireAdmin();
+  const { db, isOwner } = await requireAdmin();
   const r2Configured = isR2Configured();
   const [
     { data: rawCycles, error: cyclesError },
@@ -77,8 +77,8 @@ export default async function AdminWorksheetsPage() {
         <p className="text-sm font-black uppercase tracking-[0.2em] text-royal">Administración</p>
         <h1 className="mt-2 text-3xl font-black text-ink">Planchas de la administración</h1>
         <p className="mt-3 max-w-3xl leading-7 text-slate-600">
-          Biblioteca privada de exámenes anteriores organizada en carpetas por curso. Aquí puedes subir,
-          consultar y eliminar el material que administrará FIQT Reviews.
+          Biblioteca privada de exámenes anteriores organizada en carpetas por curso. Aquí puedes subir
+          nuevas planchas{isOwner ? ', consultar y eliminar el material que administrará FIQT Reviews' : ''}.
         </p>
       </header>
 
@@ -115,6 +115,7 @@ export default async function AdminWorksheetsPage() {
             </div>
 
             <AdminWorksheetLibraryTree
+              canManageFiles={isOwner}
               courses={courses}
               cycles={cycles}
               files={[]}

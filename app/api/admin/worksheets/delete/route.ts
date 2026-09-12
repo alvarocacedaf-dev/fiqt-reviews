@@ -9,6 +9,9 @@ export async function POST(request: Request) {
   if ('error' in context) {
     return NextResponse.json({ error: context.error }, { status: context.status });
   }
+  if (!context.isOwner) {
+    return NextResponse.json({ error: 'Solo el propietario puede eliminar planchas de la administración.' }, { status: 403 });
+  }
 
   try {
     const { fileId } = await request.json() as { fileId?: string };

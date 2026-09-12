@@ -54,9 +54,13 @@ function isActive(pathname: string, href: string) {
   return href === '/admin' ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+export function AdminShell({ children, isOwner }: { children: React.ReactNode; isOwner: boolean }) {
   const pathname = usePathname();
   const current = allLinks.find(link => isActive(pathname, link.href));
+  const visibleMenuGroups = menuGroups.map(group => ({
+    ...group,
+    links: group.links.filter(link => isOwner || link.href !== '/admin/ranking-resenas'),
+  }));
 
   return (
     <section className="grid items-start gap-6 md:grid-cols-[240px_minmax(0,1fr)]">
@@ -76,7 +80,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <nav aria-label="Navegación administrativa" className="p-3 text-sm">
           <AdminMenuLink href="/admin" icon="dashboard" label="Resumen" pathname={pathname} />
           <div className="mt-4 grid gap-4">
-            {menuGroups.map(group => (
+            {visibleMenuGroups.map(group => (
               <section key={group.label} aria-labelledby={`admin-group-${group.label}`}>
                 <p id={`admin-group-${group.label}`} className="mb-1 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">
                   {group.label}

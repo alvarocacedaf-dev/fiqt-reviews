@@ -54,7 +54,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
   ]);
 
   const approvedReviews = count ?? 0;
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === 'owner';
   const isUnlocked = isAdmin || approvedReviews >= MINIMUM_APPROVED_REVIEWS;
 
   if (profileError || (!isAdmin && countError)) {

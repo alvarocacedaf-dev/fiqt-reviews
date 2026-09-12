@@ -83,6 +83,7 @@ export async function GET(request: Request) {
       ? allFiles
       : allFiles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
     const files = await Promise.all(pageFiles.map(async file => {
+      if (!context.isOwner) return { ...file, file_path: '', signed_url: null };
       if (file.storage_provider === 'r2') {
         return {
           ...file,

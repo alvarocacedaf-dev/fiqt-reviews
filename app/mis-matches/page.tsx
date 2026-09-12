@@ -42,7 +42,7 @@ export default async function MyMatchesPage({ searchParams }: PageProps) {
     getWorksheetSanctionState(db),
   ]);
 
-  const isAdmin = profile?.role === 'admin';
+  const isAdmin = profile?.role === 'owner';
   if (!isAdmin && sanctionState.isPermanentlyBlocked) redirect('/ciclos');
 
   const { error: ensureError } = await db.rpc('ensure_user_chat_threads');

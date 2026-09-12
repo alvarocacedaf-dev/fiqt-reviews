@@ -24,7 +24,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
 
   if (!file) return NextResponse.json({ error: 'Archivo no encontrado.' }, { status: 404 });
   const approvedReviews = rewardProgress.total;
-  let canDownload = profile?.role === 'admin' || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
+  let canDownload = profile?.role === 'owner' || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
 
   if (!canDownload && approvedReviews >= REWARD_THRESHOLDS.oneAdminCourse) {
     const { data: unlock } = await adminDb
