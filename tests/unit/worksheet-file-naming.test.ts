@@ -114,4 +114,43 @@ describe('canonicalizeWorksheetFileName', () => {
       academicTerm: '2018-1',
     });
   });
+
+  it('acepta solo la primera palabra de un nombre compuesto', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Circuitos e Instalaciones Eléctricas Industriales',
+      courseCode: 'EE103',
+      courseNames: ['Circuitos e Instalaciones Eléctricas Industriales', 'Cálculo Integral', 'Cálculo Diferencial'],
+      academicTerm: '',
+      fileName: 'Practica calificada 5 de circuitos 2026-1.pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 5 de Circuitos e Instalaciones Eléctricas Industriales 2026-1',
+      error: null,
+      academicTerm: '2026-1',
+    });
+  });
+
+  it('exige el prefijo mínimo que diferencia cursos con el mismo inicio', () => {
+    const courseNames = ['Cálculo Integral', 'Cálculo Diferencial'];
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Cálculo Integral', courseCode: 'BMA02', courseNames,
+      academicTerm: '', fileName: 'Final de calculo 2026-1.pdf', examType: 'final',
+    }).error).toBeTruthy();
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Cálculo Integral', courseCode: 'BMA02', courseNames,
+      academicTerm: '', fileName: 'Final de calculo integral 2026-1.pdf', examType: 'final',
+    }).error).toBeNull();
+  });
+
+  it('incluye el número romano cuando el resto del nombre también coincide', () => {
+    const courseNames = ['Matemática Superior I', 'Matemática Superior II'];
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Matemática Superior II', courseCode: 'BMA06', courseNames,
+      academicTerm: '', fileName: 'Parcial de matematica superior 2026-1.pdf', examType: 'midterm',
+    }).error).toBeTruthy();
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Matemática Superior II', courseCode: 'BMA06', courseNames,
+      academicTerm: '', fileName: 'Parcial de matematica superior 2 2026-1.pdf', examType: 'midterm',
+    }).error).toBeNull();
+  });
 });

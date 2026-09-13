@@ -41,11 +41,10 @@ export async function POST(request: Request) {
     ) {
       return NextResponse.json({ error: 'No se pudo validar el archivo subido.' }, { status: 400 });
     }
-    const { data: course } = await context.db
-      .from('courses')
-      .select('code,name')
-      .eq('id', courseId)
-      .maybeSingle();
+    const [{ data: course }, { data: courseCatalog }] = await Promise.all([
+      context.db.from('courses').select('code,name').eq('id', courseId).maybeSingle(),
+      context.db.from('courses').select('name'),
+    ]);
     if (!course) {
       return NextResponse.json({ error: 'El curso seleccionado no existe.' }, { status: 400 });
     }
@@ -58,6 +57,7 @@ export async function POST(request: Request) {
       courseName: course.name,
       courseCode: course.code,
       academicTerm: body.academicTerm ?? '',
+      courseNames: (courseCatalog ?? []).map(item => item.name),
     });
     if (namingResult.error) {
       await deleteR2Object(key).catch(() => undefined);

@@ -24,7 +24,10 @@ export async function POST(request: Request) {
     }
 
     const adminDb = createAdminClient();
-    const { data: course } = await adminDb.from('courses').select('code,name').eq('id', courseId).maybeSingle();
+    const [{ data: course }, { data: courseCatalog }] = await Promise.all([
+      adminDb.from('courses').select('code,name').eq('id', courseId).maybeSingle(),
+      adminDb.from('courses').select('name'),
+    ]);
     if (!course || !isWorksheetExamTypeAllowed(course.code, body.examType ?? '')) return NextResponse.json({ error: 'El curso o tipo de evaluación no es válido.' }, { status: 400 });
     const namingResult = canonicalizeWorksheetFileName({
       fileName: body.fileName,
@@ -32,6 +35,7 @@ export async function POST(request: Request) {
       courseName: course.name,
       courseCode: course.code,
       academicTerm: body.academicTerm ?? '',
+      courseNames: (courseCatalog ?? []).map(item => item.name),
     });
     if (namingResult.error) {
       await deleteR2Object(key).catch(() => undefined);

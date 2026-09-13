@@ -51,11 +51,23 @@ function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function courseAliases(courseName: string, courseCode?: string | null) {
+function courseAliases(courseName: string, courseCode?: string | null, courseNames: string[] = [courseName]) {
   const canonical = normalize(courseName);
   const romanValues: Record<string, string> = { i: '1', ii: '2', iii: '3', iv: '4', v: '5', vi: '6' };
   const numeric = canonical.split(' ').map(part => romanValues[part] ?? part).join(' ');
   const aliases = new Set([canonical, numeric]);
+  const numericCourseNames = [...new Set(courseNames.map(name => (
+    normalize(name).split(' ').map(part => romanValues[part] ?? part).join(' ')
+  )))];
+  const parts = numeric.split(' ');
+  for (let length = 1; length < parts.length; length += 1) {
+    const prefix = parts.slice(0, length).join(' ');
+    const matches = numericCourseNames.filter(name => name === prefix || name.startsWith(`${prefix} `));
+    if (matches.length === 1 && matches[0] === numeric) {
+      aliases.add(prefix);
+      break;
+    }
+  }
   if (courseCode) aliases.add(normalize(courseCode));
   const shorthand: [RegExp, string][] = [
     [/^matematicas?\b/, 'mate'], [/^fisicoquimica\b/, 'fiqui'], [/^programacion\b/, 'progra'],
@@ -74,12 +86,14 @@ export function canonicalizeWorksheetFileName({
   courseName,
   courseCode,
   academicTerm,
+  courseNames,
 }: {
   fileName: string;
   examType: string;
   courseName: string;
   courseCode?: string | null;
   academicTerm: string;
+  courseNames?: string[];
 }): { title: string | null; error: string | null; academicTerm?: string } {
   if (!STRICT_EXAM_TYPES.has(examType)) return { title: null, error: null, academicTerm: academicTerm.trim() };
   const resolvedAcademicTerm = academicTerm.trim() || academicTermFromFileName(fileName);
@@ -91,7 +105,7 @@ export function canonicalizeWorksheetFileName({
   const termPattern = shortTerm === term
     ? escapeRegExp(term)
     : `(?:${escapeRegExp(term)}|${escapeRegExp(shortTerm)})`;
-  const aliases = [...courseAliases(courseName, courseCode)].sort((left, right) => right.length - left.length);
+  const aliases = [...courseAliases(courseName, courseCode, courseNames)].sort((left, right) => right.length - left.length);
   const normalizedCourseCode = normalize(courseCode ?? '');
   function courseReference(text: string) {
     if (normalizedCourseCode) {
