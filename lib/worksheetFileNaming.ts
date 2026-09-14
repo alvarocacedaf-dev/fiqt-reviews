@@ -56,6 +56,10 @@ function courseAliases(courseName: string, courseCode?: string | null, courseNam
   const romanValues: Record<string, string> = { i: '1', ii: '2', iii: '3', iv: '4', v: '5', vi: '6' };
   const numeric = canonical.split(' ').map(part => romanValues[part] ?? part).join(' ');
   const aliases = new Set([canonical, numeric]);
+  if (/^fisicoquimica\b/.test(canonical)) {
+    aliases.add(canonical.replace(/^fisicoquimica\b/, 'fisico quimica'));
+    aliases.add(numeric.replace(/^fisicoquimica\b/, 'fisico quimica'));
+  }
   const numericCourseNames = [...new Set(courseNames.map(name => (
     normalize(name).split(' ').map(part => romanValues[part] ?? part).join(' ')
   )))];

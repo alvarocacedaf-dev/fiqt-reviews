@@ -153,4 +153,30 @@ describe('canonicalizeWorksheetFileName', () => {
       academicTerm: '', fileName: 'Parcial de matematica superior 2 2026-1.pdf', examType: 'midterm',
     }).error).toBeNull();
   });
+
+  it('acepta Fisicoquímica escrita junta o separada y usa el nombre oficial', () => {
+    const course = {
+      courseName: 'Fisicoquímica II',
+      courseCode: 'QU428',
+      courseNames: ['Fisicoquímica I', 'Fisicoquímica II'],
+      academicTerm: '',
+      examType: 'final',
+    };
+    expect(canonicalizeWorksheetFileName({
+      ...course,
+      fileName: 'Examen final de físico química II 2025-2 solucionario.pdf',
+    })).toEqual({
+      title: 'Examen final de Fisicoquímica II 2025-2 — solucionario',
+      error: null,
+      academicTerm: '2025-2',
+    });
+    expect(canonicalizeWorksheetFileName({
+      ...course,
+      fileName: 'Examen final de fisicoquimica II 2025-2.pdf',
+    })).toEqual({
+      title: 'Examen final de Fisicoquímica II 2025-2',
+      error: null,
+      academicTerm: '2025-2',
+    });
+  });
 });
