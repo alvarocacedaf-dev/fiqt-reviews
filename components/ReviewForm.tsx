@@ -263,7 +263,7 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
         </span>
         <textarea
           required
-          maxLength={600}
+          maxLength={1000}
           name="comment"
           className="input mt-3 min-h-32"
           placeholder="Escribe aquí tu experiencia académica."
