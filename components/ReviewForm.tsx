@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { containsForbiddenReviewLanguage } from '@/lib/validation';
 import { isReviewAcademicTerm, REVIEW_ACADEMIC_TERMS } from '@/lib/reviewAcademicTerms';
+import { ReviewSubmittedMessage } from '@/components/ReviewSubmittedMessage';
 
 const positiveTags = [
   'Explica claro',
@@ -116,8 +118,10 @@ function RatingQuestion({
 }
 
 export function ReviewForm({ professorId, courseId }: { professorId: string; courseId: string }) {
+  const router = useRouter();
   const [message, setMessage] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
+  const [submitted, setSubmitted] = useState(false);
 
   function toggleTag(tag: string) {
     setSelected(current => (
@@ -175,8 +179,16 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
       status: 'pending',
     });
 
-    setMessage(error ? error.message : 'Gracias. Tu reseña quedó pendiente de moderación.');
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setSubmitted(true);
+    router.refresh();
   }
+
+  if (submitted) return <ReviewSubmittedMessage />;
 
   return (
     <form action={submit} className="space-y-6">

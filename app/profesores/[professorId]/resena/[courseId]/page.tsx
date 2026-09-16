@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReviewForm } from '@/components/ReviewForm';
+import { ReviewSubmittedMessage } from '@/components/ReviewSubmittedMessage';
 import { getCourse, getProfessor } from '@/lib/data';
 import { createClient } from '@/lib/supabase/server';
 
@@ -24,13 +25,19 @@ export default async function CreateReviewPage({ params }: { params: Promise<{ p
     redirect(`/registro?next=${encodeURIComponent(`/profesores/${professorId}/resena/${courseId}`)}`);
   }
 
-  const [{ data: verifiedCourse }, { data: verifiedProfessor }] = await Promise.all([
+  const [{ data: verifiedCourse }, { data: verifiedProfessor }, { data: existingReview }] = await Promise.all([
     db.from('verified_courses')
       .select('id')
       .eq('user_id', user.id)
       .eq('course_id', courseId)
       .limit(1),
     db.from('verified_course_professors')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('course_id', courseId)
+      .eq('professor_id', professorId)
+      .limit(1),
+    db.from('reviews')
       .select('id')
       .eq('user_id', user.id)
       .eq('course_id', courseId)
@@ -54,6 +61,14 @@ export default async function CreateReviewPage({ params }: { params: Promise<{ p
           <Link href="/cursos-verificados" className="btn-secondary">Ver mis cursos verificados</Link>
           <Link href={`/cursos/${courseId}`} className="btn-secondary">Volver al curso</Link>
         </div>
+      </section>
+    );
+  }
+
+  if (existingReview?.length) {
+    return (
+      <section className="panel mx-auto max-w-3xl">
+        <ReviewSubmittedMessage />
       </section>
     );
   }
