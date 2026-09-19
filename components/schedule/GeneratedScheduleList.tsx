@@ -6,6 +6,7 @@ import { ScheduleGrid } from './ScheduleGrid';
 import { ScheduleSummary } from './ScheduleSummary';
 import { Icon } from '@/components/ui/Icon';
 import type { GeneratedSchedule } from '@/lib/schedule/types';
+import { ScheduleImagePreview } from './ScheduleImagePreview';
 
 const IMAGE_DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] as const;
 const IMAGE_COLORS = ['#fcd34d', '#93c5fd', '#c4b5fd', '#6ee7b7', '#fda4af', '#fdba74', '#67e8f9', '#f0abfc'];
@@ -27,7 +28,7 @@ function fitText(context: CanvasRenderingContext2D, text: string, maxWidth: numb
   return `${shortened}…`;
 }
 
-function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
+function createScheduleImage(schedule: GeneratedSchedule, position: number) {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) throw new Error('El navegador no permite generar la imagen.');
@@ -135,23 +136,13 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
     }
   });
 
-  const triggerDownload = (url: string) => {
-    const link = document.createElement('a');
-    link.download = `horario-${position}-fiqt-reviews.png`;
-    link.href = url;
-    link.click();
-  };
-
-  return new Promise<void>((resolve, reject) => {
+  return new Promise<Blob>((resolve, reject) => {
     canvas.toBlob((blob) => {
       if (!blob) {
         reject(new Error('No se pudo generar la imagen.'));
         return;
       }
-      const url = URL.createObjectURL(blob);
-      triggerDownload(url);
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-      resolve();
+      resolve(blob);
     }, 'image/png');
   });
 }
@@ -159,6 +150,7 @@ function downloadScheduleImage(schedule: GeneratedSchedule, position: number) {
 export function GeneratedScheduleList({ schedules, truncated }: { schedules: GeneratedSchedule[]; truncated: boolean }) {
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [downloadingIds, setDownloadingIds] = useState<string[]>([]);
+  const [preview, setPreview] = useState<File | null>(null);
 
   function saveSchedule(schedule: GeneratedSchedule) {
     localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule, savedAt: new Date().toISOString() }));
@@ -169,7 +161,20 @@ export function GeneratedScheduleList({ schedules, truncated }: { schedules: Gen
     if (downloadingIds.includes(schedule.id)) return;
     setDownloadingIds((current) => [...current, schedule.id]);
     try {
-      await downloadScheduleImage(schedule, position);
+      const blob = await createScheduleImage(schedule, position);
+      const file = new File([blob], `horario-${position}-fiqt-reviews.png`, { type: 'image/png' });
+      if (/Android/i.test(navigator.userAgent)) {
+        setPreview(file);
+      } else {
+        const url = URL.createObjectURL(file);
+        const link = document.createElement('a');
+        link.download = file.name;
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.setTimeout(() => URL.revokeObjectURL(url), 60000);
+      }
     } catch {
       window.alert('No se pudo descargar la imagen. Actualiza tu navegador e inténtalo nuevamente.');
     } finally {
@@ -179,6 +184,7 @@ export function GeneratedScheduleList({ schedules, truncated }: { schedules: Gen
 
   return (
     <section className="space-y-8">
+      {preview && <ScheduleImagePreview file={preview} onClose={() => setPreview(null)} />}
       <div className="flex flex-col gap-2 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gold">Resultados</p>
