@@ -30,7 +30,9 @@ export default async function CourseMaterialPage({ params }: { params: Promise<{
       mime_type: file.mime_type,
       file_size: file.file_size,
       created_at: file.created_at,
-      signed_url: file.storage_provider === 'b2'
+      signed_url: file.material_type === 'videos' && ['b2', 'r2'].includes(file.storage_provider)
+        ? `/api/course-materials/${file.id}/play`
+        : file.storage_provider === 'b2'
         ? (b2Configured ? createB2PresignedUrl('GET', file.file_path, file.material_type === 'videos' ? 14400 : 3600) : null)
         : file.storage_provider === 'youtube'
           ? file.file_path

@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+import { CourseVideoPlayer } from '@/components/CourseVideoPlayer';
 import { Icon } from '@/components/ui/Icon';
 import { getYouTubeEmbedUrl } from '@/lib/youtube';
 
@@ -50,6 +54,7 @@ function compareMaterials(left: CourseMaterialFile, right: CourseMaterialFile) {
 }
 
 export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }) {
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
   return (
     <div className="space-y-3">
       {CATEGORIES.map(category => {
@@ -57,7 +62,7 @@ export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }
           .filter(file => file.material_type === category.type)
           .sort(compareMaterials);
         return (
-          <details className="group overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white shadow-sm" key={category.type}>
+          <details onToggle={event => { if (category.type === 'videos' && !event.currentTarget.open) setActiveVideo(null); }} className="group overflow-hidden rounded-[1.25rem] border border-slate-200 bg-white shadow-sm" key={category.type}>
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 transition hover:bg-blue-50 [&::-webkit-details-marker]:hidden">
               <span className="flex min-w-0 items-center gap-4">
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-royal">
@@ -95,9 +100,7 @@ export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }
                           />
                         </div>
                       ) : file.material_type === 'videos' && file.signed_url ? (
-                        <video className="mt-3 aspect-video w-full rounded-xl bg-black" controls playsInline preload="metadata" src={file.signed_url}>
-                          Tu navegador no puede reproducir este video.
-                        </video>
+                        <CourseVideoPlayer id={file.id} title={file.title} src={file.signed_url} active={activeVideo === file.id} onActivate={() => setActiveVideo(file.id)} />
                       ) : file.signed_url ? (
                         <a className="btn-secondary mt-3 gap-2 px-3 py-2 text-xs" href={file.signed_url} rel="noreferrer" target="_blank">
                           <Icon className="h-4 w-4" name="file" /> Abrir archivo
