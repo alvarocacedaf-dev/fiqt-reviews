@@ -84,13 +84,19 @@ export function ScheduleBuilderPage({ sections }: { sections: CourseSection[] })
           <div className="flex items-center gap-3 text-gold">
             <span className="h-10 w-1.5 rounded-full bg-gold" />
             <Icon className="h-8 w-8" name="calendar" />
-            <p className="text-sm font-black uppercase tracking-[0.2em]">Nueva herramienta</p>
+            <p className="text-sm font-black uppercase tracking-[0.2em]">Tu semana, mejor organizada</p>
           </div>
           <h1 className="mt-4 text-4xl font-black sm:text-5xl">Arma tu horario 2026-2</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-blue-100 sm:text-lg">Selecciona tus cursos y compara hasta tres combinaciones, priorizadas por cruces, tiempo perdido y días de asistencia.</p>
+          <a href="/horario" className="btn-secondary mt-5">Consultar mi horario guardado</a>
         </div>
       </section>
 
+      <ol aria-label="Pasos para elegir horario" className="grid gap-3 text-sm text-blue-100 sm:grid-cols-3">
+        <li className="rounded-xl border border-white/15 p-4"><strong className="text-gold">1.</strong> Elige tus cursos · {selected.length} seleccionados</li>
+        <li className="rounded-xl border border-white/15 p-4"><strong className="text-gold">2.</strong> Fija secciones, si lo necesitas</li>
+        <li className="rounded-xl border border-white/15 p-4"><strong className="text-gold">3.</strong> Compara y guarda tu elección</li>
+      </ol>
       <CourseSelector courses={courses} onToggle={toggleCourse} selected={selected} />
 
       <LockedSectionSelector

@@ -53,7 +53,7 @@ export function ScheduleImagePreview({ file, onClose }: { file: File; onClose: (
           <button type="button" onClick={onClose} className="rounded-lg border border-white/40 px-3 py-2">Volver</button>
           <p className="min-w-0 flex-1 break-all text-sm">{file.name}</p>
           {canShare && <button type="button" disabled={sharing} onClick={() => void share()} className="rounded-lg bg-white px-3 py-2 font-bold text-black disabled:opacity-50">{sharing ? 'Compartiendo…' : 'Compartir'}</button>}
-          {url && <a href={url} download={file.name} onClick={() => setMessage('Descarga iniciada. Puedes encontrar la imagen en Archivos → Descargas.')} className="rounded-lg border border-white/40 px-3 py-2">Guardar imagen</a>}
+          {url && <a href={url} download={file.name} onClick={() => setMessage('Descarga solicitada. Busca la imagen en Archivos → Descargas o en las descargas del navegador.')} className="rounded-lg border border-white/40 px-3 py-2">Descargar imagen</a>}
         </header>
         {message && <p role="status" className="bg-white/10 px-4 py-3 text-sm">{message}</p>}
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto">

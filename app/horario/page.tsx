@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { SavedSchedule } from '@/components/schedule/SavedSchedule';
 
 export default function SchedulePage() {
-  redirect('/armar-horario');
+  return <SavedSchedule />;
 }

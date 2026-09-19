@@ -11,7 +11,7 @@ export function ScheduleSummary({ schedule }: { schedule: GeneratedSchedule }) {
   const metrics = [
     { label: 'Cruces', value: String(schedule.conflictCount), warning: schedule.conflictCount > 0 },
     { label: 'Minutos cruzados', value: formatMinutes(schedule.conflictMinutes), warning: schedule.conflictMinutes > 0 },
-    { label: 'Huecos', value: formatMinutes(schedule.gapMinutes), warning: false },
+    { label: 'Libres entre clases', value: formatMinutes(schedule.gapMinutes), warning: false },
     { label: 'Días en la UNI', value: String(schedule.attendanceDays), warning: false },
     { label: 'Secciones fijas', value: String(schedule.lockedSectionIds.length), warning: false },
   ];

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ConflictWarning } from './ConflictWarning';
-import { ScheduleGrid } from './ScheduleGrid';
+import { ScheduleExplorer } from './ScheduleExplorer';
 import { ScheduleSummary } from './ScheduleSummary';
 import { Icon } from '@/components/ui/Icon';
 import type { GeneratedSchedule } from '@/lib/schedule/types';
@@ -147,38 +147,43 @@ function createScheduleImage(schedule: GeneratedSchedule, position: number) {
   });
 }
 
-export function GeneratedScheduleList({ schedules, truncated }: { schedules: GeneratedSchedule[]; truncated: boolean }) {
-  const [savedIds, setSavedIds] = useState<string[]>([]);
+export function GeneratedScheduleList({ schedules, truncated, daily = false }: { schedules: GeneratedSchedule[]; truncated: boolean; daily?: boolean }) {
+  const [savedId, setSavedId] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [message, setMessage] = useState('');
+  const busy = useRef(false);
   const [downloadingIds, setDownloadingIds] = useState<string[]>([]);
   const [preview, setPreview] = useState<File | null>(null);
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule') || 'null');
+      setSavedId(saved?.schedule?.id || '');
+    } catch { /* Storage can be unavailable. Saving reports the error below. */ }
+  }, []);
 
   function saveSchedule(schedule: GeneratedSchedule) {
-    localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule, savedAt: new Date().toISOString() }));
-    setSavedIds((current) => current.includes(schedule.id) ? current : [...current, schedule.id]);
+    try {
+      localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule, savedAt: new Date().toISOString() }));
+      setSavedId(schedule.id);
+      setMessage('Horario guardado en este navegador. Puedes consultarlo en Mi horario guardado.');
+    } catch {
+      setMessage('No se pudo guardar en este navegador. Puedes conservar la imagen del horario.');
+    }
   }
 
   async function handleDownload(schedule: GeneratedSchedule, position: number) {
-    if (downloadingIds.includes(schedule.id)) return;
+    if (busy.current) return;
+    busy.current = true;
     setDownloadingIds((current) => [...current, schedule.id]);
     try {
       const blob = await createScheduleImage(schedule, position);
       const file = new File([blob], `horario-${position}-fiqt-reviews.png`, { type: 'image/png' });
-      if (/Android/i.test(navigator.userAgent)) {
-        setPreview(file);
-      } else {
-        const url = URL.createObjectURL(file);
-        const link = document.createElement('a');
-        link.download = file.name;
-        link.href = url;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        window.setTimeout(() => URL.revokeObjectURL(url), 60000);
-      }
+      setPreview(file);
     } catch {
-      window.alert('No se pudo descargar la imagen. Actualiza tu navegador e inténtalo nuevamente.');
+      setMessage('No se pudo generar la imagen. Inténtalo nuevamente.');
     } finally {
       setDownloadingIds((current) => current.filter((id) => id !== schedule.id));
+      busy.current = false;
     }
   }
 
@@ -188,19 +193,27 @@ export function GeneratedScheduleList({ schedules, truncated }: { schedules: Gen
       <div className="flex flex-col gap-2 text-white sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-gold">Resultados</p>
-          <h2 className="mt-1 text-3xl font-black">Tus mejores horarios</h2>
+          <h2 className="mt-1 text-3xl font-black">{daily ? 'Tu horario guardado' : 'Compara y elige tu horario'}</h2>
         </div>
         {truncated && <p className="max-w-md text-sm text-blue-100">Se aplicó una búsqueda optimizada para evaluar las combinaciones más prometedoras sin congelar la página.</p>}
       </div>
 
-      {schedules.map((schedule, index) => (
+      {!daily && <div className="grid gap-3 sm:grid-cols-3" aria-label="Comparar alternativas">
+        {schedules.map((schedule, index) => <button key={schedule.id} type="button" aria-pressed={selectedIndex === index} onClick={() => setSelectedIndex(index)} className={`rounded-2xl border p-5 text-left transition ${selectedIndex === index ? 'border-gold bg-white text-ink ring-2 ring-gold' : 'border-white/20 bg-white/10 text-white'}`}>
+          <span className="block text-lg font-bold">Horario {index + 1}{savedId === schedule.id ? ' · Guardado' : ''}</span>
+          <span className="mt-2 block text-sm">{schedule.conflictCount ? `${schedule.conflictCount} cruces` : 'Sin cruces'} · {schedule.attendanceDays} días</span>
+          <span className="mt-1 block text-sm">{schedule.gapMinutes} min libres entre clases</span>
+          {index === 0 && <span className="mt-3 block text-xs font-bold">Mejor según cruces, huecos y asistencia</span>}
+        </button>)}
+      </div>}
+      {schedules.map((schedule, index) => index === Math.min(selectedIndex, schedules.length - 1) && (
         <article className="overflow-hidden rounded-[1.5rem] border border-white/15 bg-white shadow-card" key={schedule.id}>
           <header className="bg-gradient-to-r from-[#071a3d] to-[#123c88] p-5 sm:p-7">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="text-white">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="text-2xl font-black">Horario {index + 1}</h3>
-                  {index === 0 && <span className="rounded-full border border-gold/60 bg-gold/15 px-3 py-1 text-xs font-black uppercase tracking-wide text-gold">Opción recomendada</span>}
+                  {index === 0 && !daily && <span className="rounded-full border border-gold/60 bg-gold/15 px-3 py-1 text-xs font-black uppercase tracking-wide text-gold">Opción recomendada</span>}
                 </div>
                 <p className="mt-1 text-sm text-blue-100">{schedule.sections.map((section) => `${section.courseId}-${section.section}`).join(' · ')}</p>
               </div>
@@ -210,11 +223,11 @@ export function GeneratedScheduleList({ schedules, truncated }: { schedules: Gen
 
           <div className="space-y-4 p-4 sm:p-6">
             <ConflictWarning schedule={schedule} />
-            <ScheduleGrid schedule={schedule} />
+            <ScheduleExplorer schedule={schedule} daily={daily} />
             <div className="flex flex-wrap gap-3">
               <button className="btn-primary gap-2" onClick={() => saveSchedule(schedule)} type="button">
                 <Icon className="h-4 w-4" name="check" />
-                {savedIds.includes(schedule.id) ? 'Horario guardado' : 'Guardar horario'}
+                {savedId === schedule.id ? 'Horario guardado' : 'Guardar en este navegador'}
               </button>
               <button
                 className="btn-secondary gap-2"
@@ -223,9 +236,12 @@ export function GeneratedScheduleList({ schedules, truncated }: { schedules: Gen
                 type="button"
               >
                 <Icon className="h-4 w-4" name="file" />
-                {downloadingIds.includes(schedule.id) ? 'Generando imagen...' : 'Descargar imagen'}
+                {downloadingIds.includes(schedule.id) ? 'Preparando imagen...' : 'Ver imagen semanal'}
               </button>
             </div>
+            <p className="text-xs text-slate-500">Se guarda una sola elección en este navegador; guardar otra la reemplaza. La imagen siempre incluye la semana completa.</p>
+            {!daily && <a className="inline-block text-sm font-semibold text-royal underline" href="/horario">Mi horario guardado</a>}
+            {message && <p role="status" className="rounded-xl bg-blue-50 p-3 text-sm text-royal">{message}</p>}
           </div>
         </article>
       ))}
