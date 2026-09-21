@@ -1,4 +1,5 @@
 import { ScheduleBlock } from './ScheduleBlock';
+import { courseColors } from '@/lib/schedule/presentation';
 import { SCHEDULE_DAYS, type GeneratedSchedule } from '@/lib/schedule/types';
 
 const GRID_START = 8 * 60;
@@ -7,6 +8,7 @@ const PIXELS_PER_HOUR = 66;
 const GRID_HEIGHT = ((GRID_END - GRID_START) / 60) * PIXELS_PER_HOUR;
 
 export function ScheduleGrid({ schedule }: { schedule: GeneratedSchedule }) {
+  const colors = courseColors(schedule.blocks);
   const hours = Array.from({ length: (GRID_END - GRID_START) / 60 }, (_, index) => index + 8);
 
   return (
@@ -30,6 +32,7 @@ export function ScheduleGrid({ schedule }: { schedule: GeneratedSchedule }) {
               {schedule.blocks.filter((block) => block.day === day).map((block) => (
                 <ScheduleBlock
                   block={block}
+                  color={colors[block.courseId]}
                   conflicts={schedule.conflicts}
                   gridStart={GRID_START}
                   isLocked={schedule.sections.some((section) => schedule.lockedSectionIds.includes(section.id) && section.blocks.some((item) => item.id === block.id))}

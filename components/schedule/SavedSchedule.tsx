@@ -7,6 +7,7 @@ import { SCHEDULE_DAYS } from '@/lib/schedule/types';
 
 export function SavedSchedule() {
   const [schedule, setSchedule] = useState<GeneratedSchedule | null>(null);
+  const [position, setPosition] = useState<number | null>(null);
   const [message, setMessage] = useState('Buscando tu horario guardado…');
   useEffect(() => {
     try {
@@ -19,6 +20,7 @@ export function SavedSchedule() {
         setMessage('No se pudo leer el horario guardado. Genera y guarda uno nuevo.'); return;
       }
       setSchedule(s);
+      setPosition(Number.isInteger(value.position) && value.position > 0 ? value.position : null);
     } catch { setMessage('No se pudo acceder al horario guardado. Comprueba que tu navegador permita almacenamiento local.'); }
   }, []);
   return <div className="space-y-6">
@@ -26,6 +28,6 @@ export function SavedSchedule() {
       <p className="text-sm text-blue-100">2026-2 · Guardado solo en este navegador, no sincronizado con tu cuenta.</p>
       <a href="/armar-horario" className="btn-secondary">Comparar nuevos horarios</a>
     </div>
-    {schedule ? <GeneratedScheduleList schedules={[schedule]} truncated={false} daily /> : <section className="panel"><h1 className="text-2xl font-bold">Mi horario</h1><p role="status" className="mt-3 text-slate-600">{message}</p></section>}
+    {schedule ? <GeneratedScheduleList schedules={[schedule]} truncated={false} daily savedPosition={position} /> : <section className="panel"><h1 className="text-2xl font-bold">Mi horario</h1><p role="status" className="mt-3 text-slate-600">{message}</p></section>}
   </div>;
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ScheduleGrid } from './ScheduleGrid';
 import { SCHEDULE_DAYS, type Day, type GeneratedSchedule } from '@/lib/schedule/types';
 import { timeToMinutes } from '@/lib/schedule/generator';
+import { courseColors } from '@/lib/schedule/presentation';
 
 export function ScheduleExplorer({ schedule, daily = false }: { schedule: GeneratedSchedule; daily?: boolean }) {
   const [view, setView] = useState<'week' | 'day'>('week');
@@ -16,13 +17,14 @@ export function ScheduleExplorer({ schedule, daily = false }: { schedule: Genera
   }, [daily]);
   const blocks = schedule.blocks.filter(b => b.day === day).sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
   let latestEnd = 0;
+  const colors = courseColors(schedule.blocks);
   return (
     <section className="space-y-4" aria-label="Explorar horario">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="inline-flex rounded-xl bg-slate-100 p-1" aria-label="Vista del horario">
           {(['week', 'day'] as const).map(value => <button key={value} type="button" aria-pressed={view === value} onClick={() => setView(value)} className={`min-h-11 rounded-lg px-5 text-sm font-semibold ${view === value ? 'bg-white text-royal shadow-sm' : 'text-slate-600'}`}>{value === 'week' ? 'Semana' : 'Día'}</button>)}
         </div>
-        <p className="text-xs text-slate-500">Selecciona una clase para ver sus detalles.</p>
+        {view === 'week' && <p className="text-xs text-slate-500">Selecciona una clase para ver sus detalles.</p>}
       </div>
       {view === 'week' ? <>
         <p className="text-sm text-slate-600 md:hidden">Desliza la cuadrícula para recorrer la semana, o usa Día para leer las clases completas.</p>
@@ -40,7 +42,7 @@ export function ScheduleExplorer({ schedule, daily = false }: { schedule: Genera
           const conflicts = schedule.conflicts.filter(c => c.blocks.some(b => b.id === block.id));
           return <div key={block.id}>
             {gap > 0 && <p className="mb-3 border-l-2 border-dashed border-slate-300 py-2 pl-4 text-sm text-slate-500">{gap} min libres entre clases</p>}
-            <article className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <article className="rounded-2xl border border-slate-200 border-l-8 bg-slate-50 p-5" style={{ borderLeftColor: colors[block.courseId] }}>
               <p className="text-sm font-bold text-royal">{block.startTime}–{block.endTime}</p>
               <h5 className="mt-1 text-lg font-bold text-ink">{block.courseName}</h5>
               <p className="mt-2 text-sm text-slate-600">{block.courseId} · {block.type} · Sección {block.section}</p>

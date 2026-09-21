@@ -3,22 +3,7 @@ import { useState } from 'react';
 import { blocksConflict, timeToMinutes } from '@/lib/schedule/generator';
 import type { ClassBlock, ScheduleConflict } from '@/lib/schedule/types';
 
-const COLORS = [
-  'bg-amber-300 text-amber-950 border-amber-400',
-  'bg-blue-300 text-blue-950 border-blue-200',
-  'bg-violet-400 text-violet-950 border-violet-300',
-  'bg-emerald-400 text-emerald-950 border-emerald-300',
-  'bg-rose-400 text-rose-950 border-rose-300',
-  'bg-orange-400 text-orange-950 border-orange-300',
-  'bg-cyan-300 text-cyan-950 border-cyan-200',
-  'bg-fuchsia-400 text-fuchsia-950 border-fuchsia-300',
-];
-
-function colorIndex(courseId: string) {
-  return [...courseId].reduce((total, character) => total + character.charCodeAt(0), 0) % COLORS.length;
-}
-
-export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour, isLocked = false }: { block: ClassBlock; conflicts: ScheduleConflict[]; gridStart: number; pixelsPerHour: number; isLocked?: boolean }) {
+export function ScheduleBlock({ block, color, conflicts, gridStart, pixelsPerHour, isLocked = false }: { block: ClassBlock; color: string; conflicts: ScheduleConflict[]; gridStart: number; pixelsPerHour: number; isLocked?: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const start = timeToMinutes(block.startTime);
   const end = timeToMinutes(block.endTime);
@@ -34,8 +19,8 @@ export function ScheduleBlock({ block, conflicts, gridStart, pixelsPerHour, isLo
       onClick={() => setExpanded(!expanded)}
       aria-expanded={expanded}
       aria-label={`${block.courseName}, ${block.day}, ${block.startTime}–${block.endTime}, ver detalles`}
-      className={`absolute z-10 overflow-hidden rounded-xl border p-2 shadow-md ${COLORS[colorIndex(block.courseId)]} ${hasConflict ? 'ring-2 ring-red-600' : ''}`}
-      style={{ top, height: expanded ? 'auto' : height - 4, minHeight: height - 4, zIndex: expanded ? 30 : 10, textAlign: 'left', left: hasConflict ? `${2 + lane * 49}%` : '3%', width: expanded ? '97%' : hasConflict ? '47%' : '94%' }}
+      className={`absolute z-10 overflow-hidden rounded-xl border border-white/40 p-2 text-[#082044] shadow-md ${hasConflict ? 'ring-2 ring-red-600' : ''}`}
+      style={{ backgroundColor: color, top, height: expanded ? 'auto' : height - 4, minHeight: height - 4, zIndex: expanded ? 30 : 10, textAlign: 'left', left: hasConflict ? `${2 + lane * 49}%` : '3%', width: expanded ? '97%' : hasConflict ? '47%' : '94%' }}
       title={`${block.courseName} · Código ${block.courseId} · ${block.type} · Sección ${block.section} · ${block.professorName ?? 'Profesor por confirmar'}${isLocked ? ' · Sección fija' : ''}`}
     >
       <p className={expanded ? 'text-xs font-bold leading-4' : 'line-clamp-2 text-xs font-black leading-4'}>{block.courseName}</p>

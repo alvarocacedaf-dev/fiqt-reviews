@@ -7,19 +7,15 @@ import { ScheduleSummary } from './ScheduleSummary';
 import { Icon } from '@/components/ui/Icon';
 import type { GeneratedSchedule } from '@/lib/schedule/types';
 import { ScheduleImagePreview } from './ScheduleImagePreview';
+import { courseColors, scheduleTitle } from '@/lib/schedule/presentation';
 
 const IMAGE_DAYS = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'] as const;
-const IMAGE_COLORS = ['#fcd34d', '#93c5fd', '#c4b5fd', '#6ee7b7', '#fda4af', '#fdba74', '#67e8f9', '#f0abfc'];
 
 function timeToMinutes(time: string) {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
 }
 
-function courseColor(courseId: string) {
-  const index = [...courseId].reduce((total, character) => total + character.charCodeAt(0), 0) % IMAGE_COLORS.length;
-  return IMAGE_COLORS[index];
-}
 
 function fitText(context: CanvasRenderingContext2D, text: string, maxWidth: number) {
   if (context.measureText(text).width <= maxWidth) return text;
@@ -28,7 +24,8 @@ function fitText(context: CanvasRenderingContext2D, text: string, maxWidth: numb
   return `${shortened}…`;
 }
 
-function createScheduleImage(schedule: GeneratedSchedule, position: number) {
+function createScheduleImage(schedule: GeneratedSchedule, position: number | null) {
+  const colors = courseColors(schedule.blocks);
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) throw new Error('El navegador no permite generar la imagen.');
@@ -48,7 +45,7 @@ function createScheduleImage(schedule: GeneratedSchedule, position: number) {
   context.fillRect(0, 0, canvas.width, canvas.height);
   context.fillStyle = '#ffffff';
   context.font = 'bold 54px Arial, sans-serif';
-  context.fillText(`Horario ${position}`, 60, 78);
+  context.fillText(scheduleTitle(position), 60, 78);
   context.fillStyle = '#f4c542';
   context.font = 'bold 25px Arial, sans-serif';
   context.fillText('FIQT REVIEWS · 2026-2', 60, 122);
@@ -106,7 +103,7 @@ function createScheduleImage(schedule: GeneratedSchedule, position: number) {
     const y = topGrid + ((start - gridStart) / 60) * hourHeight + 5;
     const blockHeight = Math.max(((end - start) / 60) * hourHeight - 10, 58);
 
-    context.fillStyle = courseColor(block.courseId);
+    context.fillStyle = colors[block.courseId];
     context.beginPath();
     context.roundRect(x, y, blockWidth, blockHeight, 14);
     context.fill();
@@ -147,7 +144,7 @@ function createScheduleImage(schedule: GeneratedSchedule, position: number) {
   });
 }
 
-export function GeneratedScheduleList({ schedules, truncated, daily = false }: { schedules: GeneratedSchedule[]; truncated: boolean; daily?: boolean }) {
+export function GeneratedScheduleList({ schedules, truncated, daily = false, savedPosition = null }: { schedules: GeneratedSchedule[]; truncated: boolean; daily?: boolean; savedPosition?: number | null }) {
   const [savedId, setSavedId] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [message, setMessage] = useState('');
@@ -161,9 +158,9 @@ export function GeneratedScheduleList({ schedules, truncated, daily = false }: {
     } catch { /* Storage can be unavailable. Saving reports the error below. */ }
   }, []);
 
-  function saveSchedule(schedule: GeneratedSchedule) {
+  function saveSchedule(schedule: GeneratedSchedule, position: number | null) {
     try {
-      localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule, savedAt: new Date().toISOString() }));
+      localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule, position, savedAt: new Date().toISOString() }));
       setSavedId(schedule.id);
       setMessage('Horario guardado en este navegador. Puedes consultarlo en Mi horario guardado.');
     } catch {
@@ -171,13 +168,13 @@ export function GeneratedScheduleList({ schedules, truncated, daily = false }: {
     }
   }
 
-  async function handleDownload(schedule: GeneratedSchedule, position: number) {
+  async function handleDownload(schedule: GeneratedSchedule, position: number | null) {
     if (busy.current) return;
     busy.current = true;
     setDownloadingIds((current) => [...current, schedule.id]);
     try {
       const blob = await createScheduleImage(schedule, position);
-      const file = new File([blob], `horario-${position}-fiqt-reviews.png`, { type: 'image/png' });
+      const file = new File([blob], `horario-${position ?? 'guardado'}-fiqt-reviews.png`, { type: 'image/png' });
       setPreview(file);
     } catch {
       setMessage('No se pudo generar la imagen. Inténtalo nuevamente.');
@@ -212,7 +209,7 @@ export function GeneratedScheduleList({ schedules, truncated, daily = false }: {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="text-white">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-2xl font-black">Horario {index + 1}</h3>
+                  <h3 className="text-2xl font-black">{scheduleTitle(daily ? savedPosition : index + 1)}</h3>
                   {index === 0 && !daily && <span className="rounded-full border border-gold/60 bg-gold/15 px-3 py-1 text-xs font-black uppercase tracking-wide text-gold">Opción recomendada</span>}
                 </div>
                 <p className="mt-1 text-sm text-blue-100">{schedule.sections.map((section) => `${section.courseId}-${section.section}`).join(' · ')}</p>
@@ -225,14 +222,14 @@ export function GeneratedScheduleList({ schedules, truncated, daily = false }: {
             <ConflictWarning schedule={schedule} />
             <ScheduleExplorer schedule={schedule} daily={daily} />
             <div className="flex flex-wrap gap-3">
-              <button className="btn-primary gap-2" onClick={() => saveSchedule(schedule)} type="button">
+              <button className="btn-primary gap-2" onClick={() => saveSchedule(schedule, daily ? savedPosition : index + 1)} type="button">
                 <Icon className="h-4 w-4" name="check" />
                 {savedId === schedule.id ? 'Horario guardado' : 'Guardar en este navegador'}
               </button>
               <button
                 className="btn-secondary gap-2"
                 disabled={downloadingIds.includes(schedule.id)}
-                onClick={() => void handleDownload(schedule, index + 1)}
+                onClick={() => void handleDownload(schedule, daily ? savedPosition : index + 1)}
                 type="button"
               >
                 <Icon className="h-4 w-4" name="file" />

@@ -25,7 +25,8 @@ beforeEach(() => {
 describe('experiencia del horario', () => {
   it('presenta día completo, huecos y días sin clases', () => {
     render(<ScheduleExplorer schedule={first} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Día', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: 'Día' }));
+    expect(screen.queryByText('Selecciona una clase para ver sus detalles.')).not.toBeInTheDocument();
     expect(screen.getByText('60 min libres entre clases')).toBeInTheDocument();
     expect(screen.getAllByText('Matemática completa')).toHaveLength(2);
     fireEvent.click(screen.getByRole('button', { name: 'Domingo' }));
@@ -37,10 +38,11 @@ describe('experiencia del horario', () => {
     expect(localStorage.getItem('fiqt-reviews-saved-schedule')).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Guardar en este navegador' }));
     expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).schedule.id).toBe('second');
+    expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).position).toBe(2);
     fireEvent.click(screen.getByRole('button', { name: /Horario 1/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Guardar en este navegador' }));
     expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).schedule.id).toBe(first.id);
-    expect(screen.getAllByRole('button', { name: 'Horario guardado', exact: true })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: 'Horario guardado' })).toHaveLength(1);
   });
   it('informa cuando no se puede guardar', () => {
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('denied'); });
@@ -52,12 +54,21 @@ describe('experiencia del horario', () => {
     localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule: first }));
     render(<SavedSchedule />);
     expect(screen.getByText('Tu horario guardado')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Día', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('heading', { name: 'Mi horario guardado' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Horario 1' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Día' })).toHaveAttribute('aria-pressed', 'true');
   });
   it('tolera datos corruptos sin borrar el guardado', () => {
     localStorage.setItem('fiqt-reviews-saved-schedule', '{bad');
     render(<SavedSchedule />);
     expect(screen.getByRole('status')).toHaveTextContent('No se pudo acceder');
     expect(localStorage.getItem('fiqt-reviews-saved-schedule')).toBe('{bad');
+  });
+  it('conserva el número del horario al abrirlo y volver a guardarlo', () => {
+    localStorage.setItem('fiqt-reviews-saved-schedule', JSON.stringify({ academicTerm: '2026-2', schedule: second, position: 2 }));
+    render(<SavedSchedule />);
+    expect(screen.getByRole('heading', { name: 'Horario 2' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Horario guardado' }));
+    expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).position).toBe(2);
   });
 });
