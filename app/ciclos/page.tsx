@@ -3,6 +3,7 @@ import { CycleSelector } from '@/components/CycleSelector';
 import { ContributionModal } from '@/components/ContributionModal';
 import { PageGuideModal } from '@/components/PageGuideModal';
 import { WorksheetDonationModal } from '@/components/WorksheetDonationModal';
+import { AcademicRewards } from '@/components/academic/AcademicRewards';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
@@ -28,6 +29,18 @@ async function getApprovedReviewCount() {
 
   const progress = await getRewardProgress(user.id);
   return progress.total;
+}
+
+async function getCurrentRewardProgress() {
+  if (!isSupabaseConfigured) return null;
+
+  const db = await createClient();
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+
+  if (!user) return null;
+  return getRewardProgress(user.id);
 }
 
 async function getContributionStatus() {
@@ -226,9 +239,9 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
 }
 
 export default async function CyclesPage() {
-  const [cycles, approvedReviewCount, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses] = await Promise.all([
+  const [cycles, rewardProgress, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses] = await Promise.all([
     getCycles(),
-    getApprovedReviewCount(),
+    getCurrentRewardProgress(),
     getContributionStatus(),
     getPrivateWorksheetSanctions(),
     getWorksheetFileCount(),
@@ -236,7 +249,7 @@ export default async function CyclesPage() {
   ]);
 
   return (
-    <div className={approvedReviewCount === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
+    <div className={rewardProgress === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
     <div className="space-y-6">
       <section className="panel">
         <p className="text-sm font-bold text-royal">RUTA ACADÉMICA</p>
@@ -281,7 +294,14 @@ export default async function CyclesPage() {
       )}
       {worksheetSanctions && <WorksheetSanctionNotices sanctions={worksheetSanctions} />}
     </div>
-    {approvedReviewCount !== null && <RewardsCard approvedReviews={approvedReviewCount} contributionStatus={contributionStatus} />}
+    {rewardProgress !== null && (
+      <AcademicRewards
+        progress={rewardProgress.error ? null : rewardProgress}
+        status={contributionStatus}
+        unavailable={Boolean(rewardProgress.error)}
+        contribution={<ContributionModal initialStatus={contributionStatus} compact />}
+      />
+    )}
     </div>
   );
 }

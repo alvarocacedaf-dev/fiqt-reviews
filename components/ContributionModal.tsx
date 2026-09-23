@@ -13,7 +13,7 @@ const statusLabels: Record<Exclude<ContributionStatus, null>, string> = {
   rejected: 'Comprobante rechazado · puedes enviarlo nuevamente',
 };
 
-export function ContributionModal({ initialStatus }: { initialStatus: ContributionStatus }) {
+export function ContributionModal({ initialStatus, compact = false }: { initialStatus: ContributionStatus; compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const [status, setStatus] = useState(initialStatus);
   const [message, setMessage] = useState('');
@@ -112,7 +112,7 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
   return (
     <>
       <button
-        className={`flex w-full items-center gap-3 rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-gold ${
+        className={compact ? 'flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-white/15 bg-white/[0.06] p-3 text-left text-white transition hover:border-blue-300/50 hover:bg-white/10' : `flex w-full items-center gap-3 rounded-xl border p-3 text-left transition hover:-translate-y-0.5 hover:border-gold ${
           verified
             ? 'border-emerald-300/40 bg-emerald-400/15'
             : pending
@@ -123,12 +123,12 @@ export function ContributionModal({ initialStatus }: { initialStatus: Contributi
         ref={triggerRef}
         type="button"
       >
-        <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${verified ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
+        {!compact && <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black ${verified ? 'bg-emerald-300 text-emerald-950' : 'bg-white/10 text-gold'}`}>
           S/
-        </span>
+        </span>}
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-black text-white">Aporte a la página</span>
-          <span className="mt-0.5 block text-[11px] font-bold text-blue-200">
+          <span className={compact ? 'block text-sm font-medium' : 'block text-sm font-black text-white'}>Aporte a la página</span>
+          <span className={compact ? 'mt-1 block text-xs font-normal text-blue-200' : 'mt-0.5 block text-[11px] font-bold text-blue-200'}>
             {status ? statusLabels[status] : 'Primer paso de tu ruta'}
           </span>
         </span>

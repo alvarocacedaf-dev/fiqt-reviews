@@ -1,0 +1,54 @@
+.rewards {
+  --reward-ink: #f4f7fd;
+  --reward-muted: #adbad0;
+  --reward-line: rgba(255, 255, 255, .13);
+  min-width: 0;
+  padding: 23px;
+  color: var(--reward-ink);
+  border: 1px solid var(--reward-line);
+  border-top: 3px solid #eabf55;
+  border-radius: 14px;
+  background: rgba(8, 29, 65, .9);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .2), inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+.rewards h2, .rewards h3, .rewards p { margin: 0; }
+.rewards a:focus-visible, .rewards summary:focus-visible { outline: 3px solid #91b8ff; outline-offset: 4px; }
+.rewardHeading { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.rewardHeading h2 { font-size: 19px; font-weight: 700; line-height: 1.35; letter-spacing: -.025em; }
+.rewardSymbol { color: #eabf55; }
+.description { color: var(--reward-muted); font-size: 14px; line-height: 1.65; }
+.approved { display: flex; align-items: center; gap: 6px; color: #7ee0b5; font-size: 12px; font-weight: 600; margin-top: 24px !important; }
+.progressNumber { display: flex; align-items: baseline; flex-wrap: wrap; gap: 7px; margin-top: 13px; font-variant-numeric: tabular-nums; }
+.progressNumber strong { font-size: 42px; font-weight: 550; line-height: 1.1; letter-spacing: -.04em; }
+.progressNumber > span:not(.progressCaption) { color: #8fa2c0; font-size: 23px; }
+.progressCaption { flex-basis: 100%; color: var(--reward-muted); font-size: 12px; }
+.progressTrack { height: 6px; margin-top: 16px; overflow: hidden; border-radius: 8px; background: rgba(255, 255, 255, .1); }
+.progressTrack > span { display: block; height: 100%; border-radius: inherit; background: #eabf55; }
+.breakdown { display: flex; justify-content: space-between; gap: 12px; padding-top: 10px; color: var(--reward-muted); font-size: 12px; }
+.nextReward { margin: 24px 0 18px; }
+.eyebrow { color: var(--reward-muted); font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.nextReward h3, .contributionIntro h3 { margin-top: 6px; font-size: 17px; font-weight: 650; line-height: 1.45; }
+.nextReward > p:last-child, .contributionIntro > p { margin-top: 8px; color: var(--reward-muted); font-size: 13px; line-height: 1.6; }
+.primaryButton { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; padding: 11px 12px; color: #fff; background: #285fae; border-radius: 9px; font-size: 13px; font-weight: 600; transition: background .15s; }
+.primaryButton:hover { background: #3672d4; }
+.routeDetails { margin-top: 14px; border-top: 1px solid var(--reward-line); }
+.routeDetails > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; color: #91b8ff; font-size: 13px; font-weight: 600; list-style: none; cursor: pointer; }
+.routeDetails > summary::-webkit-details-marker { display: none; }
+.routeDetails[open] > summary svg { transform: rotate(180deg); }
+.steps { margin: 8px 0 18px; padding: 0; list-style: none; }
+.steps li { display: flex; gap: 12px; padding: 10px 0; }
+.stepNumber, .stepDone { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 28px; height: 28px; color: #b8c6da; background: rgba(255, 255, 255, .09); border-radius: 50%; font-size: 12px; }
+.stepDone { color: #8ce6bf; background: rgba(48, 185, 126, .15); }
+.steps h3 { font-size: 13px; font-weight: 600; line-height: 1.5; }
+.steps p { margin-top: 3px; color: var(--reward-muted); font-size: 11px; line-height: 1.5; }
+.finePrint, .rewardHelp { color: var(--reward-muted); font-size: 12px; line-height: 1.7; }
+.finePrint { margin-top: 12px !important; }
+.rewardHelp { padding-top: 10px; }
+.rewardHelp strong { color: var(--reward-ink); font-weight: 650; }
+.contributionIntro { padding-top: 22px; }
+.contributionIntro > :last-child { margin-top: 16px; }
+.statusLabel { display: inline-flex; padding: 4px 8px; color: #f3d889; background: rgba(234, 191, 85, .13); border-radius: 6px; font-size: 12px; }
+.notice { margin: 18px 0 0 !important; padding: 12px 14px; color: #cfe0ff; background: rgba(73, 126, 217, .13); border: 1px solid rgba(145, 184, 255, .18); border-radius: 8px; font-size: 13px; line-height: 1.6; }
+@media (min-width: 1024px) { .rewards { position: sticky; top: 6rem; } }
+@media (max-width: 639px) { .rewards { padding: 22px; } }
+@media (prefers-reduced-motion: reduce) { .rewards *, .rewards *::before, .rewards *::after { transition: none !important; } }
