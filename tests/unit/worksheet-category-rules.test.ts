@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
+import { isWorksheetExamTypeAllowed, usesControlsInsteadOfPractices } from '@/lib/worksheetCategoryRules';
 
 describe('worksheet category rules', () => {
   it('permite únicamente prácticas calificadas para BRN01', () => {
@@ -25,6 +25,16 @@ describe('worksheet category rules', () => {
     expect(isWorksheetExamTypeAllowed('BMA02', 'midterm')).toBe(true);
     expect(isWorksheetExamTypeAllowed('BMA02', 'final')).toBe(true);
     expect(isWorksheetExamTypeAllowed('BMA02', 'substitute')).toBe(true);
+  });
+
+  it('usa controles en lugar de prácticas calificadas para QU428 — Fisicoquímica II', () => {
+    expect(usesControlsInsteadOfPractices('QU428')).toBe(true);
+    expect(usesControlsInsteadOfPractices(' qu428 ')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU428', 'practice')).toBe(false);
+    expect(isWorksheetExamTypeAllowed('QU428', 'quiz')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU428', 'midterm')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU428', 'final')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU428', 'substitute')).toBe(true);
   });
 
   it('rechaza valores desconocidos', () => {

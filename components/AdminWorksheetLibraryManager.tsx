@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
-import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
+import { isWorksheetExamTypeAllowed, usesControlsInsteadOfPractices } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
@@ -654,7 +654,9 @@ export function AdminWorksheetLibraryTree({
     : null;
   const folderCategories = libraryType === 'materials' ? MATERIAL_CATEGORIES : FOLDER_CATEGORIES;
   const selectedCategoryLabel = selectedFolder
-    ? folderCategories.find(category => category.type === selectedFolder.examType)?.label
+    ? usesControlsInsteadOfPractices(selectedCourse?.code) && selectedFolder.examType === 'quiz'
+      ? 'Controles'
+      : folderCategories.find(category => category.type === selectedFolder.examType)?.label
       ?? LEGACY_CATEGORY_LABELS[selectedFolder.examType]
       ?? 'Archivos'
     : '';
@@ -715,15 +717,20 @@ export function AdminWorksheetLibraryTree({
                 <div className="border-t border-slate-100 bg-slate-50 px-3 py-3 sm:px-5">
                   <div className="space-y-2">
                     {cycleCourses.map(course => {
+                      const usesControls = libraryType === 'worksheets' && usesControlsInsteadOfPractices(course.code);
                       const courseFileCount = paginated
                         ? Object.entries(folderCounts ?? {}).reduce((sum, [key, count]) => (
                           key.startsWith(`${course.id}:`) ? sum + count : sum
                         ), 0)
                         : files.filter(file => file.course_id === course.id).length;
+                      const courseFolderCategories = usesControls
+                        ? [{ type: 'quiz' as ExamType, label: 'Controles' }, ...folderCategories]
+                        : folderCategories;
                       const legacyCategories = libraryType === 'worksheets' ? (['quiz', 'other'] as ExamType[])
+                        .filter(type => !courseFolderCategories.some(category => category.type === type))
                         .filter(type => fileCountFor(course.id, type))
                         .map(type => ({ type, label: LEGACY_CATEGORY_LABELS[type] ?? 'Otros materiales' })) : [];
-                      const categories = [...folderCategories, ...legacyCategories].filter(category => (
+                      const categories = [...courseFolderCategories, ...legacyCategories].filter(category => (
                         libraryType !== 'worksheets'
                         || isWorksheetExamTypeAllowed(course.code, category.type)
                       ));
@@ -770,7 +777,10 @@ export function AdminWorksheetLibraryTree({
                               const key = folderKey(course.id, category.type);
                               const isOpen = openCategories.includes(key);
                               const categoryFileCount = fileCountFor(course.id, category.type);
-                              const canUpload = !readOnly && folderCategories.some(item => item.type === category.type);
+                              const canUpload = !readOnly && (
+                                folderCategories.some(item => item.type === category.type)
+                                || (usesControls && category.type === 'quiz')
+                              );
                               const inputId = `add-${course.id}-${category.type}`;
 
                               return (
