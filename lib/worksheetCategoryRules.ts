@@ -9,7 +9,7 @@ export const WORKSHEET_EXAM_TYPES = [
 
 export type WorksheetExamType = typeof WORKSHEET_EXAM_TYPES[number];
 
-const PRACTICE_ONLY_COURSE_CODES = new Set(['BRN01']);
+const PRACTICE_ONLY_COURSE_CODES = new Set(['BRN01', 'PI111']);
 
 export function isWorksheetExamTypeAllowed(
   courseCode: string | null | undefined,

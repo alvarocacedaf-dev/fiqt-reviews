@@ -11,6 +11,15 @@ describe('worksheet category rules', () => {
     expect(isWorksheetExamTypeAllowed('BRN01', 'other')).toBe(false);
   });
 
+  it('permite únicamente prácticas calificadas para PI111 — Balance de Materia y Energía', () => {
+    expect(isWorksheetExamTypeAllowed('PI111', 'practice')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('PI111', 'midterm')).toBe(false);
+    expect(isWorksheetExamTypeAllowed('pi111', 'final')).toBe(false);
+    expect(isWorksheetExamTypeAllowed(' PI111 ', 'substitute')).toBe(false);
+    expect(isWorksheetExamTypeAllowed('PI111', 'quiz')).toBe(false);
+    expect(isWorksheetExamTypeAllowed('PI111', 'other')).toBe(false);
+  });
+
   it('mantiene las categorías habituales para los demás cursos', () => {
     expect(isWorksheetExamTypeAllowed('BMA02', 'practice')).toBe(true);
     expect(isWorksheetExamTypeAllowed('BMA02', 'midterm')).toBe(true);
