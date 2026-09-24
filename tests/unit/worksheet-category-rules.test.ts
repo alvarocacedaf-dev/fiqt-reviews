@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isWorksheetExamTypeAllowed, usesControlsInsteadOfPractices } from '@/lib/worksheetCategoryRules';
+import { isWorksheetExamTypeAllowed, worksheetPracticeReplacementLabel } from '@/lib/worksheetCategoryRules';
 
 describe('worksheet category rules', () => {
   it('permite únicamente prácticas calificadas para BRN01', () => {
@@ -28,13 +28,23 @@ describe('worksheet category rules', () => {
   });
 
   it('usa controles en lugar de prácticas calificadas para QU428 — Fisicoquímica II', () => {
-    expect(usesControlsInsteadOfPractices('QU428')).toBe(true);
-    expect(usesControlsInsteadOfPractices(' qu428 ')).toBe(true);
+    expect(worksheetPracticeReplacementLabel('QU428')).toBe('Controles');
+    expect(worksheetPracticeReplacementLabel(' qu428 ')).toBe('Controles');
     expect(isWorksheetExamTypeAllowed('QU428', 'practice')).toBe(false);
     expect(isWorksheetExamTypeAllowed('QU428', 'quiz')).toBe(true);
     expect(isWorksheetExamTypeAllowed('QU428', 'midterm')).toBe(true);
     expect(isWorksheetExamTypeAllowed('QU428', 'final')).toBe(true);
     expect(isWorksheetExamTypeAllowed('QU428', 'substitute')).toBe(true);
+  });
+
+  it('usa Test o Pasitos en lugar de prácticas calificadas para QU328 — Química Orgánica I', () => {
+    expect(worksheetPracticeReplacementLabel('QU328')).toBe('Test o Pasitos');
+    expect(worksheetPracticeReplacementLabel(' qu328 ')).toBe('Test o Pasitos');
+    expect(isWorksheetExamTypeAllowed('QU328', 'practice')).toBe(false);
+    expect(isWorksheetExamTypeAllowed('QU328', 'quiz')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU328', 'midterm')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU328', 'final')).toBe(true);
+    expect(isWorksheetExamTypeAllowed('QU328', 'substitute')).toBe(true);
   });
 
   it('rechaza valores desconocidos', () => {

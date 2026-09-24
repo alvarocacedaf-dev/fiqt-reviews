@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/ui/Icon';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
-import { isWorksheetExamTypeAllowed, usesControlsInsteadOfPractices } from '@/lib/worksheetCategoryRules';
+import { isWorksheetExamTypeAllowed, worksheetPracticeReplacementLabel } from '@/lib/worksheetCategoryRules';
 import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/actions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
@@ -654,8 +654,8 @@ export function AdminWorksheetLibraryTree({
     : null;
   const folderCategories = libraryType === 'materials' ? MATERIAL_CATEGORIES : FOLDER_CATEGORIES;
   const selectedCategoryLabel = selectedFolder
-    ? usesControlsInsteadOfPractices(selectedCourse?.code) && selectedFolder.examType === 'quiz'
-      ? 'Controles'
+    ? worksheetPracticeReplacementLabel(selectedCourse?.code) && selectedFolder.examType === 'quiz'
+      ? worksheetPracticeReplacementLabel(selectedCourse?.code)
       : folderCategories.find(category => category.type === selectedFolder.examType)?.label
       ?? LEGACY_CATEGORY_LABELS[selectedFolder.examType]
       ?? 'Archivos'
@@ -717,14 +717,16 @@ export function AdminWorksheetLibraryTree({
                 <div className="border-t border-slate-100 bg-slate-50 px-3 py-3 sm:px-5">
                   <div className="space-y-2">
                     {cycleCourses.map(course => {
-                      const usesControls = libraryType === 'worksheets' && usesControlsInsteadOfPractices(course.code);
+                      const practiceReplacementLabel = libraryType === 'worksheets'
+                        ? worksheetPracticeReplacementLabel(course.code)
+                        : null;
                       const courseFileCount = paginated
                         ? Object.entries(folderCounts ?? {}).reduce((sum, [key, count]) => (
                           key.startsWith(`${course.id}:`) ? sum + count : sum
                         ), 0)
                         : files.filter(file => file.course_id === course.id).length;
-                      const courseFolderCategories = usesControls
-                        ? [{ type: 'quiz' as ExamType, label: 'Controles' }, ...folderCategories]
+                      const courseFolderCategories = practiceReplacementLabel
+                        ? [{ type: 'quiz' as ExamType, label: practiceReplacementLabel }, ...folderCategories]
                         : folderCategories;
                       const legacyCategories = libraryType === 'worksheets' ? (['quiz', 'other'] as ExamType[])
                         .filter(type => !courseFolderCategories.some(category => category.type === type))
@@ -779,7 +781,7 @@ export function AdminWorksheetLibraryTree({
                               const categoryFileCount = fileCountFor(course.id, category.type);
                               const canUpload = !readOnly && (
                                 folderCategories.some(item => item.type === category.type)
-                                || (usesControls && category.type === 'quiz')
+                                || (Boolean(practiceReplacementLabel) && category.type === 'quiz')
                               );
                               const inputId = `add-${course.id}-${category.type}`;
 
