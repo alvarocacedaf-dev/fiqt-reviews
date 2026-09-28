@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { type FormEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { containsForbiddenReviewLanguage } from '@/lib/validation';
 import { isReviewAcademicTerm, REVIEW_ACADEMIC_TERMS } from '@/lib/reviewAcademicTerms';
 import { ReviewSubmittedMessage } from '@/components/ReviewSubmittedMessage';
+import { InlineSpinner } from '@/components/ui/InlineSpinner';
 
 const positiveTags = [
   'Explica claro',
@@ -122,6 +123,8 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
   const [message, setMessage] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
 
   function toggleTag(tag: string) {
     setSelected(current => (
@@ -131,7 +134,10 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
     ));
   }
 
-  async function submit(form: FormData) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submittingRef.current) return;
+    const form = new FormData(event.currentTarget);
     setMessage('');
     const comment = String(form.get('comment') || '').trim();
     const academicTerm = String(form.get('academic_term') || '').trim();
@@ -144,54 +150,64 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
       return setMessage('Tu reseña debe enfocarse en la experiencia académica y mantener un lenguaje respetuoso.');
     }
 
-    const db = createClient();
-    const { data: { user } } = await db.auth.getUser();
+    submittingRef.current = true;
+    setSubmitting(true);
 
-    if (!user) return setMessage('Inicia sesión para poder reseñar.');
+    try {
+      const db = createClient();
+      const { data: { user } } = await db.auth.getUser();
 
-    const { data: verified } = await db
-      .from('verified_course_professors')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('course_id', courseId)
-      .eq('professor_id', professorId)
-      .limit(1);
-    if (!verified?.length) return setMessage('Este profesor y curso todavía no fueron verificados para tu cuenta.');
+      if (!user) return setMessage('Inicia sesión para poder reseñar.');
 
-    const payload = Object.fromEntries(
-      ratingQuestions.map(({ key }) => [key, Number(form.get(key))]),
-    );
-    const customTags = [
-      String(form.get('positive_other') || '').trim(),
-      String(form.get('negative_other') || '').trim(),
-    ].filter(Boolean);
-    const selectedTags = [...new Set([...selected, ...customTags])];
+      const { data: verified } = await db
+        .from('verified_course_professors')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('course_id', courseId)
+        .eq('professor_id', professorId)
+        .limit(1);
+      if (!verified?.length) return setMessage('Este profesor y curso todavía no fueron verificados para tu cuenta.');
 
-    const { error } = await db.from('reviews').insert({
-      ...payload,
-      user_id: user.id,
-      professor_id: professorId,
-      course_id: courseId,
-      academic_term: academicTerm,
-      recommendation: form.get('recommendation'),
-      selected_tags: selectedTags,
-      comment,
-      status: 'pending',
-    });
+      const payload = Object.fromEntries(
+        ratingQuestions.map(({ key }) => [key, Number(form.get(key))]),
+      );
+      const customTags = [
+        String(form.get('positive_other') || '').trim(),
+        String(form.get('negative_other') || '').trim(),
+      ].filter(Boolean);
+      const selectedTags = [...new Set([...selected, ...customTags])];
 
-    if (error) {
-      setMessage(error.message);
-      return;
+      const { error } = await db.from('reviews').insert({
+        ...payload,
+        user_id: user.id,
+        professor_id: professorId,
+        course_id: courseId,
+        academic_term: academicTerm,
+        recommendation: form.get('recommendation'),
+        selected_tags: selectedTags,
+        comment,
+        status: 'pending',
+      });
+
+      if (error) {
+        setMessage(error.message);
+        return;
+      }
+
+      setSubmitted(true);
+      router.refresh();
+    } catch {
+      setMessage('No pudimos enviar tu reseña. Revisa tu conexión e inténtalo nuevamente.');
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
     }
-
-    setSubmitted(true);
-    router.refresh();
   }
 
   if (submitted) return <ReviewSubmittedMessage />;
 
   return (
-    <form action={submit} className="space-y-6">
+    <form aria-busy={submitting} className="space-y-6" onSubmit={submit}>
       <p className="rounded-xl bg-blue-50 p-3 text-sm text-blue-950">
         Solo puedes reseñar si este curso fue verificado en tu cuenta. La reseña será revisada antes de hacerse pública.
       </p>
@@ -282,9 +298,12 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
         />
       </label>
 
-      {message && <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-950">{message}</p>}
+      {message && <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-950" role="alert">{message}</p>}
 
-      <button className="btn-primary">Enviar a moderación</button>
+      <button className="btn-primary min-w-52 gap-2 disabled:cursor-wait" disabled={submitting} type="submit">
+        {submitting && <InlineSpinner />}
+        {submitting ? 'Enviando reseña…' : 'Enviar a moderación'}
+      </button>
     </form>
   );
 }

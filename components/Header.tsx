@@ -1,6 +1,7 @@
 ﻿import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { Icon } from '@/components/ui/Icon';
+import { SignOutButton } from '@/components/SignOutButton';
 import { isSupabaseConfigured } from '@/lib/demo';
 
 function UserIcon() {
@@ -136,10 +137,7 @@ function LoggedInLinks({
           </a>
         )}
         <form action={signOut}>
-          <button className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left font-bold text-white transition hover:bg-white/10 hover:text-gold">
-            <NavIcon type="logout" />
-            Cerrar sesión
-          </button>
+          <SignOutButton variant="mobile" />
         </form>
       </div>
     );
@@ -186,10 +184,7 @@ function LoggedInLinks({
         </a>
       )}
       <form action={signOut}>
-        <button className="inline-flex items-center gap-1 font-semibold text-white transition hover:text-gold">
-          <NavIcon type="logout" />
-          Cerrar sesión
-        </button>
+        <SignOutButton />
       </form>
     </>
   );
