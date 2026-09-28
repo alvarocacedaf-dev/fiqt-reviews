@@ -49,11 +49,15 @@ export function ScheduleImagePreview({ file, onClose }: { file: File; onClose: (
       className="fixed inset-0 m-0 h-[100dvh] max-h-none w-screen max-w-none bg-[#101010] p-0 text-white backdrop:bg-black"
     >
       <div className="flex h-full flex-col" style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}>
-        <header className="flex flex-wrap items-center gap-3 border-b border-white/20 p-4">
-          <button type="button" onClick={onClose} className="rounded-lg border border-white/40 px-3 py-2">Volver</button>
-          <p className="min-w-0 flex-1 break-all text-sm">{file.name}</p>
-          {canShare && <button type="button" disabled={sharing} onClick={() => void share()} className="rounded-lg bg-white px-3 py-2 font-bold text-black disabled:opacity-50">{sharing ? 'Compartiendo…' : 'Compartir'}</button>}
-          {url && <a href={url} download={file.name} onClick={() => setMessage('Descarga solicitada. Busca la imagen en Archivos → Descargas o en las descargas del navegador.')} className="rounded-lg border border-white/40 px-3 py-2">Descargar imagen</a>}
+        <header className="flex flex-col gap-3 border-b border-white/20 p-4">
+          <p className="w-full truncate text-sm text-white/80" title={file.name}>{file.name}</p>
+          <div className="flex w-full items-center gap-2">
+            <button type="button" onClick={onClose} className="shrink-0 rounded-lg border border-white/40 px-3 py-2">Volver</button>
+            <div className="ml-auto flex min-w-0 items-center justify-end gap-2">
+              {canShare && <button type="button" disabled={sharing} onClick={() => void share()} className="shrink-0 rounded-lg bg-white px-3 py-2 font-bold text-black disabled:opacity-50">{sharing ? 'Compartiendo…' : 'Compartir'}</button>}
+              {url && <a href={url} download={file.name} onClick={() => setMessage('Descarga solicitada. Busca la imagen en Archivos → Descargas o en las descargas del navegador.')} className="truncate rounded-lg border border-white/40 px-3 py-2 text-center">Descargar imagen</a>}
+            </div>
+          </div>
         </header>
         {message && <p role="status" className="bg-white/10 px-4 py-3 text-sm">{message}</p>}
         <div className="flex min-h-0 flex-1 items-center justify-center overflow-auto">
