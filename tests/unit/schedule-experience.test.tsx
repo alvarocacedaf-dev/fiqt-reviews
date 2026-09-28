@@ -36,18 +36,18 @@ describe('experiencia del horario', () => {
     render(<GeneratedScheduleList schedules={[first, second]} truncated={false} />);
     fireEvent.click(screen.getByRole('button', { name: /Horario 2/ }));
     expect(localStorage.getItem('fiqt-reviews-saved-schedule')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Guardar en este navegador' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar horario' }));
     expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).schedule.id).toBe('second');
     expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).position).toBe(2);
     fireEvent.click(screen.getByRole('button', { name: /Horario 1/ }));
-    fireEvent.click(screen.getByRole('button', { name: 'Guardar en este navegador' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar horario' }));
     expect(JSON.parse(localStorage.getItem('fiqt-reviews-saved-schedule')!).schedule.id).toBe(first.id);
     expect(screen.getAllByRole('button', { name: 'Horario guardado' })).toHaveLength(1);
   });
   it('informa cuando no se puede guardar', () => {
     vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('denied'); });
     render(<GeneratedScheduleList schedules={[first]} truncated={false} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Guardar en este navegador' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar horario' }));
     expect(screen.getByRole('status')).toHaveTextContent('No se pudo guardar');
   });
   it('lee el formato de guardado anterior y abre consulta diaria en móvil', () => {

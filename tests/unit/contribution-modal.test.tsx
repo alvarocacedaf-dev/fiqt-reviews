@@ -31,7 +31,7 @@ describe('ContributionModal', () => {
     fireEvent.click(screen.getByRole('button', { name: /Aporte a la página/i }));
     const fileInput = screen.getByLabelText(/Sube aquí tu comprobante/i);
     fireEvent.change(fileInput, { target: { files: [new File(['imagen'], 'yape.png', { type: 'image/png' })] } });
-    const form = screen.getByRole('button', { name: 'Enviar' }).closest('form');
+    const form = screen.getByRole('button', { name: 'Enviar comprobante' }).closest('form');
     expect(form).not.toBeNull();
     return form!;
   }
@@ -41,7 +41,7 @@ describe('ContributionModal', () => {
     fireEvent.submit(form);
     fireEvent.submit(form);
 
-    expect(screen.getByRole('button', { name: 'Enviando…' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Enviando comprobante…' })).toBeDisabled();
     await waitFor(() => expect(supabaseMocks.upload).toHaveBeenCalledTimes(1));
     await waitFor(() => expect(supabaseMocks.insert).toHaveBeenCalledTimes(1));
   });
@@ -58,6 +58,6 @@ describe('ContributionModal', () => {
     fireEvent.submit(prepareSubmission());
 
     expect(await screen.findByText('No se pudo subir la imagen: Bucket no disponible')).toBeVisible();
-    expect(screen.getByRole('button', { name: 'Enviar' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Enviar comprobante' })).toBeEnabled();
   });
 });

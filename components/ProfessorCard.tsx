@@ -31,7 +31,7 @@ export function ProfessorCard({
   const total = reviews.length;
 
   return (
-    <article className="group relative min-h-[29rem] overflow-hidden rounded-[2.25rem] border-4 border-white bg-gradient-to-br from-white via-blue-50 to-blue-100 p-6 pb-12 shadow-card transition hover:-translate-y-1 hover:shadow-2xl">
+    <article className="relative min-h-[29rem] overflow-hidden rounded-[2.25rem] border-4 border-white bg-gradient-to-br from-white via-blue-50 to-blue-100 p-6 pb-12 shadow-card">
       <div className="absolute left-4 top-3 text-center font-black leading-none text-royal">
         <div className="text-lg">FIQT</div>
         <div className="text-2xl text-gold">◆</div>
@@ -74,7 +74,7 @@ export function ProfessorCard({
           )}
         </div>
 
-        <div className="relative z-10 grid grid-cols-2 gap-3 transition duration-200 md:translate-y-1 md:opacity-85 md:group-hover:translate-y-0 md:group-hover:opacity-100 md:group-focus-within:translate-y-0 md:group-focus-within:opacity-100">
+        <div className="relative z-10 grid grid-cols-2 gap-3">
           {hasReviewAccess ? (
             <Link className="btn-primary px-3 text-sm" href={`/profesores/${professor.id}?courseId=${encodeURIComponent(courseId)}`}>
               Ver perfil

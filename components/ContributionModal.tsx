@@ -204,7 +204,7 @@ export function ContributionModal({ initialStatus, compact = false }: { initialS
                     <span className="mt-2 block text-xs font-normal text-slate-500">JPG, PNG o WebP. Máximo 5 MB.</span>
                   </label>
                   <button className="btn-primary w-full" disabled={submitting} type="submit">
-                    {submitting ? 'Enviando…' : 'Enviar'}
+                    {submitting ? 'Enviando comprobante…' : 'Enviar comprobante'}
                   </button>
                 </form>
               )}

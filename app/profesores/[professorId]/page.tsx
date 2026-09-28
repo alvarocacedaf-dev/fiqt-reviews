@@ -127,7 +127,7 @@ export default async function ProfessorPage({
         <h2 className="text-xl font-black text-ink">Reseñas aprobadas de {contextCourse.name}</h2>
         <div className="mt-5 space-y-4">
           {reviews.map(review => (
-            <article key={review.id} className="surface-card-interactive p-4">
+            <article key={review.id} className="surface-card p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="flex items-center gap-2 font-semibold text-royal">
                 <Icon className="h-4 w-4" name={review.recommendation === 'like' ? 'check' : 'close'} />

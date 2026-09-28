@@ -224,7 +224,7 @@ export function GeneratedScheduleList({ schedules, truncated, daily = false, sav
             <div className="flex flex-wrap gap-3">
               <button className="btn-primary gap-2" onClick={() => saveSchedule(schedule, daily ? savedPosition : index + 1)} type="button">
                 <Icon className="h-4 w-4" name="check" />
-                {savedId === schedule.id ? 'Horario guardado' : 'Guardar en este navegador'}
+                {savedId === schedule.id ? 'Horario guardado' : 'Guardar horario'}
               </button>
               <button
                 className="btn-secondary gap-2"
