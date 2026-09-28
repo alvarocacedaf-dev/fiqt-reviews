@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ProfessorCard } from '@/components/ProfessorCard';
 import { ContentHeader } from '@/components/ContentHeader';
 import { Icon } from '@/components/ui/Icon';
+import { laboratoryGuideForCourse } from '@/lib/courseLaboratoryGuides';
 import { getCourse, getCourseProfessors, getProfessorReviews, hasReviewAccess } from '@/lib/data';
 
 const courseSyllabi: Record<string, { label: string; href: string }> = {
@@ -200,6 +201,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
     : [];
   const reviews = Object.fromEntries(rows);
   const syllabus = course?.code ? courseSyllabi[course.code] : null;
+  const laboratoryGuide = laboratoryGuideForCourse(course?.code);
 
   return (
     <section>
@@ -208,16 +210,39 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
           <>
             <p>Docentes asociados como información pública referencial. {professors.length} profesor{professors.length === 1 ? '' : 'es'} · Fuente: DIRCE UNI.</p>
             <div className="mt-3 flex flex-col items-start gap-2">
-              {syllabus && (
-                <a
-                  href={syllabus.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
-                >
-                  <Icon className="h-5 w-5" name="file" /> {syllabus.label}
-                </a>
-              )}
+              <div className="flex flex-wrap items-center gap-2">
+                {syllabus && (
+                  <a
+                    href={syllabus.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
+                  >
+                    <Icon className="h-5 w-5" name="file" /> {syllabus.label}
+                  </a>
+                )}
+                {laboratoryGuide !== undefined && (
+                  laboratoryGuide ? (
+                    <a
+                      href={laboratoryGuide}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
+                    >
+                      <Icon className="h-5 w-5" name="file" /> Guía de laboratorio
+                    </a>
+                  ) : (
+                    <span
+                      aria-disabled="true"
+                      title="La guía se publicará próximamente"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/70"
+                    >
+                      <Icon className="h-5 w-5" name="file" /> Guía de laboratorio
+                      <span className="text-[0.65rem] font-semibold uppercase tracking-wide text-gold">Próximamente</span>
+                    </span>
+                  )
+                )}
+              </div>
               <Link
                 href={`/cursos/${courseId}/material`}
                 className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:border-gold hover:bg-gold hover:text-ink"
