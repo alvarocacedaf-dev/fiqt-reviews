@@ -18,6 +18,8 @@ describe('materiales incluidos con la aplicación', () => {
     expect(materials.every(material => material.materialType === 'other')).toBe(true);
     expect(materials.filter(material => material.fileType === 'PDF')).toHaveLength(2);
     expect(materials.filter(material => material.fileType === 'DOCX')).toHaveLength(2);
+    expect(materials.every(material => material.title.endsWith('- TEODARDO'))).toBe(true);
+    expect(materials.every(material => material.fileName.includes('-TEODARDO.'))).toBe(true);
     expect(new Set(materials.map(material => material.fileUrl)).size).toBe(4);
   });
 });
