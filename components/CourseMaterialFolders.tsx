@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CourseVideoPlayer } from '@/components/CourseVideoPlayer';
 import { Icon } from '@/components/ui/Icon';
+import { formatFileType } from '@/lib/filePresentation';
 import { getYouTubeEmbedUrl } from '@/lib/youtube';
 
 export type CourseMaterialFile = {
@@ -86,7 +87,10 @@ export function CourseMaterialFolders({ files }: { files: CourseMaterialFile[] }
                     return (
                     <article className={file.material_type === 'videos' ? 'rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2' : 'rounded-2xl border border-slate-200 bg-white p-4'} key={file.id}>
                       <h3 className="break-words text-sm font-black text-ink">{file.title}</h3>
-                      <p className="mt-1 text-xs text-slate-500">{youtubeEmbedUrl ? 'YouTube' : formatBytes(file.file_size)}{file.academic_term ? ` · ${file.academic_term}` : ''}</p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {youtubeEmbedUrl ? 'YouTube' : `${formatBytes(file.file_size)} · ${formatFileType(file)}`}
+                        {file.academic_term ? ` · ${file.academic_term}` : ''}
+                      </p>
                       {youtubeEmbedUrl ? (
                         <div className="mt-3 aspect-video overflow-hidden rounded-xl bg-black">
                           <iframe

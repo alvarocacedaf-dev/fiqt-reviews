@@ -9,6 +9,7 @@ import { toggleAdminWorksheetCourse } from '@/app/planchas-administracion/action
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
 import { canonicalizeWorksheetFileName, worksheetFileFormat } from '@/lib/worksheetFileNaming';
+import { formatFileType } from '@/lib/filePresentation';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -954,7 +955,7 @@ export function AdminWorksheetLibraryTree({
                   <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h4 className="break-words text-xs font-black leading-4 text-ink">{file.title}</h4>
                     <span className="text-[10px] leading-4 text-slate-500">
-                      {formatBytes(file.file_size)} · {formatDate(file.created_at)}
+                      {formatBytes(file.file_size)} · {formatFileType(file)} · {formatDate(file.created_at)}
                     </span>
                     {file.academic_term && (
                       <span className="inline-block rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-black uppercase text-amber-900">
