@@ -8,7 +8,7 @@ export type BundledCourseMaterial = {
   fileName: string;
   mimeType: string;
   fileSize: number;
-  fileType: 'PDF' | 'ZIP';
+  fileType: 'PDF' | 'DOCX' | 'ZIP';
   contents: string;
   downloadLabel: string;
   professorIds?: string[];
@@ -128,6 +128,62 @@ export const bundledCourseMaterials: BundledCourseMaterial[] = [
     fileSize: 1_728_584,
     fileType: 'PDF',
     contents: '1 documento PDF',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-problemas-sistemas-ternarios-parte-1',
+    courseCodes: ['QU428'],
+    title: 'Problemas de sistemas ternarios — parte 1',
+    description: 'Material complementario de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-problemas-sistemas-ternarios-parte-1.pdf',
+    fileName: 'QU428-Problemas-sistemas-ternarios-parte-1.pdf',
+    mimeType: 'application/pdf',
+    fileSize: 337_869,
+    fileType: 'PDF',
+    contents: '1 documento PDF',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-problemas-sistemas-ternarios-parte-2',
+    courseCodes: ['QU428'],
+    title: 'Problemas de sistemas ternarios — parte 2',
+    description: 'Material complementario de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-problemas-sistemas-ternarios-parte-2.pdf',
+    fileName: 'QU428-Problemas-sistemas-ternarios-parte-2.pdf',
+    mimeType: 'application/pdf',
+    fileSize: 175_199,
+    fileType: 'PDF',
+    contents: '1 documento PDF',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-problemas-sistemas-binarios-y-ternarios',
+    courseCodes: ['QU428'],
+    title: 'Problemas de sistemas binarios y ternarios',
+    description: 'Material complementario de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-problemas-sistemas-binarios-y-ternarios.docx',
+    fileName: 'QU428-Problemas-sistemas-binarios-y-ternarios.docx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    fileSize: 42_750,
+    fileType: 'DOCX',
+    contents: '1 documento Word',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-problemas-sistemas-binarios',
+    courseCodes: ['QU428'],
+    title: 'Problemas de sistemas binarios',
+    description: 'Material complementario de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-problemas-sistemas-binarios.docx',
+    fileName: 'QU428-Problemas-sistemas-binarios.docx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    fileSize: 121_305,
+    fileType: 'DOCX',
+    contents: '1 documento Word',
     downloadLabel: 'Abrir archivo',
   },
 ];

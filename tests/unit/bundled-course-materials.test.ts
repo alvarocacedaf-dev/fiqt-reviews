@@ -10,4 +10,14 @@ describe('materiales incluidos con la aplicación', () => {
     expect(materials.every(material => material.mimeType === 'application/pdf')).toBe(true);
     expect(new Set(materials.map(material => material.fileUrl)).size).toBe(6);
   });
+
+  it('coloca los cuatro documentos de QU428 en Otros', () => {
+    const materials = getBundledMaterialsForCourse('QU428');
+
+    expect(materials).toHaveLength(4);
+    expect(materials.every(material => material.materialType === 'other')).toBe(true);
+    expect(materials.filter(material => material.fileType === 'PDF')).toHaveLength(2);
+    expect(materials.filter(material => material.fileType === 'DOCX')).toHaveLength(2);
+    expect(new Set(materials.map(material => material.fileUrl)).size).toBe(4);
+  });
 });
