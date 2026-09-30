@@ -214,6 +214,20 @@ export const bundledCourseMaterials: BundledCourseMaterial[] = [
     contents: '1 libro de Excel',
     downloadLabel: 'Abrir archivo',
   },
+  {
+    id: 'qu428-clases-2026-1',
+    courseCodes: ['QU428'],
+    title: '2026-1',
+    description: 'Fotografías de las clases de Fisicoquímica II del ciclo 2026-1.',
+    materialType: 'classes',
+    fileUrl: '/materiales/qu428-clases-2026-1.zip',
+    fileName: 'QU428-Clases-2026-1.zip',
+    mimeType: 'application/zip',
+    fileSize: 2_615_188,
+    fileType: 'ZIP',
+    contents: '24 fotografías JPEG',
+    downloadLabel: 'Descargar fotografías',
+  },
 ];
 
 export function getBundledMaterialsForCourse(courseCode: string | null | undefined) {
