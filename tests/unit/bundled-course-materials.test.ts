@@ -23,14 +23,26 @@ describe('materiales incluidos con la aplicación', () => {
     expect(new Set(otherMaterials.map(material => material.fileUrl)).size).toBe(9);
   });
 
-  it('coloca las 24 fotos de QU428 como el archivo de clases 2026-1', () => {
+  it('coloca las 24 fotos de QU428 como el archivo de clases 2025-2', () => {
     const materials = getBundledMaterialsForCourse('QU428');
-    const classMaterial = materials.find(material => material.materialType === 'classes');
+    const classMaterial = materials.find(material => material.materialType === 'classes' && material.title === '2025-2');
+
+    expect(classMaterial).toMatchObject({
+      title: '2025-2',
+      fileType: 'ZIP',
+      contents: '24 fotografías JPEG',
+      fileUrl: '/materiales/qu428-clases-2025-2.zip',
+    });
+  });
+
+  it('coloca las 40 fotos de QU428 como el archivo de clases 2026-1', () => {
+    const materials = getBundledMaterialsForCourse('QU428');
+    const classMaterial = materials.find(material => material.materialType === 'classes' && material.title === '2026-1');
 
     expect(classMaterial).toMatchObject({
       title: '2026-1',
       fileType: 'ZIP',
-      contents: '24 fotografías JPEG',
+      contents: '40 fotografías JPEG',
       fileUrl: '/materiales/qu428-clases-2026-1.zip',
     });
   });
