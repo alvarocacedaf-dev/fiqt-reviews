@@ -11,16 +11,16 @@ describe('materiales incluidos con la aplicación', () => {
     expect(new Set(materials.map(material => material.fileUrl)).size).toBe(6);
   });
 
-  it('coloca los seis documentos únicos de QU428 en Otros', () => {
+  it('coloca los nueve documentos únicos de QU428 en Otros', () => {
     const materials = getBundledMaterialsForCourse('QU428');
     const otherMaterials = materials.filter(material => material.materialType === 'other');
 
-    expect(otherMaterials).toHaveLength(6);
-    expect(otherMaterials.filter(material => material.fileType === 'PDF')).toHaveLength(3);
+    expect(otherMaterials).toHaveLength(9);
+    expect(otherMaterials.filter(material => material.fileType === 'PDF')).toHaveLength(4);
     expect(otherMaterials.filter(material => material.fileType === 'DOCX')).toHaveLength(2);
-    expect(otherMaterials.filter(material => material.fileType === 'XLSX')).toHaveLength(1);
+    expect(otherMaterials.filter(material => material.fileType === 'XLSX')).toHaveLength(3);
     expect(otherMaterials.filter(material => material.fileType !== 'XLSX').every(material => material.title.endsWith('- TEODARDO'))).toBe(true);
-    expect(new Set(otherMaterials.map(material => material.fileUrl)).size).toBe(6);
+    expect(new Set(otherMaterials.map(material => material.fileUrl)).size).toBe(9);
   });
 
   it('coloca las 24 fotos de QU428 como el archivo de clases 2026-1', () => {
