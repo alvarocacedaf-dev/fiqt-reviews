@@ -8,7 +8,7 @@ export type BundledCourseMaterial = {
   fileName: string;
   mimeType: string;
   fileSize: number;
-  fileType: 'PDF' | 'DOCX' | 'ZIP';
+  fileType: 'PDF' | 'DOCX' | 'XLSX' | 'ZIP';
   contents: string;
   downloadLabel: string;
   professorIds?: string[];
@@ -145,13 +145,13 @@ export const bundledCourseMaterials: BundledCourseMaterial[] = [
     downloadLabel: 'Abrir archivo',
   },
   {
-    id: 'qu428-problemas-sistemas-ternarios-parte-2',
+    id: 'qu428-problemas-ternarios-solidos-liquidos-2026-1-teodardo',
     courseCodes: ['QU428'],
-    title: 'Problemas de sistemas ternarios — parte 2 - TEODARDO',
+    title: 'Problemas ternarios sólidos-líquidos 2026-1 - TEODARDO',
     description: 'Material complementario de Fisicoquímica II.',
     materialType: 'other',
-    fileUrl: '/materiales/qu428-problemas-sistemas-ternarios-parte-2-teodardo.pdf',
-    fileName: 'QU428-Problemas-sistemas-ternarios-parte-2-TEODARDO.pdf',
+    fileUrl: '/materiales/qu428-problemas-ternarios-solidos-liquidos-2026-1-teodardo.pdf',
+    fileName: 'QU428-Problemas-ternarios-solidos-liquidos-2026-1-TEODARDO.pdf',
     mimeType: 'application/pdf',
     fileSize: 175_199,
     fileType: 'PDF',
@@ -184,6 +184,34 @@ export const bundledCourseMaterials: BundledCourseMaterial[] = [
     fileSize: 121_305,
     fileType: 'DOCX',
     contents: '1 documento Word',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-celdas-electroliticas-teodardo',
+    courseCodes: ['QU428'],
+    title: 'Celdas electrolíticas - TEODARDO',
+    description: 'Material complementario de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-celdas-electroliticas-teodardo.pdf',
+    fileName: 'QU428-Celdas-electroliticas-TEODARDO.pdf',
+    mimeType: 'application/pdf',
+    fileSize: 1_664_661,
+    fileType: 'PDF',
+    contents: '1 documento PDF',
+    downloadLabel: 'Abrir archivo',
+  },
+  {
+    id: 'qu428-titulacion-de-cobreado-acido',
+    courseCodes: ['QU428'],
+    title: 'Titulación de cobreado ácido',
+    description: 'Hoja de cálculo complementaria de Fisicoquímica II.',
+    materialType: 'other',
+    fileUrl: '/materiales/qu428-titulacion-de-cobreado-acido.xlsx',
+    fileName: 'QU428-Titulacion-de-cobreado-acido.xlsx',
+    mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    fileSize: 19_325,
+    fileType: 'XLSX',
+    contents: '1 libro de Excel',
     downloadLabel: 'Abrir archivo',
   },
 ];
