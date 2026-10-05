@@ -179,4 +179,18 @@ describe('canonicalizeWorksheetFileName', () => {
       academicTerm: '2025-2',
     });
   });
+
+  it('acepta una práctica combinada 1 y 2 y conserva el nombre de la profesora', () => {
+    expect(canonicalizeWorksheetFileName({
+      courseName: 'Fenómenos de Transporte',
+      courseCode: 'PI140',
+      academicTerm: '',
+      fileName: 'Prácticas 1 y 2 de Fenómenos de Transporte 2024-3 - (Emma A. Alvarez Núñez).pdf',
+      examType: 'practice',
+    })).toEqual({
+      title: 'Práctica calificada 1 y 2 de Fenómenos de Transporte 2024-3 — (Emma A. Alvarez Núñez)',
+      error: null,
+      academicTerm: '2024-3',
+    });
+  });
 });

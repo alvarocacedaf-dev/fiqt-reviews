@@ -27,6 +27,20 @@ describe('compareAssessmentWorksheetFiles', () => {
     ]);
   });
 
+  it('ubica una práctica combinada según el primer número y su ciclo', () => {
+    const files = [
+      worksheet('Práctica calificada 1 de Fenómenos de Transporte 2025-1'),
+      worksheet('Práctica calificada 1 y 2 de Fenómenos de Transporte 2024-3'),
+      worksheet('Práctica calificada 1 de Fenómenos de Transporte 2024-2'),
+    ].sort(compareAssessmentWorksheetFiles);
+
+    expect(files.map(file => file.title)).toEqual([
+      'Práctica calificada 1 de Fenómenos de Transporte 2024-2',
+      'Práctica calificada 1 y 2 de Fenómenos de Transporte 2024-3',
+      'Práctica calificada 1 de Fenómenos de Transporte 2025-1',
+    ]);
+  });
+
   it('reconoce el número después de “práctica calificada” y agrupa antes de ordenar por ciclo', () => {
     const files = [
       worksheet('PRÁCTICA CALIFICADA 3 DE CÁLCULO DIFERENCIAL 2012-2 PARTE 2'),

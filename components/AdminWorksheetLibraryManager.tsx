@@ -974,7 +974,9 @@ export function AdminWorksheetLibraryTree({
                     unlockAllCourses || unlockedCourses.has(file.course_id) ? (
                       <a
                         className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
-                        href={`/api/admin-worksheets/${file.id}/download`}
+                        href={file.storage_provider === 'public' && file.signed_url
+                          ? file.signed_url
+                          : `/api/admin-worksheets/${file.id}/download`}
                         rel="noreferrer"
                         target="_blank"
                       >

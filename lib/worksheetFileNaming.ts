@@ -24,7 +24,7 @@ function normalize(value: string) {
 export function worksheetFileFormat(examType: string, courseName: string, academicTerm: string) {
   const term = academicTerm.trim() || '[ciclo académico]';
   const optional = ' — [sección, profesor, parte o solucionario opcional]';
-  if (examType === 'practice') return `Práctica calificada [número] de ${courseName} ${term}${optional}`;
+  if (examType === 'practice') return `Práctica calificada [número o números] de ${courseName} ${term}${optional}`;
   if (examType === 'midterm') return `Examen parcial de ${courseName} ${term}${optional}`;
   if (examType === 'final') return `Examen final de ${courseName} ${term}${optional}`;
   if (examType === 'substitute') return `Examen sustitutorio de ${courseName} ${term}${optional}`;
@@ -132,13 +132,13 @@ export function canonicalizeWorksheetFileName({
     return null;
   }
   const patterns: Record<string, RegExp> = {
-    practice: new RegExp(`^(?:practica(?: calificada)?|pc)\\s+(\\d+)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
+    practice: new RegExp(`^(?:practicas?(?: calificadas?)?|pc)\\s+(\\d+(?:\\s+y\\s+\\d+)*)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
     midterm: new RegExp(`^(?:examen\\s+)?(?:parcial|ep)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
     final: new RegExp(`^(?:examen\\s+)?(?:final|ef)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
     substitute: new RegExp(`^(?:examen\\s+)?(?:sustitutorio|susti|sustitutorio|es)\\s+de\\s+(.+?)\\s+${termPattern}(?:\\s+.*)?$`),
   };
   const prefixedPatterns: Record<string, RegExp> = {
-    practice: new RegExp(`^${termPattern}\\s+(?:practica(?: calificada)?|pc)\\s+(\\d+)\\s+(.+)$`),
+    practice: new RegExp(`^${termPattern}\\s+(?:practicas?(?: calificadas?)?|pc)\\s+(\\d+(?:\\s+y\\s+\\d+)*)\\s+(.+)$`),
     midterm: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:parcial|ep)\\s+(.+)$`),
     final: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:final|ef)\\s+(.+)$`),
     substitute: new RegExp(`^${termPattern}\\s+(?:examen\\s+)?(?:sustitutorio|susti|es)\\s+(.+)$`),

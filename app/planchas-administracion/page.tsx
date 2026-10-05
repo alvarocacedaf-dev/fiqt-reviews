@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
+import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,7 +31,8 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'supabase' | 'r2';
+  storage_provider: 'supabase' | 'r2' | 'public';
+  signed_url?: string | null;
 };
 
 const FILE_BATCH_SIZE = 1000;
@@ -67,7 +69,7 @@ export default async function PublicAdminWorksheetsPage() {
   const [
     { data: rawCycles, error: cyclesError },
     { data: rawCourses, error: coursesError },
-    { files, error: filesError },
+    { files: storedFiles, error: filesError },
     { data: profile },
     rewardProgress,
     { data: rawUnlocks },
@@ -82,6 +84,10 @@ export default async function PublicAdminWorksheetsPage() {
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
+  const files: WorksheetFile[] = [
+    ...storedFiles,
+    ...resolveBundledAdminWorksheets(courses),
+  ];
   const loadError = cyclesError || coursesError || filesError;
   const reviewCount = rewardProgress.total;
   const isOwner = profile?.role === 'owner';
