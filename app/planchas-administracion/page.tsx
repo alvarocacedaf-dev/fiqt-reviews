@@ -72,7 +72,7 @@ export default async function PublicAdminWorksheetsPage() {
     rewardProgress,
     { data: rawUnlocks },
   ] = await Promise.all([
-    db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 10).order('number'),
+    db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 12).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
     loadAllWorksheetFiles(db),
     db.from('profiles').select('role').eq('id', user.id).single(),

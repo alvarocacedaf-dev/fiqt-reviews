@@ -61,7 +61,7 @@ export default async function AdminWorksheetsPage() {
     { data: rawCourses, error: coursesError },
     fileSummary,
   ] = await Promise.all([
-    db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 10).order('number'),
+    db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 12).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
     loadFolderCounts(db),
   ]);

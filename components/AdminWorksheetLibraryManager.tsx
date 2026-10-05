@@ -80,6 +80,12 @@ const MATERIAL_CATEGORIES: { type: ExamType; label: string }[] = [
   { type: 'other', label: 'Otros' },
 ];
 
+export function worksheetLibraryCycleLabel(cycleNumber: number) {
+  if (cycleNumber === 11) return 'Cursos electivos';
+  if (cycleNumber === 12) return 'Cursos complementarios';
+  return `Ciclo ${cycleNumber}`;
+}
+
 async function readApiResponse(response: Response) {
   const result = await response.json().catch(() => ({})) as {
     error?: string;
@@ -706,7 +712,7 @@ export function AdminWorksheetLibraryTree({
                   <span className="flex min-w-0 items-center gap-3">
                     <Icon className="h-5 w-5" name="folder" />
                     <span className="min-w-0">
-                      <span className="block font-black text-ink">Ciclo {cycle.number}</span>
+                      <span className="block font-black text-ink">{worksheetLibraryCycleLabel(cycle.number)}</span>
                       <span className="block text-xs text-slate-500">
                         {cycleCourses.length} curso{cycleCourses.length === 1 ? '' : 's'} · {cycleFileCount} archivo{cycleFileCount === 1 ? '' : 's'}
                       </span>
