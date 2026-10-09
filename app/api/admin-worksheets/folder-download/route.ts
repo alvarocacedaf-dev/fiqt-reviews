@@ -5,15 +5,12 @@ import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { createStoredZipStream } from '@/lib/zipStream';
+import { worksheetArchiveDisposition, worksheetArchiveName } from '@/lib/worksheetArchiveName';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const EXAM_TYPES = new Set(['practice', 'midterm', 'final', 'substitute', 'quiz', 'other']);
-
-function zipFileName(value: string) {
-  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -70,11 +67,11 @@ export async function GET(request: Request) {
   })).catch(() => null);
   if (!sources) return NextResponse.json({ error: 'No se pudo preparar uno de los archivos.' }, { status: 503 });
 
-  const archiveName = `${zipFileName(course.code || course.name)}-${zipFileName(examType)}.zip`;
+  const archiveName = worksheetArchiveName(examType, course.name);
   return new Response(createStoredZipStream(sources), {
     headers: {
       'Cache-Control': 'private, no-store',
-      'Content-Disposition': `attachment; filename="${archiveName}"`,
+      'Content-Disposition': worksheetArchiveDisposition(archiveName),
       'Content-Type': 'application/zip',
       'X-Content-Type-Options': 'nosniff',
     },
