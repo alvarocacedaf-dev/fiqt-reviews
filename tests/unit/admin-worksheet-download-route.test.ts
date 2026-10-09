@@ -94,18 +94,11 @@ describe('descarga individual de planchas', () => {
     expect(fetch).toHaveBeenCalledWith('https://supabase.example/documento', { cache: 'no-store' });
   });
 
-  it('abre el visor normal del almacenamiento con el nombre visible para compartir', async () => {
+  it('abre el visor normal del almacenamiento sin alterar la firma de R2', async () => {
     const response = await GET(new Request('https://example.test?mode=preview'), { params });
 
     expect(response.status).toBe(307);
     expect(response.headers.get('location')).toBe('https://storage.example/practica?signature=fresh');
-    expect(mocks.r2).toHaveBeenCalledWith(
-      'GET',
-      'worksheets/practica.jpeg',
-      300,
-      expect.objectContaining({
-        responseContentDisposition: expect.stringContaining("filename*=UTF-8''Pr%C3%A1ctica%20calificada%201.jpeg"),
-      }),
-    );
+    expect(mocks.r2).toHaveBeenCalledWith('GET', 'worksheets/practica.jpeg', 300);
   });
 });

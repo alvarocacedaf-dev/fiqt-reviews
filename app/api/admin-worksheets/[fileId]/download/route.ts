@@ -89,7 +89,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
       'GET',
       file.file_path,
       300,
-      isPreview ? { responseContentDisposition: contentDispositionHeader(downloadName, 'inline') } : undefined,
     );
     if (isPreview) return NextResponse.redirect(signedUrl);
     return downloadResponse(
