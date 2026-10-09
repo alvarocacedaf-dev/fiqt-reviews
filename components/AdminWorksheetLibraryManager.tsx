@@ -978,15 +978,27 @@ export function AdminWorksheetLibraryTree({
 
                   {readOnly && libraryType === 'worksheets' && (
                     unlockAllCourses || unlockedCourses.has(file.course_id) ? (
-                      <a
-                        className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
-                        download={file.storage_provider === 'public' ? visibleFileName(file.title, file.file_name) : undefined}
-                        href={file.storage_provider === 'public' && file.signed_url
-                          ? file.signed_url
-                          : `/api/admin-worksheets/${file.id}/download`}
-                      >
-                        Descargar
-                      </a>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <a
+                          className="btn-secondary inline-flex px-3 py-2 text-xs"
+                          href={file.storage_provider === 'public' && file.signed_url
+                            ? file.signed_url
+                            : `/api/admin-worksheets/${file.id}/download?mode=preview`}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          Ver y compartir
+                        </a>
+                        <a
+                          className="btn-primary inline-flex px-3 py-2 text-xs"
+                          download={file.storage_provider === 'public' ? visibleFileName(file.title, file.file_name) : undefined}
+                          href={file.storage_provider === 'public' && file.signed_url
+                            ? file.signed_url
+                            : `/api/admin-worksheets/${file.id}/download`}
+                        >
+                          Descargar
+                        </a>
+                      </div>
                     ) : (
                       <p className="mt-3 text-xs font-bold text-slate-500">Marca este curso cuando tu ruta de recompensas lo permita para descargar.</p>
                     )

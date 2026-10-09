@@ -7,7 +7,7 @@ import { getRewardProgress } from '@/lib/rewardProgress';
 
 export const runtime = 'nodejs';
 
-function attachmentHeader(fileName: string) {
+function contentDispositionHeader(fileName: string, disposition: 'attachment' | 'inline') {
   const safeName = fileName.replace(/[\r\n]/g, '').trim() || 'archivo';
   const asciiName = safeName
     .normalize('NFD')
@@ -15,7 +15,7 @@ function attachmentHeader(fileName: string) {
     .replace(/[^\x20-\x7E]/g, '_')
     .replace(/["\\]/g, '_');
 
-  return `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`;
+  return `${disposition}; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`;
 }
 
 function visibleDownloadName(title: string, storedFileName: string) {
@@ -24,7 +24,12 @@ function visibleDownloadName(title: string, storedFileName: string) {
   return `${title}${extension.toLocaleLowerCase()}`;
 }
 
-async function downloadResponse(url: string, fileName: string, mimeType: string | null) {
+async function downloadResponse(
+  url: string,
+  fileName: string,
+  mimeType: string | null,
+  disposition: 'attachment' | 'inline',
+) {
   const source = await fetch(url, { cache: 'no-store' });
   if (!source.ok || !source.body) {
     return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
@@ -32,7 +37,7 @@ async function downloadResponse(url: string, fileName: string, mimeType: string 
 
   const headers = new Headers({
     'Cache-Control': 'private, no-store',
-    'Content-Disposition': attachmentHeader(fileName),
+    'Content-Disposition': contentDispositionHeader(fileName, disposition),
     'Content-Type': mimeType || source.headers.get('content-type') || 'application/octet-stream',
     'X-Content-Type-Options': 'nosniff',
   });
@@ -44,6 +49,7 @@ async function downloadResponse(url: string, fileName: string, mimeType: string 
 
 export async function GET(_request: Request, { params }: { params: Promise<{ fileId: string }> }) {
   const { fileId } = await params;
+  const disposition = new URL(_request.url).searchParams.get('mode') === 'preview' ? 'inline' : 'attachment';
   const db = await createClient();
   const {
     data: { user },
@@ -81,10 +87,16 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
       createR2PresignedUrl('GET', file.file_path, 300),
       visibleDownloadName(file.title, file.file_name),
       file.mime_type,
+      disposition,
     );
   }
 
   const { data, error } = await adminDb.storage.from('admin-worksheets').createSignedUrl(file.file_path, 300);
   if (error || !data?.signedUrl) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
-  return downloadResponse(data.signedUrl, visibleDownloadName(file.title, file.file_name), file.mime_type);
+  return downloadResponse(
+    data.signedUrl,
+    visibleDownloadName(file.title, file.file_name),
+    file.mime_type,
+    disposition,
+  );
 }

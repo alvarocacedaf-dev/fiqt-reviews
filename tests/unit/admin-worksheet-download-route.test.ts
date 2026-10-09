@@ -93,4 +93,12 @@ describe('descarga individual de planchas', () => {
     expect(response.headers.get('content-disposition')).toContain('filename="Documento visible.pdf"');
     expect(fetch).toHaveBeenCalledWith('https://supabase.example/documento', { cache: 'no-store' });
   });
+
+  it('permite abrir una vista previa con el nombre visible para compartir', async () => {
+    const response = await GET(new Request('https://example.test?mode=preview'), { params });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-disposition')).toContain('inline;');
+    expect(response.headers.get('content-disposition')).toContain("filename*=UTF-8''Pr%C3%A1ctica%20calificada%201.jpeg");
+  });
 });
