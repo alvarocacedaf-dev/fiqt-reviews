@@ -49,8 +49,9 @@ async function downloadResponse(
 
 export async function GET(_request: Request, { params }: { params: Promise<{ fileId: string }> }) {
   const { fileId } = await params;
-  const isPreview = new URL(_request.url).searchParams.get('mode') === 'preview';
-  const disposition = isPreview ? 'inline' : 'attachment';
+  const mode = new URL(_request.url).searchParams.get('mode');
+  const isPreview = mode === 'preview';
+  const disposition = mode === 'embed' ? 'inline' : 'attachment';
   const db = await createClient();
   const {
     data: { user },

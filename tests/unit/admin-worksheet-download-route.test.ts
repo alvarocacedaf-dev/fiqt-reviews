@@ -101,4 +101,13 @@ describe('descarga individual de planchas', () => {
     expect(response.headers.get('location')).toBe('https://storage.example/practica?signature=fresh');
     expect(mocks.r2).toHaveBeenCalledWith('GET', 'worksheets/practica.jpeg', 300);
   });
+
+  it('entrega el archivo en línea para incrustarlo en el visor propio', async () => {
+    const response = await GET(new Request('https://example.test?mode=embed'), { params });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-disposition')).toContain('inline;');
+    expect(response.headers.get('content-type')).toBe('image/jpeg');
+    expect(await response.text()).toBe('imagen');
+  });
 });

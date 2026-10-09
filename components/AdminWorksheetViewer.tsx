@@ -65,7 +65,9 @@ export function AdminWorksheetViewer({
     }
   }
 
-  const isImage = (mimeType || file?.type || '').startsWith('image/');
+  const isImage = (mimeType || file?.type || '').startsWith('image/')
+    || /\.(?:avif|gif|jpe?g|png|webp)$/i.test(fileName);
+  const embeddedUrl = `/api/admin-worksheets/${encodeURIComponent(fileId)}/download?mode=embed`;
 
   return (
     <main className="fixed inset-0 z-[100] flex h-[100dvh] flex-col bg-black text-white">
@@ -81,7 +83,7 @@ export function AdminWorksheetViewer({
           <img alt={title} className="max-h-full w-full object-contain" src={objectUrl} />
         )}
         {objectUrl && !isImage && (
-          <iframe className="h-[calc(100dvh-8.5rem)] w-full border-0 bg-white" src={objectUrl} title={title} />
+          <iframe className="h-[calc(100dvh-8.5rem)] w-full border-0 bg-white" src={embeddedUrl} title={title} />
         )}
       </section>
 
