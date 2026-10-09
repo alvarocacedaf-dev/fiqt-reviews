@@ -86,12 +86,6 @@ export function worksheetLibraryCycleLabel(cycleNumber: number) {
   return `Ciclo ${cycleNumber}`;
 }
 
-function visibleFileName(title: string, storedFileName: string) {
-  const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0] ?? '';
-  if (!extension || title.toLocaleLowerCase().endsWith(extension.toLocaleLowerCase())) return title;
-  return `${title}${extension.toLocaleLowerCase()}`;
-}
-
 async function readApiResponse(response: Response) {
   const result = await response.json().catch(() => ({})) as {
     error?: string;
@@ -978,27 +972,16 @@ export function AdminWorksheetLibraryTree({
 
                   {readOnly && libraryType === 'worksheets' && (
                     unlockAllCourses || unlockedCourses.has(file.course_id) ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <a
-                          className="btn-secondary inline-flex px-3 py-2 text-xs"
-                          href={file.storage_provider === 'public' && file.signed_url
-                            ? file.signed_url
-                            : `/api/admin-worksheets/${file.id}/download?mode=preview`}
-                          rel="noreferrer"
-                          target="_blank"
-                        >
-                          Ver y compartir
-                        </a>
-                        <a
-                          className="btn-primary inline-flex px-3 py-2 text-xs"
-                          download={file.storage_provider === 'public' ? visibleFileName(file.title, file.file_name) : undefined}
-                          href={file.storage_provider === 'public' && file.signed_url
-                            ? file.signed_url
-                            : `/api/admin-worksheets/${file.id}/download`}
-                        >
-                          Descargar
-                        </a>
-                      </div>
+                      <a
+                        className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
+                        href={file.storage_provider === 'public' && file.signed_url
+                          ? file.signed_url
+                          : `/api/admin-worksheets/${file.id}/download?mode=preview`}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        Descargar
+                      </a>
                     ) : (
                       <p className="mt-3 text-xs font-bold text-slate-500">Marca este curso cuando tu ruta de recompensas lo permita para descargar.</p>
                     )

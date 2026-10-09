@@ -49,7 +49,8 @@ async function downloadResponse(
 
 export async function GET(_request: Request, { params }: { params: Promise<{ fileId: string }> }) {
   const { fileId } = await params;
-  const disposition = new URL(_request.url).searchParams.get('mode') === 'preview' ? 'inline' : 'attachment';
+  const isPreview = new URL(_request.url).searchParams.get('mode') === 'preview';
+  const disposition = isPreview ? 'inline' : 'attachment';
   const db = await createClient();
   const {
     data: { user },
@@ -83,9 +84,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
 
   if (file.storage_provider === 'r2') {
     if (!isR2Configured()) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
+    const downloadName = visibleDownloadName(file.title, file.file_name);
+    const signedUrl = createR2PresignedUrl(
+      'GET',
+      file.file_path,
+      300,
+      isPreview ? { responseContentDisposition: contentDispositionHeader(downloadName, 'inline') } : undefined,
+    );
+    if (isPreview) return NextResponse.redirect(signedUrl);
     return downloadResponse(
-      createR2PresignedUrl('GET', file.file_path, 300),
-      visibleDownloadName(file.title, file.file_name),
+      signedUrl,
+      downloadName,
       file.mime_type,
       disposition,
     );
@@ -93,6 +102,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
 
   const { data, error } = await adminDb.storage.from('admin-worksheets').createSignedUrl(file.file_path, 300);
   if (error || !data?.signedUrl) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
+  if (isPreview) return NextResponse.redirect(data.signedUrl);
   return downloadResponse(
     data.signedUrl,
     visibleDownloadName(file.title, file.file_name),

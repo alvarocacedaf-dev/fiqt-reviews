@@ -49,6 +49,7 @@ export function createR2PresignedUrl(
   method: R2Method,
   key: string,
   expiresInSeconds = 900,
+  options?: { responseContentDisposition?: string },
 ) {
   const { accountId, accessKeyId, secretAccessKey, bucket } = requireR2Config();
   const now = new Date();
@@ -66,6 +67,9 @@ export function createR2PresignedUrl(
     'X-Amz-Expires': String(Math.min(Math.max(expiresInSeconds, 1), 604800)),
     'X-Amz-SignedHeaders': 'host',
   };
+  if (options?.responseContentDisposition) {
+    parameters['response-content-disposition'] = options.responseContentDisposition;
+  }
   const canonicalQuery = Object.entries(parameters)
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([name, value]) => `${encodeRfc3986(name)}=${encodeRfc3986(value)}`)
