@@ -86,6 +86,21 @@ export function worksheetLibraryCycleLabel(cycleNumber: number) {
   return `Ciclo ${cycleNumber}`;
 }
 
+function visibleFileName(title: string, storedFileName: string) {
+  const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0] ?? '';
+  if (!extension || title.toLocaleLowerCase().endsWith(extension.toLocaleLowerCase())) return title;
+  return `${title}${extension.toLocaleLowerCase()}`;
+}
+
+function worksheetViewerUrl(file: WorksheetFile) {
+  const query = new URLSearchParams({
+    fileName: visibleFileName(file.title, file.file_name),
+    mimeType: file.mime_type || '',
+    title: file.title,
+  });
+  return `/planchas-administracion/archivo/${encodeURIComponent(file.id)}?${query.toString()}`;
+}
+
 async function readApiResponse(response: Response) {
   const result = await response.json().catch(() => ({})) as {
     error?: string;
@@ -976,9 +991,7 @@ export function AdminWorksheetLibraryTree({
                         className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
                         href={file.storage_provider === 'public' && file.signed_url
                           ? file.signed_url
-                          : `/api/admin-worksheets/${file.id}/download?mode=preview`}
-                        rel="noreferrer"
-                        target="_blank"
+                          : worksheetViewerUrl(file)}
                       >
                         Descargar
                       </a>
