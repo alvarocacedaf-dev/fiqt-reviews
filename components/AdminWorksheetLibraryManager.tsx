@@ -86,6 +86,12 @@ export function worksheetLibraryCycleLabel(cycleNumber: number) {
   return `Ciclo ${cycleNumber}`;
 }
 
+function visibleFileName(title: string, storedFileName: string) {
+  const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0] ?? '';
+  if (!extension || title.toLocaleLowerCase().endsWith(extension.toLocaleLowerCase())) return title;
+  return `${title}${extension.toLocaleLowerCase()}`;
+}
+
 async function readApiResponse(response: Response) {
   const result = await response.json().catch(() => ({})) as {
     error?: string;
@@ -974,11 +980,10 @@ export function AdminWorksheetLibraryTree({
                     unlockAllCourses || unlockedCourses.has(file.course_id) ? (
                       <a
                         className="btn-primary mt-3 inline-flex px-3 py-2 text-xs"
+                        download={file.storage_provider === 'public' ? visibleFileName(file.title, file.file_name) : undefined}
                         href={file.storage_provider === 'public' && file.signed_url
                           ? file.signed_url
                           : `/api/admin-worksheets/${file.id}/download`}
-                        rel="noreferrer"
-                        target="_blank"
                       >
                         Descargar
                       </a>
