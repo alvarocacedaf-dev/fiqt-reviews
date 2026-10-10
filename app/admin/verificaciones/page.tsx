@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/admin';
 import { VerificationApprovalForm } from '@/components/VerificationApprovalForm';
 import { AdminEmptyState } from '@/components/AdminEmptyState';
+import { loadAllPaginatedRows, uniqueRowsBy } from '@/lib/paginatedRows';
 
 type Submission = {
   id: string;
@@ -28,19 +29,26 @@ function firstRelation<T>(relation: T | T[] | null): T | null {
 
 export default async function AdminVerifications() {
   const { db } = await requireAdmin();
-  const [{ data: rawItems }, { data: rawProfessorCourses }] = await Promise.all([
+  const [{ data: rawItems }, rawProfessorCourses] = await Promise.all([
     db.from('verification_submissions').select('*').eq('status', 'pending').order('created_at'),
-    db.from('course_professors').select('course_id,professor_id,courses(name,code,cycle_id),professors(full_name)'),
+    loadAllPaginatedRows((from, to) => db
+      .from('course_professors')
+      .select('course_id,professor_id,courses(name,code,cycle_id),professors(full_name)')
+      .order('id')
+      .range(from, to)),
   ]);
 
   const items = (rawItems ?? []) as Submission[];
-  const professorCourses = ((rawProfessorCourses ?? []) as unknown as ProfessorCourse[])
+  const professorCourses = uniqueRowsBy(
+    (rawProfessorCourses as unknown as ProfessorCourse[])
     .map(link => ({
       ...link,
       course: firstRelation(link.courses),
       professor: firstRelation(link.professors),
     }))
-    .filter(link => link.course && link.professor)
+    .filter(link => link.course && link.professor),
+    link => `${link.course_id}|${link.professor_id}`,
+  )
     .sort((a, b) =>
       (a.course?.cycle_id ?? 999) - (b.course?.cycle_id ?? 999)
       || `${a.course?.code} ${a.professor?.full_name}`.localeCompare(`${b.course?.code} ${b.professor?.full_name}`, 'es'),
