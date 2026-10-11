@@ -4,13 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { requireAdmin } from '@/lib/admin';
 
-export async function moderateContribution(form: FormData) {
+type ContributionStatus = 'approved' | 'rejected';
+
+async function moderateContributionWithStatus(form: FormData, status: ContributionStatus) {
   const { db, user } = await requireAdmin();
   const id = String(form.get('id') || '');
-  const status = String(form.get('status') || '');
   const actionCode = String(form.get('action_code') || '').trim();
 
-  if (!id || !['approved', 'rejected'].includes(status)) {
+  if (!id) {
     redirect('/admin/yapes?error=' + encodeURIComponent('No se recibió una acción válida.'));
   }
   if (!actionCode) {
@@ -50,4 +51,12 @@ export async function moderateContribution(form: FormData) {
   revalidatePath('/ciclos');
   const message = status === 'approved' ? 'Comprobante aprobado.' : 'Comprobante rechazado.';
   redirect('/admin/yapes?success=' + encodeURIComponent(message));
+}
+
+export async function approveContribution(form: FormData) {
+  return moderateContributionWithStatus(form, 'approved');
+}
+
+export async function rejectContribution(form: FormData) {
+  return moderateContributionWithStatus(form, 'rejected');
 }

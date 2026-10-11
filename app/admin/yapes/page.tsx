@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { AdminEmptyState } from '@/components/AdminEmptyState';
 import { requireAdmin } from '@/lib/admin';
-import { moderateContribution } from './actions';
+import { approveContribution, rejectContribution } from './actions';
 
 const PAGE_SIZE = 24;
 
@@ -144,7 +144,7 @@ export default async function AdminYapesPage({ searchParams }: PageProps) {
                 </dl>
 
                 {item.status === 'pending' ? (
-                  <form action={moderateContribution} className="mt-4 grid gap-3">
+                  <form className="mt-4 grid gap-3">
                     <label className="text-sm font-bold text-slate-700">
                       Código del asistente o propietario
                       <input
@@ -158,8 +158,8 @@ export default async function AdminYapesPage({ searchParams }: PageProps) {
                     </label>
                     <div className="flex flex-wrap gap-3">
                       <input type="hidden" name="id" value={item.id} />
-                      <button className="btn-primary" name="status" type="submit" value="approved">Aprobar aporte</button>
-                      <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" name="status" type="submit" value="rejected">Rechazar</button>
+                      <button className="btn-primary" formAction={approveContribution} type="submit">Aprobar aporte</button>
+                      <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" formAction={rejectContribution} type="submit">Rechazar</button>
                       {url && <a className="btn-secondary" href={url} target="_blank" rel="noreferrer">Abrir imagen</a>}
                     </div>
                   </form>
