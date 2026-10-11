@@ -10,6 +10,7 @@ import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { FolderDownloadButton } from '@/components/FolderDownloadButton';
 import { canonicalizeWorksheetFileName, worksheetFileFormat } from '@/lib/worksheetFileNaming';
 import { formatFileType } from '@/lib/filePresentation';
+import { worksheetUploadErrorMessage } from '@/lib/worksheetUploadError';
 
 const WORKSHEET_MAX_FILE_SIZE = 100 * 1024 * 1024;
 const MATERIAL_MAX_FILE_SIZE = 100 * 1024 * 1024;
@@ -152,20 +153,24 @@ async function uploadLibraryFile({
     throw new Error(`El almacenamiento rechazó la subida de “${file.name}” (${uploadResponse.status}).`);
   }
 
-  await readApiResponse(await fetch(`${apiBase}/confirm`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      courseId,
-      title,
-      ...(libraryType === 'materials' ? { materialType: examType } : { examType }),
-      academicTerm,
-      key: prepared.key,
-      fileName: file.name,
-      mimeType: file.type,
-      fileSize: file.size,
-    }),
-  }));
+  try {
+    await readApiResponse(await fetch(`${apiBase}/confirm`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        courseId,
+        title,
+        ...(libraryType === 'materials' ? { materialType: examType } : { examType }),
+        academicTerm,
+        key: prepared.key,
+        fileName: file.name,
+        mimeType: file.type,
+        fileSize: file.size,
+      }),
+    }));
+  } catch (error) {
+    throw new Error(worksheetUploadErrorMessage({ error, fileName: file.name, title }));
+  }
 }
 
 function formatDate(value: string) {

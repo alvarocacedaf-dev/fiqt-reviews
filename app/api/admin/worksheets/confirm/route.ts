@@ -24,6 +24,7 @@ export async function POST(request: Request) {
   }
 
   let key = '';
+  let confirmedTitle = '';
   try {
     const body = await request.json() as ConfirmBody;
     const courseId = body.courseId?.trim() ?? '';
@@ -78,9 +79,10 @@ export async function POST(request: Request) {
       throw new Error('R2 no confirmó que el archivo se haya subido completamente.');
     }
 
+    confirmedTitle = namingResult.title ?? body.title.trim().slice(0, 160);
     const { error } = await context.db.from('admin_worksheets').insert({
       course_id: courseId,
-      title: namingResult.title ?? body.title.trim().slice(0, 160),
+      title: confirmedTitle,
       exam_type: body.examType,
       academic_term: namingResult.academicTerm?.slice(0, 20) || null,
       file_path: key,
@@ -95,8 +97,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (key) await deleteR2Object(key).catch(() => undefined);
+    const message = error instanceof Error ? error.message : 'No se pudo registrar el archivo.';
+    const duplicate = /plancha\b[\s\S]*ya ha sido subida/i.test(message);
     return NextResponse.json({
-      error: error instanceof Error ? error.message : 'No se pudo registrar el archivo.',
-    }, { status: 500 });
+      error: duplicate && confirmedTitle
+        ? `La plancha “${confirmedTitle}” ya ha sido subida.`
+        : message,
+    }, { status: duplicate ? 409 : 500 });
   }
 }
