@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { AdminWorksheetPdfPreview } from '@/components/AdminWorksheetPdfPreview';
 import { Icon } from '@/components/ui/Icon';
 
 export function AdminWorksheetViewer({
@@ -67,6 +68,8 @@ export function AdminWorksheetViewer({
 
   const isImage = (mimeType || file?.type || '').startsWith('image/')
     || /\.(?:avif|gif|jpe?g|png|webp)$/i.test(fileName);
+  const isPdf = (mimeType || file?.type || '').toLowerCase() === 'application/pdf'
+    || /\.pdf$/i.test(fileName);
   const embeddedUrl = `/api/admin-worksheets/${encodeURIComponent(fileId)}/download?mode=embed`;
 
   return (
@@ -82,7 +85,8 @@ export function AdminWorksheetViewer({
           // eslint-disable-next-line @next/next/no-img-element
           <img alt={title} className="max-h-full w-full object-contain" src={objectUrl} />
         )}
-        {objectUrl && !isImage && (
+        {file && isPdf && <AdminWorksheetPdfPreview file={file} title={title} />}
+        {objectUrl && !isImage && !isPdf && (
           <iframe className="h-[calc(100dvh-8.5rem)] w-full border-0 bg-white" src={embeddedUrl} title={title} />
         )}
       </section>
