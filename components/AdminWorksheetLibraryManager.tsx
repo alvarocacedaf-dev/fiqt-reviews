@@ -87,6 +87,10 @@ export function worksheetLibraryCycleLabel(cycleNumber: number) {
   return `Ciclo ${cycleNumber}`;
 }
 
+export function worksheetLibraryLinkTarget(isPhoneViewport: boolean) {
+  return isPhoneViewport ? '_self' : '_blank';
+}
+
 function visibleFileName(title: string, storedFileName: string) {
   const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0] ?? '';
   if (!extension || title.toLocaleLowerCase().endsWith(extension.toLocaleLowerCase())) return title;
@@ -997,6 +1001,13 @@ export function AdminWorksheetLibraryTree({
                         href={file.storage_provider === 'public' && file.signed_url
                           ? file.signed_url
                           : worksheetViewerUrl(file)}
+                        onClick={event => {
+                          event.currentTarget.target = worksheetLibraryLinkTarget(
+                            window.matchMedia('(max-width: 767px)').matches,
+                          );
+                        }}
+                        rel="noopener noreferrer"
+                        target="_blank"
                       >
                         Descargar
                       </a>
