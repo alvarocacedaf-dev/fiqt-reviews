@@ -62,4 +62,13 @@ describe('planchas incluidas con la aplicación', () => {
       storage_provider: 'public',
     });
   });
+
+  it('permite sumar todas las planchas incluidas al contador general', () => {
+    const files = resolveBundledAdminWorksheets([
+      { id: 'course-pi111', code: 'PI111' },
+      { id: 'course-pi140', code: 'PI140' },
+    ]);
+
+    expect(1_881 + files.length).toBe(1_884);
+  });
 });

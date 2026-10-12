@@ -11,6 +11,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
+import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
 import {
   getWorksheetSanctionState,
   seriousReportCategoryLabels,
@@ -69,11 +70,16 @@ async function getWorksheetFileCount() {
   if (!isSupabaseConfigured) return 0;
 
   const db = createAdminClient();
-  const { count, error } = await db
-    .from('admin_worksheets')
-    .select('id', { count: 'exact', head: true });
+  const [{ count, error }, { data: courses, error: coursesError }] = await Promise.all([
+    db.from('admin_worksheets').select('id', { count: 'exact', head: true }),
+    db.from('courses').select('id,code'),
+  ]);
 
-  return error ? 0 : count ?? 0;
+  if (error || coursesError) return 0;
+  const bundledCount = resolveBundledAdminWorksheets(
+    (courses ?? []) as { id: string; code: string | null }[],
+  ).length;
+  return (count ?? 0) + bundledCount;
 }
 
 async function getDonationCourseOptions() {
