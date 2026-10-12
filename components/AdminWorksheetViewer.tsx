@@ -97,7 +97,7 @@ export function AdminWorksheetViewer({
         className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-around border-t border-white/15 bg-[#111]/95 px-4 py-3 backdrop-blur"
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
       >
-        <button className="flex min-w-20 flex-col items-center gap-1 text-xs" onClick={() => window.history.back()} type="button">
+        <button className="flex min-w-20 flex-col items-center gap-1 text-xs md:hidden" onClick={() => window.history.back()} type="button">
           <Icon className="h-6 w-6" name="arrow-left" />
           Volver
         </button>
