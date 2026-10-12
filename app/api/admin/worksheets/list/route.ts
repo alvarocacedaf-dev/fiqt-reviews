@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAdminApiContext } from '@/lib/adminApi';
+import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
 import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
 
@@ -27,7 +28,7 @@ type WorksheetFile = {
   mime_type: string | null;
   file_size: number;
   created_at: string;
-  storage_provider: 'supabase' | 'r2';
+  storage_provider: 'supabase' | 'r2' | 'public';
   signed_url?: string | null;
 };
 
@@ -70,6 +71,17 @@ export async function GET(request: Request) {
       offset += BATCH_SIZE;
     }
 
+    const { data: course } = await context.db
+      .from('courses')
+      .select('id,code')
+      .eq('id', courseId)
+      .maybeSingle();
+    if (course) {
+      allFiles.push(...resolveBundledAdminWorksheets([course])
+        .filter(file => file.exam_type === examType)
+        .map(file => ({ ...file, file_path: file.signed_url })));
+    }
+
     allFiles.sort(
       ['practice', 'midterm', 'final', 'substitute'].includes(examType)
         ? compareAssessmentWorksheetFiles
@@ -83,6 +95,7 @@ export async function GET(request: Request) {
       ? allFiles
       : allFiles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
     const files = await Promise.all(pageFiles.map(async file => {
+      if (file.storage_provider === 'public') return file;
       if (!context.isOwner) return { ...file, file_path: '', signed_url: null };
       if (file.storage_provider === 'r2') {
         return {

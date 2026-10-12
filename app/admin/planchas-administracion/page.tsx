@@ -3,6 +3,7 @@ import {
   AdminWorksheetUploadForm,
 } from '@/components/AdminWorksheetLibraryManager';
 import { requireAdmin } from '@/lib/admin';
+import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
 import { isR2Configured } from '@/lib/r2';
 
 type Cycle = {
@@ -68,6 +69,13 @@ export default async function AdminWorksheetsPage() {
 
   const cycles = (rawCycles ?? []) as Cycle[];
   const courses = (rawCourses ?? []) as Course[];
+  const bundledFiles = resolveBundledAdminWorksheets(courses);
+  const folderCounts = { ...fileSummary.folderCounts };
+  for (const file of bundledFiles) {
+    const key = `${file.course_id}:${file.exam_type}`;
+    folderCounts[key] = (folderCounts[key] ?? 0) + 1;
+  }
+  const totalFiles = fileSummary.total + bundledFiles.length;
   const filesError = fileSummary.error;
   const migrationMissing = filesError?.code === '42P01' || filesError?.code === '42703';
 
@@ -110,7 +118,7 @@ export default async function AdminWorksheetsPage() {
             <div className="px-1">
               <h2 className="text-2xl font-black text-white">Carpetas de cursos</h2>
               <p className="mt-1 text-sm text-blue-100">
-                10 ciclos · {courses.length} cursos · {fileSummary.total} archivo{fileSummary.total === 1 ? '' : 's'}
+                {cycles.length} ciclos · {courses.length} cursos · {totalFiles} archivo{totalFiles === 1 ? '' : 's'}
               </p>
             </div>
 
@@ -119,7 +127,7 @@ export default async function AdminWorksheetsPage() {
               courses={courses}
               cycles={cycles}
               files={[]}
-              folderCounts={fileSummary.folderCounts}
+              folderCounts={folderCounts}
               paginated
             />
 

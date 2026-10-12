@@ -28,4 +28,16 @@ describe('planchas incluidas con la aplicación', () => {
 
     expect(files.map(file => file.academic_term)).toEqual(['2024-2', '2024-3', '2025-1']);
   });
+
+  it('puede sumarse al conteo administrativo de su carpeta', () => {
+    const files = resolveBundledAdminWorksheets([{ id: 'course-pi140', code: 'PI140' }]);
+    const folderCounts: Record<string, number> = { 'course-pi140:practice': 8 };
+
+    for (const file of files) {
+      const key = `${file.course_id}:${file.exam_type}`;
+      folderCounts[key] = (folderCounts[key] ?? 0) + 1;
+    }
+
+    expect(folderCounts['course-pi140:practice']).toBe(9);
+  });
 });
