@@ -38,7 +38,7 @@ const bundledAdminWorksheets = [
     academic_term: '0000',
     file_name: 'Práctica calificada 2 de Balance de Materia y Energía 0000 - Banco de ejercicios del profesor de la cruz (de acá viene).pdf',
     mime_type: 'application/pdf',
-    file_size: 6_239_868,
+    file_size: 6_346_604,
     created_at: '2026-10-12T00:00:00-05:00',
     signed_url: '/planchas/pi111-practica-calificada-2-banco-ejercicios-profesor.pdf',
     storage_provider: 'public' as const,

@@ -58,7 +58,7 @@ describe('planchas incluidas con la aplicación', () => {
       exam_type: 'practice',
       academic_term: '0000',
       title: 'Práctica calificada 2 de Balance de Materia y Energía 0000 — Banco de ejercicios del profesor de la cruz (de acá viene)',
-      file_size: 6_239_868,
+      file_size: 6_346_604,
       storage_provider: 'public',
     });
   });
