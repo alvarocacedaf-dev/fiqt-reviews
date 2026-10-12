@@ -44,13 +44,21 @@ describe('planchas incluidas con la aplicación', () => {
   it('incluye el banco de ejercicios especial en las prácticas de PI111', () => {
     const files = resolveBundledAdminWorksheets([{ id: 'course-pi111', code: 'PI111' }]);
 
-    expect(files).toHaveLength(1);
+    expect(files).toHaveLength(2);
     expect(files[0]).toMatchObject({
       course_id: 'course-pi111',
       exam_type: 'practice',
       academic_term: '0000',
       title: 'Práctica calificada 1 de Balance de Materia y Energía 0000 — Banco de ejercicios del profesor de la cruz (de acá viene)',
       file_size: 2_964_766,
+      storage_provider: 'public',
+    });
+    expect(files[1]).toMatchObject({
+      course_id: 'course-pi111',
+      exam_type: 'practice',
+      academic_term: '0000',
+      title: 'Práctica calificada 2 de Balance de Materia y Energía 0000 — Banco de ejercicios del profesor de la cruz (de acá viene)',
+      file_size: 6_239_868,
       storage_provider: 'public',
     });
   });
