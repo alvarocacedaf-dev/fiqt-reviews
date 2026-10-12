@@ -11,6 +11,16 @@ function worksheet(title: string, academicTerm: string | null = null) {
 }
 
 describe('compareAssessmentWorksheetFiles', () => {
+  it('coloca los bancos con ciclo 0000 antes de los ciclos académicos reales', () => {
+    const files = [
+      worksheet('Práctica calificada 1 de Balance de Materia y Energía 2026-1', '2026-1'),
+      worksheet('Práctica calificada 1 de Balance de Materia y Energía 0000 — Banco de ejercicios', '0000'),
+      worksheet('Práctica calificada 2 de Balance de Materia y Energía 2026-1', '2026-1'),
+    ].sort(compareAssessmentWorksheetFiles);
+
+    expect(files.map(file => file.academic_term)).toEqual(['0000', '2026-1', '2026-1']);
+  });
+
   it('ordena por número de práctica y después por ciclo académico', () => {
     const files = [
       worksheet('4 CUARTA PC DE INTEGRAL 2024-1'),

@@ -42,6 +42,7 @@ function assessmentNumber(file: WorksheetSortEntry) {
 }
 
 function academicTerm(file: WorksheetSortEntry) {
+  if (file.academic_term?.trim() === '0000' || /\b0000\b/.test(searchableName(file))) return 0;
   const explicitTerm = file.academic_term?.match(/\b(20\d{2})\s*[-–]\s*([123])\b/);
   const inferredTerm = searchableName(file).match(/\b(20\d{2})\s*[-–]\s*([123])\b/);
   const match = explicitTerm ?? inferredTerm;
