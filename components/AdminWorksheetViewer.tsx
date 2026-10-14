@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { AdminWorksheetPdfPreview } from '@/components/AdminWorksheetPdfPreview';
+import { AdminWorksheetWordPreview } from '@/components/AdminWorksheetWordPreview';
 import { Icon } from '@/components/ui/Icon';
 
 export function AdminWorksheetViewer({
@@ -70,6 +71,11 @@ export function AdminWorksheetViewer({
     || /\.(?:avif|gif|jpe?g|png|webp)$/i.test(fileName);
   const isPdf = (mimeType || file?.type || '').toLowerCase() === 'application/pdf'
     || /\.pdf$/i.test(fileName);
+  const isDocx = /\.docx$/i.test(fileName)
+    || (mimeType || file?.type || '').toLowerCase() === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  const isLegacyDoc = !isDocx && (/\.doc$/i.test(fileName)
+    || (mimeType || file?.type || '').toLowerCase() === 'application/msword');
+  const isWord = isDocx || isLegacyDoc;
   const embeddedUrl = `/api/admin-worksheets/${encodeURIComponent(fileId)}/download?mode=embed`;
 
   return (
@@ -78,15 +84,30 @@ export function AdminWorksheetViewer({
         <p className="truncate text-sm font-semibold" title={title}>{title}</p>
       </header>
 
-      <section className="flex min-h-0 flex-1 items-center justify-center overflow-auto pb-24">
-        {!objectUrl && !error && <p className="text-sm text-white/70">Preparando archivo…</p>}
-        {error && <p className="m-4 rounded-xl bg-red-950 px-4 py-3 text-sm" role="alert">{error}</p>}
+      <section className="min-h-0 flex-1 overflow-auto pb-24">
+        {!objectUrl && !error && (
+          <div className="flex min-h-full items-center justify-center">
+            <p className="text-sm text-white/70">Preparando archivo…</p>
+          </div>
+        )}
+        {error && (
+          <div className="flex min-h-full items-center justify-center">
+            <p className="m-4 rounded-xl bg-red-950 px-4 py-3 text-sm" role="alert">{error}</p>
+          </div>
+        )}
         {objectUrl && isImage && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt={title} className="max-h-full w-full object-contain" src={objectUrl} />
+          <img alt={title} className="mx-auto max-h-full w-full object-contain" src={objectUrl} />
         )}
         {file && isPdf && <AdminWorksheetPdfPreview file={file} title={title} />}
-        {objectUrl && !isImage && !isPdf && (
+        {file && isDocx && <AdminWorksheetWordPreview file={file} title={title} />}
+        {file && isLegacyDoc && (
+          <div className="m-4 max-w-lg rounded-xl bg-slate-900 px-5 py-4 text-center text-sm leading-6">
+            Este archivo usa el formato antiguo de Word (.doc), que los navegadores no pueden previsualizar.
+            Puedes compartirlo o descargarlo con las opciones inferiores.
+          </div>
+        )}
+        {objectUrl && !isImage && !isPdf && !isWord && (
           <iframe className="h-[calc(100dvh-8.5rem)] w-full border-0 bg-white" src={embeddedUrl} title={title} />
         )}
       </section>
