@@ -4,6 +4,7 @@ import { ContributionModal } from '@/components/ContributionModal';
 import { PageGuideModal } from '@/components/PageGuideModal';
 import { WorksheetDonationModal } from '@/components/WorksheetDonationModal';
 import { AcademicRewards } from '@/components/academic/AcademicRewards';
+import { RewardCampaignNotice } from '@/components/RewardCampaignNotice';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
@@ -255,6 +256,8 @@ export default async function CyclesPage() {
   ]);
 
   return (
+    <>
+    <RewardCampaignNotice initialOpen={rewardProgress !== null} />
     <div className={rewardProgress === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
     <div className="space-y-6">
       <section className="panel">
@@ -309,5 +312,6 @@ export default async function CyclesPage() {
       />
     )}
     </div>
+    </>
   );
 }

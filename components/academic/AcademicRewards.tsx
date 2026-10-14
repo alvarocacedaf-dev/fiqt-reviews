@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Icon } from '@/components/ui/Icon';
+import { OPEN_REWARD_CAMPAIGN_EVENT } from '@/components/RewardCampaignNotice';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import styles from './rewards-card.module.css';
 
@@ -36,7 +39,15 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
     <aside className={styles.rewards} aria-labelledby="rewards-heading">
       <div className={styles.rewardHeading}>
         <span className={styles.rewardSymbol}><Icon name="star" className="h-5 w-5" /></span>
-        <h2 id="rewards-heading">Tu ruta de recompensas</h2>
+        <h2 id="rewards-heading">
+          <button
+            className="text-left"
+            onClick={() => window.dispatchEvent(new Event(OPEN_REWARD_CAMPAIGN_EVENT))}
+            type="button"
+          >
+            Tu ruta de recompensas
+          </button>
+        </h2>
       </div>
       <p className={styles.description}>Tu experiencia y tus materiales ayudan a toda la comunidad.</p>
 
