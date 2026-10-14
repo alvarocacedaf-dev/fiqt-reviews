@@ -61,15 +61,6 @@ export default async function AdminVerifications() {
     ((rawProfiles ?? []) as Profile[]).map(profile => [profile.id, profile]),
   );
 
-  const signedUrls = Object.fromEntries(
-    await Promise.all(
-      items.map(async item => [
-        item.id,
-        (await db.storage.from('verification-evidence').createSignedUrl(item.file_url, 600)).data?.signedUrl ?? '#',
-      ]),
-    ),
-  );
-
   return (
     <div className="space-y-6">
       <header className="panel">
@@ -89,7 +80,7 @@ export default async function AdminVerifications() {
       {items.map(item => {
         const profile = profiles[item.user_id];
         const isPdf = item.file_url.toLowerCase().endsWith('.pdf');
-        const url = signedUrls[item.id];
+        const url = `/api/admin/verification-evidence/${encodeURIComponent(item.id)}`;
 
         return (
           <article key={item.id} className="surface-card overflow-hidden">
