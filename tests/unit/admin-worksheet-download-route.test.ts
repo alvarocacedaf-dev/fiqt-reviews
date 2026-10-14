@@ -50,6 +50,10 @@ beforeEach(() => {
       title: 'Práctica calificada 1',
       mime_type: 'image/jpeg',
       storage_provider: 'r2',
+      preview_file_path: null,
+      preview_file_name: null,
+      preview_mime_type: null,
+      preview_storage_provider: null,
     },
   });
   mocks.r2Configured.mockReturnValue(true);
@@ -109,5 +113,45 @@ describe('descarga individual de planchas', () => {
     expect(response.headers.get('content-disposition')).toContain('inline;');
     expect(response.headers.get('content-type')).toBe('image/jpeg');
     expect(await response.text()).toBe('imagen');
+  });
+
+  it('entrega el PDF compañero para previsualizar y conserva el original en la descarga normal', async () => {
+    mocks.file.mockResolvedValue({
+      data: {
+        id: '11111111-1111-4111-8111-111111111111',
+        course_id: 'course-id',
+        file_path: 'worksheets/original.docx',
+        file_name: 'original.docx',
+        title: 'Examen final',
+        mime_type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        storage_provider: 'r2',
+        preview_file_path: 'previews/original.pdf',
+        preview_file_name: 'original.pdf',
+        preview_mime_type: 'application/pdf',
+        preview_storage_provider: 'r2',
+      },
+    });
+    mocks.r2
+      .mockReturnValueOnce('https://storage.example/original.pdf')
+      .mockReturnValueOnce('https://storage.example/original.docx');
+    vi.stubGlobal('fetch', vi.fn()
+      .mockResolvedValueOnce(new Response('pdf', { headers: { 'content-type': 'application/pdf' } }))
+      .mockResolvedValueOnce(new Response('docx', { headers: { 'content-type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' } })));
+
+    const preview = await GET(new Request('https://example.test?mode=preview-pdf'), { params });
+    expect(preview.headers.get('content-type')).toBe('application/pdf');
+    expect(preview.headers.get('content-disposition')).toContain('inline;');
+    expect(mocks.r2).toHaveBeenNthCalledWith(1, 'GET', 'previews/original.pdf', 300);
+
+    const download = await GET(new Request('https://example.test'), { params });
+    expect(download.headers.get('content-disposition')).toContain('attachment;');
+    expect(mocks.r2).toHaveBeenNthCalledWith(2, 'GET', 'worksheets/original.docx', 300);
+  });
+
+  it('responde 404 cuando un DOCX todavía no tiene PDF de previsualización', async () => {
+    const response = await GET(new Request('https://example.test?mode=preview-pdf'), { params });
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toEqual({ error: 'Esta plancha todavía no tiene una vista previa en PDF.' });
   });
 });

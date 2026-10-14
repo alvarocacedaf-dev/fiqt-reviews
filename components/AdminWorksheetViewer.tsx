@@ -16,7 +16,11 @@ export function AdminWorksheetViewer({
   mimeType: string;
   title: string;
 }) {
+  const expectsPdfPreview = /\.docx$/i.test(fileName)
+    || mimeType.toLowerCase() === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
   const [file, setFile] = useState<File | null>(null);
+  const [pdfPreview, setPdfPreview] = useState<File | null>(null);
+  const [pdfPreviewUnavailable, setPdfPreviewUnavailable] = useState(false);
   const [objectUrl, setObjectUrl] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -41,6 +45,24 @@ export function AdminWorksheetViewer({
         localUrl = URL.createObjectURL(loadedFile);
         setFile(loadedFile);
         setObjectUrl(localUrl);
+        const docx = /\.docx$/i.test(fileName)
+          || (mimeType || blob.type).toLowerCase() === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+        if (docx) {
+          const previewResponse = await fetch(
+            `/api/admin-worksheets/${encodeURIComponent(fileId)}/download?mode=preview-pdf`,
+            { credentials: 'same-origin', signal: controller.signal },
+          );
+          if (previewResponse.ok) {
+            const previewBlob = await previewResponse.blob();
+            setPdfPreview(new File([previewBlob], `${fileName.replace(/\.docx$/i, '')}.pdf`, {
+              type: 'application/pdf',
+            }));
+          } else if (previewResponse.status === 404) {
+            setPdfPreviewUnavailable(true);
+          } else if (previewResponse.status !== 404) {
+            throw new Error('No se pudo abrir la vista previa en PDF.');
+          }
+        }
       } catch (caught) {
         if (!(caught instanceof DOMException && caught.name === 'AbortError')) {
           setError(caught instanceof Error ? caught.message : 'No se pudo abrir el archivo.');
@@ -90,6 +112,11 @@ export function AdminWorksheetViewer({
             <p className="text-sm text-white/70">Preparando archivo…</p>
           </div>
         )}
+        {objectUrl && expectsPdfPreview && !pdfPreview && !pdfPreviewUnavailable && !error && (
+          <div className="flex min-h-full items-center justify-center">
+            <p className="text-sm text-white/70">Preparando vista previa en PDF…</p>
+          </div>
+        )}
         {error && (
           <div className="flex min-h-full items-center justify-center">
             <p className="m-4 rounded-xl bg-red-950 px-4 py-3 text-sm" role="alert">{error}</p>
@@ -100,7 +127,8 @@ export function AdminWorksheetViewer({
           <img alt={title} className="mx-auto max-h-full w-full object-contain" src={objectUrl} />
         )}
         {file && isPdf && <AdminWorksheetPdfPreview file={file} title={title} />}
-        {file && isDocx && <AdminWorksheetWordPreview file={file} title={title} />}
+        {file && isDocx && pdfPreview && <AdminWorksheetPdfPreview file={pdfPreview} title={title} />}
+        {file && isDocx && pdfPreviewUnavailable && <AdminWorksheetWordPreview file={file} title={title} />}
         {file && isLegacyDoc && (
           <div className="m-4 max-w-lg rounded-xl bg-slate-900 px-5 py-4 text-center text-sm leading-6">
             Este archivo usa el formato antiguo de Word (.doc), que los navegadores no pueden previsualizar.

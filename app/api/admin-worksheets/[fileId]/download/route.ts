@@ -51,7 +51,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const { fileId } = await params;
   const mode = new URL(_request.url).searchParams.get('mode');
   const isPreview = mode === 'preview';
-  const disposition = mode === 'embed' ? 'inline' : 'attachment';
+  const isPdfPreview = mode === 'preview-pdf';
+  const disposition = mode === 'embed' || isPdfPreview ? 'inline' : 'attachment';
   const db = await createClient();
   const {
     data: { user },
@@ -62,7 +63,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const [{ data: profile }, rewardProgress, { data: file }] = await Promise.all([
     adminDb.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
-    adminDb.from('admin_worksheets').select('id,course_id,file_path,file_name,title,mime_type,storage_provider').eq('id', fileId).single(),
+    adminDb.from('admin_worksheets').select('id,course_id,file_path,file_name,title,mime_type,storage_provider,preview_file_path,preview_file_name,preview_mime_type,preview_storage_provider').eq('id', fileId).single(),
   ]);
 
   if (!file) return NextResponse.json({ error: 'Archivo no encontrado.' }, { status: 404 });
@@ -81,6 +82,25 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
 
   if (!canDownload) {
     return NextResponse.json({ error: 'Este curso todavía no está habilitado en tu ruta de recompensas.' }, { status: 403 });
+  }
+
+  if (isPdfPreview) {
+    if (!file.preview_file_path || !file.preview_file_name) {
+      return NextResponse.json({ error: 'Esta plancha todavía no tiene una vista previa en PDF.' }, { status: 404 });
+    }
+    const previewName = visibleDownloadName(file.title, file.preview_file_name);
+    if (file.preview_storage_provider === 'r2') {
+      if (!isR2Configured()) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
+      return downloadResponse(
+        createR2PresignedUrl('GET', file.preview_file_path, 300),
+        previewName,
+        file.preview_mime_type || 'application/pdf',
+        'inline',
+      );
+    }
+    const { data, error } = await adminDb.storage.from('admin-worksheets').createSignedUrl(file.preview_file_path, 300);
+    if (error || !data?.signedUrl) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
+    return downloadResponse(data.signedUrl, previewName, file.preview_mime_type || 'application/pdf', 'inline');
   }
 
   if (file.storage_provider === 'r2') {
