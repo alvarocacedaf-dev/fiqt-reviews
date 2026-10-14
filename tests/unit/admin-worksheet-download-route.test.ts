@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   file: vi.fn(),
   signedUrl: vi.fn(),
   reward: vi.fn(),
+  promotionalAccess: vi.fn(),
   r2: vi.fn(),
   r2Configured: vi.fn(),
 }));
@@ -27,6 +28,7 @@ vi.mock('@/lib/supabase/admin', () => ({
   }),
 }));
 vi.mock('@/lib/rewardProgress', () => ({ getRewardProgress: mocks.reward }));
+vi.mock('@/lib/rewardCampaignAccess', () => ({ hasRewardCampaignFullAccess: mocks.promotionalAccess }));
 vi.mock('@/lib/r2', () => ({
   createR2PresignedUrl: mocks.r2,
   isR2Configured: mocks.r2Configured,
@@ -41,6 +43,7 @@ beforeEach(() => {
   mocks.auth.mockResolvedValue({ data: { user: { id: 'owner' } } });
   mocks.profile.mockResolvedValue({ data: { role: 'owner' } });
   mocks.reward.mockResolvedValue({ total: 0 });
+  mocks.promotionalAccess.mockResolvedValue(false);
   mocks.file.mockResolvedValue({
     data: {
       id: '11111111-1111-4111-8111-111111111111',
@@ -66,6 +69,16 @@ beforeEach(() => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe('descarga individual de planchas', () => {
+  it('permite descargar todos los cursos con el acceso completo de la promoción', async () => {
+    mocks.profile.mockResolvedValue({ data: { role: 'student' } });
+    mocks.promotionalAccess.mockResolvedValue(true);
+
+    const response = await GET(new Request('https://example.test'), { params });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('content-disposition')).toContain('attachment;');
+  });
+
   it('fuerza la descarga desde R2 conservando el nombre del archivo', async () => {
     const response = await GET(new Request('https://example.test'), { params });
 

@@ -6,6 +6,7 @@ import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { createStoredZipStream } from '@/lib/zipStream';
 import { worksheetArchiveDisposition, worksheetArchiveName } from '@/lib/worksheetArchiveName';
+import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,15 +26,16 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.redirect(new URL('/login?next=/planchas-administracion', request.url));
 
   const adminDb = createAdminClient();
-  const [{ data: profile }, rewardProgress, { data: course }] = await Promise.all([
+  const [{ data: profile }, rewardProgress, { data: course }, promotionalFullAccess] = await Promise.all([
     adminDb.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
     adminDb.from('courses').select('code,name').eq('id', courseId).single(),
+    hasRewardCampaignFullAccess(user.id),
   ]);
   if (!course) return NextResponse.json({ error: 'Curso no encontrado.' }, { status: 404 });
 
   const approvedReviews = rewardProgress.total;
-  let canDownload = profile?.role === 'owner' || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
+  let canDownload = profile?.role === 'owner' || promotionalFullAccess || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
   if (!canDownload && approvedReviews >= REWARD_THRESHOLDS.oneAdminCourse) {
     const { data: unlock } = await adminDb
       .from('admin_worksheet_course_unlocks')

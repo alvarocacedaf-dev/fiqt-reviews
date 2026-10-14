@@ -5,6 +5,7 @@ import { Icon } from '@/components/ui/Icon';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
 const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
 
@@ -43,6 +44,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
     { data: profile, error: profileError },
     { count, error: countError },
     sanctionState,
+    promotionalFullAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     db
@@ -51,11 +53,12 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
       .eq('user_id', user.id)
       .eq('status', 'approved'),
     getWorksheetSanctionState(db),
+    hasRewardCampaignFullAccess(user.id),
   ]);
 
   const approvedReviews = count ?? 0;
   const isAdmin = profile?.role === 'owner';
-  const isUnlocked = isAdmin || approvedReviews >= MINIMUM_APPROVED_REVIEWS;
+  const isUnlocked = isAdmin || promotionalFullAccess || approvedReviews >= MINIMUM_APPROVED_REVIEWS;
 
   if (profileError || (!isAdmin && countError)) {
     return (

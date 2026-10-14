@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
+import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 import {
   getWorksheetSanctionState,
   seriousReportCategoryLabels,
@@ -43,6 +44,17 @@ async function getCurrentRewardProgress() {
 
   if (!user) return null;
   return getRewardProgress(user.id);
+}
+
+async function getCurrentRewardCampaignAccess() {
+  if (!isSupabaseConfigured) return false;
+
+  const db = await createClient();
+  const {
+    data: { user },
+  } = await db.auth.getUser();
+
+  return user ? hasRewardCampaignFullAccess(user.id) : false;
 }
 
 async function getContributionStatus() {
@@ -246,13 +258,14 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
 }
 
 export default async function CyclesPage() {
-  const [cycles, rewardProgress, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses] = await Promise.all([
+  const [cycles, rewardProgress, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses, promotionalFullAccess] = await Promise.all([
     getCycles(),
     getCurrentRewardProgress(),
     getContributionStatus(),
     getPrivateWorksheetSanctions(),
     getWorksheetFileCount(),
     getDonationCourseOptions(),
+    getCurrentRewardCampaignAccess(),
   ]);
 
   return (
@@ -309,6 +322,7 @@ export default async function CyclesPage() {
         status={contributionStatus}
         unavailable={Boolean(rewardProgress.error)}
         contribution={<ContributionModal initialStatus={contributionStatus} compact />}
+        promotionalFullAccess={promotionalFullAccess}
       />
     )}
     </div>

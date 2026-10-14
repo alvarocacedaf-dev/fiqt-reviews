@@ -23,17 +23,18 @@ const rewards = [
   { goal: REWARD_THRESHOLDS.allAdminCourses, title: 'Planchas de todos los cursos de la administración' },
 ];
 
-export function AcademicRewards({ progress, status, contribution, unavailable = false }: {
+export function AcademicRewards({ progress, status, contribution, unavailable = false, promotionalFullAccess = false }: {
   progress: AcademicProgress | null;
   status: ContributionStatus;
   contribution: ReactNode;
   unavailable?: boolean;
+  promotionalFullAccess?: boolean;
 }) {
   const approved = status === 'approved';
   const total = progress?.total ?? 0;
-  const next = rewards.find(reward => total < reward.goal);
+  const next = promotionalFullAccess ? undefined : rewards.find(reward => total < reward.goal);
   const goal = next?.goal ?? REWARD_THRESHOLDS.allAdminCourses;
-  const percentage = Math.min(100, Math.max(0, Math.round(total / goal * 100)));
+  const percentage = promotionalFullAccess ? 100 : Math.min(100, Math.max(0, Math.round(total / goal * 100)));
 
   return (
     <aside className={styles.rewards} aria-labelledby="rewards-heading">
@@ -60,9 +61,12 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
           {approved ? (
             <>
               <p className={styles.approved}><Icon name="check" className="h-4 w-4" /> Aporte aprobado</p>
+              {promotionalFullAccess && (
+                <p className={styles.notice}>Promoción de parciales activa: tienes acceso completo a la página y a todas las planchas.</p>
+              )}
               <div className={styles.progressNumber}>
-                <strong>{total}</strong><span>/ {goal}</span>
-                <span className={styles.progressCaption}>contribuciones aprobadas</span>
+                <strong>{promotionalFullAccess ? goal : total}</strong><span>/ {goal}</span>
+                <span className={styles.progressCaption}>{promotionalFullAccess ? 'ruta habilitada por promoción' : 'contribuciones aprobadas'}</span>
               </div>
               <div
                 className={styles.progressTrack}
@@ -70,8 +74,8 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
                 aria-label="Avance hacia la siguiente recompensa"
                 aria-valuemin={0}
                 aria-valuemax={goal}
-                aria-valuenow={Math.min(total, goal)}
-                aria-valuetext={`${total} contribuciones aprobadas; meta de ${goal}`}
+                aria-valuenow={promotionalFullAccess ? goal : Math.min(total, goal)}
+                aria-valuetext={promotionalFullAccess ? 'Acceso completo habilitado por la promoción de parciales' : `${total} contribuciones aprobadas; meta de ${goal}`}
               >
                 <span style={{ width: `${percentage}%` }} />
               </div>
@@ -105,7 +109,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
                 <div><h3>Aporte inicial</h3><p>{approved ? 'Aprobado' : status === 'pending' ? 'En revisión' : 'Pendiente'}</p></div>
               </li>
               {rewards.map((reward, index) => {
-                const unlocked = approved && total >= reward.goal;
+                const unlocked = approved && (promotionalFullAccess || total >= reward.goal);
                 return (
                   <li key={reward.goal}>
                     <span className={unlocked ? styles.stepDone : styles.stepNumber}>{unlocked ? <Icon name="check" className="h-4 w-4" /> : index + 2}</span>

@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
+import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
 const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
 
@@ -24,6 +25,7 @@ export async function saveWorksheetPreferences(form: FormData) {
     { data: profile, error: profileError },
     { count, error: countError },
     sanctionState,
+    promotionalFullAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     db
@@ -32,6 +34,7 @@ export async function saveWorksheetPreferences(form: FormData) {
       .eq('user_id', user.id)
       .eq('status', 'approved'),
     getWorksheetSanctionState(db),
+    hasRewardCampaignFullAccess(user.id),
   ]);
 
   const isAdmin = profile?.role === 'owner';
@@ -41,7 +44,7 @@ export async function saveWorksheetPreferences(form: FormData) {
     redirect('/ciclos');
   }
   if (!isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de reseñas aprobadas.');
-  if (!isAdmin && (count ?? 0) < MINIMUM_APPROVED_REVIEWS) {
+  if (!isAdmin && !promotionalFullAccess && (count ?? 0) < MINIMUM_APPROVED_REVIEWS) {
     redirectWithMessage('error', `Necesitas ${MINIMUM_APPROVED_REVIEWS} reseñas aprobadas para usar Planchas.`);
   }
 

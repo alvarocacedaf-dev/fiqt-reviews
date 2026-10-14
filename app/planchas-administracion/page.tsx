@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
+import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
 export const dynamic = 'force-dynamic';
 
@@ -73,6 +74,7 @@ export default async function PublicAdminWorksheetsPage() {
     { data: profile },
     rewardProgress,
     { data: rawUnlocks },
+    promotionalFullAccess,
   ] = await Promise.all([
     db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 12).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
@@ -80,6 +82,7 @@ export default async function PublicAdminWorksheetsPage() {
     db.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
     db.from('admin_worksheet_course_unlocks').select('course_id').eq('user_id', user.id),
+    hasRewardCampaignFullAccess(user.id),
   ]);
 
   const cycles = (rawCycles ?? []) as Cycle[];
@@ -91,7 +94,7 @@ export default async function PublicAdminWorksheetsPage() {
   const loadError = cyclesError || coursesError || filesError;
   const reviewCount = rewardProgress.total;
   const isOwner = profile?.role === 'owner';
-  const selectionLimit = isOwner || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
+  const selectionLimit = isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
     ? courses.length
     : reviewCount >= REWARD_THRESHOLDS.twoAdminCourses
       ? 2
@@ -132,7 +135,7 @@ export default async function PublicAdminWorksheetsPage() {
             readOnly
             selectableCourseLimit={selectionLimit}
             selectedCourseIds={selectedCourseIds}
-            unlockAllCourses={isOwner || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
+            unlockAllCourses={isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
           />
         </section>
       )}
