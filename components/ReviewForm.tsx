@@ -177,7 +177,9 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
       ].filter(Boolean);
       const selectedTags = [...new Set([...selected, ...customTags])];
 
+      const reviewId = crypto.randomUUID();
       const { error } = await db.from('reviews').insert({
+        id: reviewId,
         ...payload,
         user_id: user.id,
         professor_id: professorId,
@@ -194,6 +196,10 @@ export function ReviewForm({ professorId, courseId }: { professorId: string; cou
         return;
       }
 
+      await fetch('/api/admin-notifications/dispatch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventType: 'review_pending', eventId: reviewId }),
+      }).catch(() => undefined);
       setSubmitted(true);
       router.refresh();
     } catch {

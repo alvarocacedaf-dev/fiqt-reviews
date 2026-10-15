@@ -33,7 +33,9 @@ export function VerificationForm() {
 
       if (uploadError) return setMessage('No pudimos subir la evidencia. Revisa tu conexión e inténtalo nuevamente.');
 
+      const submissionId = crypto.randomUUID();
       const { error } = await db.from('verification_submissions').insert({
+        id: submissionId,
         user_id: user.id,
         file_url: path,
         status: 'pending',
@@ -47,6 +49,10 @@ export function VerificationForm() {
         return setMessage('No pudimos registrar la evidencia. Inténtalo nuevamente.');
       }
 
+      await fetch('/api/admin-notifications/dispatch', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventType: 'verification_pending', eventId: submissionId }),
+      }).catch(() => undefined);
       setMessage('Evidencia enviada. Quedó pendiente de revisión.');
     } catch {
       setMessage('No pudimos enviar la evidencia. Revisa tu conexión e inténtalo nuevamente.');

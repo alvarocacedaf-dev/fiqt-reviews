@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/admin';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { AdminPushNotifications } from '@/components/AdminPushNotifications';
 
 type StorageUsageRow = {
   bucket_id: string;
@@ -78,6 +79,8 @@ export default async function Admin() {
           </Link>
         ))}
       </div>
+
+      <AdminPushNotifications />
 
       <section className="surface-muted mt-6 border-blue-100 bg-blue-50 p-5">
         <div className="flex flex-wrap items-end justify-between gap-3">
