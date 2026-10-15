@@ -4,7 +4,7 @@ export const courseLaboratoryGuides: Record<string, string | null> = {
   QU216: null,
   QU427: null,
   QU518: null,
-  QU428: null,
+  QU428: '/guias-laboratorio/QU428-fisicoquimica-ii.pdf',
   QU328: '/guias-laboratorio/QU328-quimica-organica-i.pdf',
   QU338: null,
 };
