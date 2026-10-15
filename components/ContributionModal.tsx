@@ -81,7 +81,9 @@ export function ContributionModal({ initialStatus, compact = false }: { initialS
       if (uploadError) throw new Error(`No se pudo subir la imagen: ${uploadError.message}`);
 
       setMessage('Imagen cargada. Estamos registrando tu comprobante…');
+      const submissionId = crypto.randomUUID();
       const { error: insertError } = await db.from('contribution_submissions').insert({
+        id: submissionId,
         user_id: user.id,
         receipt_path: uploadedPath,
         amount: 1.5,
@@ -92,6 +94,12 @@ export function ContributionModal({ initialStatus, compact = false }: { initialS
         await db.storage.from('contribution-evidence').remove([uploadedPath]);
         throw new Error(`No se pudo registrar el comprobante: ${insertError.message}`);
       }
+
+      await fetch('/api/admin-notifications/dispatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ eventType: 'contribution_pending', eventId: submissionId }),
+      }).catch(() => undefined);
 
       formRef.current?.reset();
       setStatus('pending');

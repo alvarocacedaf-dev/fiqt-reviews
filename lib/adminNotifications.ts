@@ -1,7 +1,7 @@
 import webpush from 'web-push';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export type AdminNotificationEvent = 'review_pending' | 'verification_pending';
+export type AdminNotificationEvent = 'review_pending' | 'verification_pending' | 'contribution_pending';
 
 const eventCopy = {
   review_pending: {
@@ -13,6 +13,11 @@ const eventCopy = {
     title: 'Nueva verificación pendiente',
     body: 'Hay una nueva evidencia académica esperando revisión.',
     url: '/admin/verificaciones',
+  },
+  contribution_pending: {
+    title: 'Nuevo Yape pendiente',
+    body: 'Hay un nuevo comprobante de aporte esperando aprobación.',
+    url: '/admin/yapes',
   },
 } satisfies Record<AdminNotificationEvent, { title: string; body: string; url: string }>;
 

@@ -5,6 +5,7 @@ import { sendAdminNotifications, type AdminNotificationEvent } from '@/lib/admin
 const tableByEvent = {
   review_pending: 'reviews',
   verification_pending: 'verification_submissions',
+  contribution_pending: 'contribution_submissions',
 } as const;
 
 export const runtime = 'nodejs';
