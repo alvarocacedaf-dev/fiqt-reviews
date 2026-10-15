@@ -71,12 +71,35 @@ async function main() {
   const root = path.resolve(import.meta.dirname, '..');
   const env = parseEnv(await fs.readFile(path.join(root, '.env.local'), 'utf8'));
   const resendKeyPath = process.argv[2];
+  const previewTo = process.argv
+    .find(argument => argument.startsWith('--preview-to='))
+    ?.slice('--preview-to='.length)
+    .trim();
   if (!resendKeyPath) throw new Error('Falta la ruta de la clave temporal de Resend.');
 
   const resendKey = (await fs.readFile(resendKeyPath, 'utf8')).trim();
   const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceKey = env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceKey || !resendKey) throw new Error('Faltan credenciales de envío.');
+
+  if (previewTo) {
+    const sent = await jsonRequest('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'FIQT Reviews <no-reply@auth.fiqtreviews.com>',
+        to: [previewTo],
+        subject: '[PRUEBA] 🎉 Ya tienes acceso completo a más de 1,900 planchas',
+        html: emailHtml(),
+        text: 'Por los exámenes parciales, hemos decidido ser más flexibles con Tu ruta de recompensas. Tu cuenta ya cumple con los requisitos de esta promoción, por lo que hemos habilitado tu acceso completo a la página y a sus más de 1,900 planchas. ¡Muchos éxitos en tus parciales! Ingresa en https://www.fiqtreviews.com/ciclos',
+      }),
+    });
+    process.stdout.write(`${JSON.stringify({ preview: true, sent: Boolean(sent.id) })}\n`);
+    return;
+  }
 
   const supabaseHeaders = {
     apikey: serviceKey,
