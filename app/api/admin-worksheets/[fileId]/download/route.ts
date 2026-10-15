@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
+import { worksheetDownloadName } from '@/lib/worksheetArchiveName';
 
 export const runtime = 'nodejs';
 
@@ -17,12 +18,6 @@ function contentDispositionHeader(fileName: string, disposition: 'attachment' | 
     .replace(/["\\]/g, '_');
 
   return `${disposition}; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(safeName)}`;
-}
-
-function visibleDownloadName(title: string, storedFileName: string) {
-  const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0] ?? '';
-  if (!extension || title.toLocaleLowerCase().endsWith(extension.toLocaleLowerCase())) return title;
-  return `${title}${extension.toLocaleLowerCase()}`;
 }
 
 async function downloadResponse(
@@ -90,7 +85,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
     if (!file.preview_file_path || !file.preview_file_name) {
       return NextResponse.json({ error: 'Esta plancha todavía no tiene una vista previa en PDF.' }, { status: 404 });
     }
-    const previewName = visibleDownloadName(file.title, file.preview_file_name);
+    const previewName = worksheetDownloadName(file.title, file.preview_file_name);
     if (file.preview_storage_provider === 'r2') {
       if (!isR2Configured()) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
       return downloadResponse(
@@ -107,7 +102,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
 
   if (file.storage_provider === 'r2') {
     if (!isR2Configured()) return NextResponse.json({ error: 'El archivo no está disponible.' }, { status: 503 });
-    const downloadName = visibleDownloadName(file.title, file.file_name);
+    const downloadName = worksheetDownloadName(file.title, file.file_name);
     const signedUrl = createR2PresignedUrl(
       'GET',
       file.file_path,
@@ -127,7 +122,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   if (isPreview) return NextResponse.redirect(data.signedUrl);
   return downloadResponse(
     data.signedUrl,
-    visibleDownloadName(file.title, file.file_name),
+    worksheetDownloadName(file.title, file.file_name),
     file.mime_type,
     disposition,
   );

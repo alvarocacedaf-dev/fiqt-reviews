@@ -7,6 +7,9 @@ import { getRewardProgress } from '@/lib/rewardProgress';
 import { createStoredZipStream } from '@/lib/zipStream';
 import { worksheetArchiveDisposition, worksheetArchiveName } from '@/lib/worksheetArchiveName';
 import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
+import { worksheetDownloadName } from '@/lib/worksheetArchiveName';
+import { compareAssessmentWorksheetFiles, compareWorksheetTitles } from '@/lib/worksheetSorting';
+import { resolveBundledAdminWorksheets } from '@/lib/bundledAdminWorksheets';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,7 +32,7 @@ export async function GET(request: Request) {
   const [{ data: profile }, rewardProgress, { data: course }, promotionalFullAccess] = await Promise.all([
     adminDb.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
-    adminDb.from('courses').select('code,name').eq('id', courseId).single(),
+    adminDb.from('courses').select('id,code,name').eq('id', courseId).single(),
     hasRewardCampaignFullAccess(user.id),
   ]);
   if (!course) return NextResponse.json({ error: 'Curso no encontrado.' }, { status: 404 });
@@ -51,21 +54,35 @@ export async function GET(request: Request) {
 
   const { data: rawFiles, error } = await adminDb
     .from('admin_worksheets')
-    .select('id,file_name,file_path,storage_provider')
+    .select('id,course_id,title,exam_type,academic_term,file_name,file_path,storage_provider,created_at')
     .eq('course_id', courseId)
     .eq('exam_type', examType)
     .order('id');
   if (error) return NextResponse.json({ error: 'No se pudo preparar la carpeta.' }, { status: 500 });
-  if (!rawFiles?.length) return NextResponse.json({ error: 'Esta carpeta está vacía.' }, { status: 404 });
+  const files = [
+    ...(rawFiles ?? []),
+    ...resolveBundledAdminWorksheets([course])
+      .filter(file => file.exam_type === examType)
+      .map(file => ({ ...file, file_path: file.signed_url })),
+  ].sort(
+    ['practice', 'midterm', 'final', 'substitute'].includes(examType)
+      ? compareAssessmentWorksheetFiles
+      : compareWorksheetTitles,
+  );
+  if (!files.length) return NextResponse.json({ error: 'Esta carpeta está vacía.' }, { status: 404 });
 
-  const sources = await Promise.all(rawFiles.map(async file => {
+  const sources = await Promise.all(files.map(async file => {
+    const name = worksheetDownloadName(file.title, file.file_name);
+    if (file.storage_provider === 'public') {
+      return { name, url: new URL(file.file_path, request.url).toString() };
+    }
     if (file.storage_provider === 'r2') {
       if (!isR2Configured()) throw new Error('Uno de los archivos no está disponible.');
-      return { name: file.file_name, url: createR2PresignedUrl('GET', file.file_path, 900) };
+      return { name, url: createR2PresignedUrl('GET', file.file_path, 900) };
     }
     const { data, error: signedUrlError } = await adminDb.storage.from('admin-worksheets').createSignedUrl(file.file_path, 900);
     if (signedUrlError || !data?.signedUrl) throw new Error('Uno de los archivos no está disponible.');
-    return { name: file.file_name, url: data.signedUrl };
+    return { name, url: data.signedUrl };
   })).catch(() => null);
   if (!sources) return NextResponse.json({ error: 'No se pudo preparar uno de los archivos.' }, { status: 503 });
 

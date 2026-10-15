@@ -27,3 +27,10 @@ export function worksheetArchiveDisposition(fileName: string) {
 
   return `attachment; filename="${asciiName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`;
 }
+
+export function worksheetDownloadName(title: string, storedFileName: string) {
+  const cleanTitle = title.replace(/[\r\n]/g, ' ').replace(/\s+/g, ' ').trim() || 'Plancha';
+  const extension = storedFileName.match(/\.[A-Za-z0-9]{1,10}$/)?.[0]?.toLocaleLowerCase() ?? '';
+  if (!extension || cleanTitle.toLocaleLowerCase().endsWith(extension)) return cleanTitle;
+  return `${cleanTitle}${extension}`;
+}
