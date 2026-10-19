@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   upload: vi.fn(),
   remove: vi.fn(),
   refresh: vi.fn(),
+  digest: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
@@ -40,6 +41,11 @@ vi.mock('@/lib/supabase/client', () => ({
 describe('respuesta inmediata de acciones principales', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubGlobal('crypto', {
+      randomUUID: vi.fn(() => 'test-uuid'),
+      subtle: { digest: mocks.digest },
+    });
+    mocks.digest.mockResolvedValue(new Uint8Array(32).buffer);
     mocks.getUser.mockResolvedValue({ data: { user: { id: 'user-1' } } });
     mocks.insertReview.mockResolvedValue({ error: null });
     mocks.upload.mockResolvedValue({ error: null });
@@ -103,10 +109,10 @@ describe('respuesta inmediata de acciones principales', () => {
     expect(mocks.upload).toHaveBeenCalledTimes(1);
   });
 
-  it('elimina la segunda subida y explica que ya existe una evidencia pendiente', async () => {
+  it('elimina la segunda subida y explica que el mismo archivo ya está pendiente', async () => {
     const user = userEvent.setup();
     mocks.insertVerification.mockResolvedValue({
-      error: { code: '23505', message: 'Ya tienes una evidencia pendiente de revisión.' },
+      error: { code: '23505', message: 'duplicate key value violates unique constraint' },
     });
 
     render(<VerificationForm />);
@@ -117,8 +123,30 @@ describe('respuesta inmediata de acciones principales', () => {
     const form = screen.getByRole('button', { name: 'Enviar para revisión' }).closest('form')!;
     fireEvent.submit(form);
 
-    expect(await screen.findByText(/Ya tienes una evidencia pendiente/i)).toBeVisible();
+    expect(await screen.findByText(/Este mismo archivo ya fue enviado/i)).toBeVisible();
     expect(mocks.remove).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('button', { name: 'Evidencia enviada' })).toBeDisabled();
+  });
+
+  it('permite iniciar el envío de una evidencia diferente después de la primera', async () => {
+    const user = userEvent.setup();
+    render(<VerificationForm />);
+
+    await user.upload(
+      screen.getByLabelText('Evidencia académica'),
+      new File(['primera'], 'primera.pdf', { type: 'application/pdf' }),
+    );
+    fireEvent.submit(screen.getByRole('button', { name: 'Enviar para revisión' }).closest('form')!);
+    expect(await screen.findByText('Evidencia enviada. Quedó pendiente de revisión.')).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'Enviar otra evidencia' }));
+    await user.upload(
+      screen.getByLabelText('Evidencia académica'),
+      new File(['segunda'], 'segunda.pdf', { type: 'application/pdf' }),
+    );
+    fireEvent.submit(screen.getByRole('button', { name: 'Enviar para revisión' }).closest('form')!);
+
+    await waitFor(() => expect(mocks.upload).toHaveBeenCalledTimes(2));
+    expect(mocks.insertVerification).toHaveBeenCalledTimes(2);
   });
 });

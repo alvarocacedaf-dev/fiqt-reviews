@@ -4,6 +4,17 @@ import { type FormEvent, useRef, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { InlineSpinner } from '@/components/ui/InlineSpinner';
 
+async function sha256(file: File) {
+  const bytes = await new Promise<ArrayBuffer>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as ArrayBuffer);
+    reader.onerror = () => reject(reader.error ?? new Error('No se pudo leer el archivo.'));
+    reader.readAsArrayBuffer(file);
+  });
+  const digest = await crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
 export function VerificationForm() {
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -27,6 +38,8 @@ export function VerificationForm() {
 
       if (!user) return setMessage('Inicia sesión antes de enviar una evidencia.');
 
+      const contentHash = await sha256(file);
+
       const path = `${user.id}/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
       const { error: uploadError } = await db.storage
         .from('verification-evidence')
@@ -39,14 +52,15 @@ export function VerificationForm() {
         id: submissionId,
         user_id: user.id,
         file_url: path,
+        content_hash: contentHash,
         status: 'pending',
       });
 
       if (error) {
         await db.storage.from('verification-evidence').remove([path]);
-        if (error.code === '23505' || error.message.toLowerCase().includes('evidencia pendiente')) {
+        if (error.code === '23505') {
           setSubmitted(true);
-          return setMessage('Ya tienes una evidencia pendiente de revisión. No es necesario volver a enviarla.');
+          return setMessage('Este mismo archivo ya fue enviado y continúa pendiente de revisión. Puedes enviar otro documento diferente.');
         }
         if (error.message.toLowerCase().includes('demasiados intentos')) {
           return setMessage('Alcanzaste el límite de 5 evidencias de verificación por día. Intenta nuevamente mañana.');
@@ -69,6 +83,12 @@ export function VerificationForm() {
     }
   }
 
+  function startAnotherSubmission() {
+    setSubmitted(false);
+    setMessage('');
+    if (fileRef.current) fileRef.current.value = '';
+  }
+
   return (
     <form aria-busy={submitting} className="space-y-4" onSubmit={submit}>
       <label className="block font-semibold">
@@ -88,6 +108,11 @@ export function VerificationForm() {
         {submitting && <InlineSpinner />}
         {submitting ? 'Enviando evidencia…' : submitted ? 'Evidencia enviada' : 'Enviar para revisión'}
       </button>
+      {submitted && (
+        <button className="btn-secondary min-w-52" onClick={startAnotherSubmission} type="button">
+          Enviar otra evidencia
+        </button>
+      )}
     </form>
   );
 }

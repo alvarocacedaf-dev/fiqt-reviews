@@ -16,6 +16,8 @@ select ok(to_regclass('public.verification_submissions_status_created_idx') is n
   'verification_submissions tiene índice para pendientes');
 select ok(to_regclass('public.verification_submissions_user_created_idx') is not null,
   'verification_submissions tiene índice para historial por cuenta');
+select ok(to_regclass('public.verification_submissions_pending_content_hash_idx') is not null,
+  'verification_submissions impide repetir el mismo archivo pendiente');
 select ok(to_regclass('public.course_professors_professor_course_idx') is not null,
   'course_professors permite buscar eficientemente por profesor');
 select ok(to_regclass('public.worksheet_preferences_course_preference_user_idx') is not null,
@@ -38,12 +40,9 @@ select ok(exists (
     and not tgisinternal
 ), 'reviews conserva su trigger de reglas de inserción');
 
-select like(lower(pg_get_functiondef(
+select unlike(lower(pg_get_functiondef(
   'public.enforce_verification_submission_rate_limit()'::regprocedure
-)), '%pg_advisory_xact_lock%', 'los envíos de verificación se serializan por cuenta');
-select like(lower(pg_get_functiondef(
-  'public.enforce_verification_submission_rate_limit()'::regprocedure
-)), '%evidencia pendiente%', 'una cuenta no puede crear otra verificación mientras tenga una pendiente');
+)), '%evidencia pendiente%', 'una cuenta puede crear varias verificaciones pendientes diferentes');
 
 -- La moderación de verificaciones debe seguir siendo una única RPC protegida.
 select ok(to_regprocedure(
