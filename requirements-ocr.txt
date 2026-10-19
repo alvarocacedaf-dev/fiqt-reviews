@@ -1,0 +1,4 @@
+# Versiones fijadas para Windows/CPU. PaddlePaddle 3.3.x presenta un fallo de oneDNN con PaddleOCR.
+paddlepaddle==3.2.2
+paddleocr==3.7.0
+numpy==2.3.5
