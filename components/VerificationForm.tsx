@@ -7,6 +7,7 @@ import { InlineSpinner } from '@/components/ui/InlineSpinner';
 export function VerificationForm() {
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const submittingRef = useRef(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -43,6 +44,10 @@ export function VerificationForm() {
 
       if (error) {
         await db.storage.from('verification-evidence').remove([path]);
+        if (error.code === '23505' || error.message.toLowerCase().includes('evidencia pendiente')) {
+          setSubmitted(true);
+          return setMessage('Ya tienes una evidencia pendiente de revisión. No es necesario volver a enviarla.');
+        }
         if (error.message.toLowerCase().includes('demasiados intentos')) {
           return setMessage('Alcanzaste el límite de 5 evidencias de verificación por día. Intenta nuevamente mañana.');
         }
@@ -53,6 +58,8 @@ export function VerificationForm() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ eventType: 'verification_pending', eventId: submissionId }),
       }).catch(() => undefined);
+      setSubmitted(true);
+      if (fileRef.current) fileRef.current.value = '';
       setMessage('Evidencia enviada. Quedó pendiente de revisión.');
     } catch {
       setMessage('No pudimos enviar la evidencia. Revisa tu conexión e inténtalo nuevamente.');
@@ -72,14 +79,14 @@ export function VerificationForm() {
           name="evidence"
           type="file"
           className="mt-2 block w-full text-sm"
-          disabled={submitting}
+          disabled={submitting || submitted}
           ref={fileRef}
         />
       </label>
       {message && <p aria-live="polite" className="rounded-xl bg-blue-50 p-3 text-sm text-blue-950">{message}</p>}
-      <button className="btn-primary min-w-52 gap-2 disabled:cursor-wait" disabled={submitting} type="submit">
+      <button className="btn-primary min-w-52 gap-2 disabled:cursor-wait disabled:opacity-70" disabled={submitting || submitted} type="submit">
         {submitting && <InlineSpinner />}
-        {submitting ? 'Enviando evidencia…' : 'Enviar para revisión'}
+        {submitting ? 'Enviando evidencia…' : submitted ? 'Evidencia enviada' : 'Enviar para revisión'}
       </button>
     </form>
   );

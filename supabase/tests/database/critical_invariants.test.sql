@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(28);
+select plan(30);
 
 -- Índices que sostienen las consultas principales.
 select ok(to_regclass('public.reviews_professor_status_created_idx') is not null,
@@ -37,6 +37,13 @@ select ok(exists (
     and tgname = 'reviews_before_insert'
     and not tgisinternal
 ), 'reviews conserva su trigger de reglas de inserción');
+
+select like(lower(pg_get_functiondef(
+  'public.enforce_verification_submission_rate_limit()'::regprocedure
+)), '%pg_advisory_xact_lock%', 'los envíos de verificación se serializan por cuenta');
+select like(lower(pg_get_functiondef(
+  'public.enforce_verification_submission_rate_limit()'::regprocedure
+)), '%evidencia pendiente%', 'una cuenta no puede crear otra verificación mientras tenga una pendiente');
 
 -- La moderación de verificaciones debe seguir siendo una única RPC protegida.
 select ok(to_regprocedure(

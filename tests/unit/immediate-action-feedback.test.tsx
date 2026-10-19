@@ -98,5 +98,27 @@ describe('respuesta inmediata de acciones principales', () => {
     await waitFor(() => expect(mocks.upload).toHaveBeenCalledTimes(1));
     finishUpload?.({ error: null });
     expect(await screen.findByText('Evidencia enviada. Quedó pendiente de revisión.')).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Evidencia enviada' })).toBeDisabled();
+    fireEvent.submit(form);
+    expect(mocks.upload).toHaveBeenCalledTimes(1);
+  });
+
+  it('elimina la segunda subida y explica que ya existe una evidencia pendiente', async () => {
+    const user = userEvent.setup();
+    mocks.insertVerification.mockResolvedValue({
+      error: { code: '23505', message: 'Ya tienes una evidencia pendiente de revisión.' },
+    });
+
+    render(<VerificationForm />);
+    await user.upload(
+      screen.getByLabelText('Evidencia académica'),
+      new File(['duplicada'], 'boleta.pdf', { type: 'application/pdf' }),
+    );
+    const form = screen.getByRole('button', { name: 'Enviar para revisión' }).closest('form')!;
+    fireEvent.submit(form);
+
+    expect(await screen.findByText(/Ya tienes una evidencia pendiente/i)).toBeVisible();
+    expect(mocks.remove).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole('button', { name: 'Evidencia enviada' })).toBeDisabled();
   });
 });
