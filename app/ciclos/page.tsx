@@ -4,7 +4,6 @@ import { ContributionModal } from '@/components/ContributionModal';
 import { PageGuideModal } from '@/components/PageGuideModal';
 import { WorksheetDonationModal } from '@/components/WorksheetDonationModal';
 import { AcademicRewards } from '@/components/academic/AcademicRewards';
-import { RewardCampaignNotice } from '@/components/RewardCampaignNotice';
 import { Icon } from '@/components/ui/Icon';
 import { getCycles } from '@/lib/data';
 import { isSupabaseConfigured } from '@/lib/demo';
@@ -270,7 +269,6 @@ export default async function CyclesPage() {
 
   return (
     <>
-    <RewardCampaignNotice initialOpen={rewardProgress !== null} />
     <div className={rewardProgress === null ? '' : 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start'}>
     <div className="space-y-6">
       <section className="panel">
@@ -300,9 +298,6 @@ export default async function CyclesPage() {
         <div className="mt-4 space-y-3">
           <p className="rounded-xl border border-white/10 bg-[#071a3d]/65 p-4 text-sm leading-6 text-blue-50">
             Queremos agradecerles el gran recibimiento que ha tenido la página durante estos primeros dos días de lanzamiento. Aún se están cargando más planchas y materiales de estudio, además de los que ya tiene la administración.
-          </p>
-          <p className="rounded-xl border border-gold/60 bg-gold/15 p-4 text-sm font-semibold leading-6 text-yellow-50 shadow-[0_0_24px_rgba(250,204,21,0.12)]">
-            Debido a que se acercan los parciales y esta semana también habrá exposiciones y prácticas, se habilitará el acceso a <strong className="font-black text-gold">todas las planchas</strong> para los <strong className="font-black text-gold">primeros 50 usuarios</strong> que completen los <strong className="font-black text-gold">dos primeros pasos</strong> de <strong className="font-black uppercase text-gold">Tu ruta de recompensas</strong>. Esta promoción estará vigente durante estas dos semanas, <strong className="font-black text-gold">del 12/10 al 24/10</strong>, fecha en que terminan los parciales. Quienes ya hayan completado estos pasos antes de esta semana también recibirán <strong className="font-black text-gold">acceso completo a la página y a todas sus planchas</strong>. <strong className="font-black text-gold">¡Éxitos en sus parciales!</strong>
           </p>
           <p className="rounded-xl border border-white/10 bg-[#071a3d]/65 p-4 text-sm leading-6 text-blue-50">
             Durante esta primera semana continuaremos realizando mejoras en la página para ofrecer más beneficios a los estudiantes.

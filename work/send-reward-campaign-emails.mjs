@@ -68,6 +68,7 @@ async function jsonRequest(url, options = {}) {
 }
 
 async function main() {
+  throw new Error('La campaña de parciales finalizó; el envío de anuncios está deshabilitado.');
   const root = path.resolve(import.meta.dirname, '..');
   const env = parseEnv(await fs.readFile(path.join(root, '.env.local'), 'utf8'));
   const resendKeyPath = process.argv[2];

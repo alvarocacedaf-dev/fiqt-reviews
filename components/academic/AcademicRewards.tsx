@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { Icon } from '@/components/ui/Icon';
-import { OPEN_REWARD_CAMPAIGN_EVENT } from '@/components/RewardCampaignNotice';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import styles from './rewards-card.module.css';
 
@@ -41,13 +40,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
       <div className={styles.rewardHeading}>
         <span className={styles.rewardSymbol}><Icon name="star" className="h-5 w-5" /></span>
         <h2 id="rewards-heading">
-          <button
-            className="text-left"
-            onClick={() => window.dispatchEvent(new Event(OPEN_REWARD_CAMPAIGN_EVENT))}
-            type="button"
-          >
-            Tu ruta de recompensas
-          </button>
+          Tu ruta de recompensas
         </h2>
       </div>
       <p className={styles.description}>Tu experiencia y tus materiales ayudan a toda la comunidad.</p>
@@ -62,11 +55,11 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
             <>
               <p className={styles.approved}><Icon name="check" className="h-4 w-4" /> Aporte aprobado</p>
               {promotionalFullAccess && (
-                <p className={styles.notice}>Promoción de parciales activa: tienes acceso completo a la página y a todas las planchas.</p>
+                <p className={styles.notice}>Conservas el acceso completo obtenido durante la campaña de parciales.</p>
               )}
               <div className={styles.progressNumber}>
                 <strong>{promotionalFullAccess ? goal : total}</strong><span>/ {goal}</span>
-                <span className={styles.progressCaption}>{promotionalFullAccess ? 'ruta habilitada por promoción' : 'contribuciones aprobadas'}</span>
+                <span className={styles.progressCaption}>{promotionalFullAccess ? 'acceso completo obtenido' : 'contribuciones aprobadas'}</span>
               </div>
               <div
                 className={styles.progressTrack}
