@@ -12,9 +12,9 @@ describe('módulo de recompensas académicas', () => {
     expect(screen.getByText('2 planchas')).toBeInTheDocument();
     expect(screen.queryByText('7 reseñas')).not.toBeInTheDocument();
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '10');
-    expect(screen.getByText('Te faltan 3 contribuciones aprobadas.')).toBeInTheDocument();
-    expect(screen.getByText('7 contribuciones en total · Desbloqueado')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '8');
+    expect(screen.getByText('Te falta 1 contribución aprobada.')).toBeInTheDocument();
+    expect(screen.getByText('6 contribuciones en total · Desbloqueado')).toBeInTheDocument();
   });
 
   it.each([null, 'pending', 'rejected'] as const)('no desbloquea beneficios sin aporte aprobado (%s)', status => {
@@ -26,14 +26,14 @@ describe('módulo de recompensas académicas', () => {
 
   it('mantiene las metas basadas solo en reseñas antes del paso tres', () => {
     render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 0, total: 2 }} status="approved" contribution={contribution} />);
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '5');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '3');
     expect(screen.getByText('2 reseñas aprobadas · Desbloqueado')).toBeInTheDocument();
-    expect(screen.getByText('5 reseñas aprobadas · Pendiente')).toBeInTheDocument();
+    expect(screen.getByText('3 reseñas aprobadas · Pendiente')).toBeInTheDocument();
   });
 
   it('limita la barra a la meta sin ocultar el total real', () => {
     render(<AcademicRewards progress={{ approvedReviews: 20, donatedWorksheets: 4, total: 24 }} status="approved" contribution={contribution} />);
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '18');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '10');
     expect(screen.getByText('24')).toBeInTheDocument();
     expect(screen.getByText('¡Ruta completada!')).toBeInTheDocument();
   });

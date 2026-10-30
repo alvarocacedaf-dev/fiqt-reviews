@@ -79,7 +79,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
               <div className={styles.nextReward}>
                 <p className={styles.eyebrow}>{next ? 'Tu próximo beneficio' : '¡Ruta completada!'}</p>
                 <h3>{next?.title ?? 'Todas las recompensas actuales desbloqueadas'}</h3>
-                <p>{next ? `Te faltan ${next.goal - total} contribuciones aprobadas.` : 'Gracias por compartir con la comunidad.'}</p>
+                <p>{next ? next.goal - total === 1 ? 'Te falta 1 contribución aprobada.' : `Te faltan ${next.goal - total} contribuciones aprobadas.` : 'Gracias por compartir con la comunidad.'}</p>
               </div>
               <Link className={styles.primaryButton} href="/cursos-verificados">
                 Ir a mis cursos verificados <Icon name="arrow-right" className="h-4 w-4" />
@@ -108,7 +108,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
                     <span className={unlocked ? styles.stepDone : styles.stepNumber}>{unlocked ? <Icon name="check" className="h-4 w-4" /> : index + 2}</span>
                     <div>
                       <h3>{reward.title}</h3>
-                      <p>{reward.goal} {reward.goal <= 5 ? 'reseñas aprobadas' : 'contribuciones en total'} · {unlocked ? 'Desbloqueado' : 'Pendiente'}</p>
+                      <p>{reward.goal} {reward.goal <= REWARD_THRESHOLDS.worksheetsCommunity ? 'reseñas aprobadas' : 'contribuciones en total'} · {unlocked ? 'Desbloqueado' : 'Pendiente'}</p>
                     </div>
                   </li>
                 );
@@ -119,7 +119,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
           </details>
 
           <p className={styles.rewardHelp}>
-            Tras completar el paso 3 con 5 reseñas aprobadas, también suman tus planchas aprobadas. Por ejemplo: <strong>5 reseñas + 2 planchas = 7</strong>, suficiente para el paso 4 con el aporte aprobado.
+            Tras completar el paso 3 con {REWARD_THRESHOLDS.worksheetsCommunity} reseñas aprobadas, también suman tus planchas aprobadas. Por ejemplo: <strong>{REWARD_THRESHOLDS.worksheetsCommunity} reseñas + {REWARD_THRESHOLDS.oneAdminCourse - REWARD_THRESHOLDS.worksheetsCommunity} planchas = {REWARD_THRESHOLDS.oneAdminCourse}</strong>, suficiente para el paso 4 con el aporte aprobado.
           </p>
         </>
       )}
