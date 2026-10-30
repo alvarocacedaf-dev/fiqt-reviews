@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export function Footer() {
   return (
     <footer className="border-t border-white/15 bg-[#051530] px-6 py-5 text-blue-100">
@@ -6,6 +8,7 @@ export function Footer() {
           FIQT Reviews es un proyecto estudiantil independiente. No pertenece ni representa oficialmente a la
           Universidad Nacional de Ingeniería. Las reseñas reflejan experiencias académicas de estudiantes y pasan por
           moderación. No se permiten insultos, acusaciones personales ni contenido discriminatorio.
+          <Link href="/privacidad" className="mt-2 block underline">Privacidad y estadísticas</Link>
         </p>
 
         <img

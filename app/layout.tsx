@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { PwaRegistration } from '@/components/PwaRegistration';
 import { PwaLaunchSplash } from '@/components/PwaLaunchSplash';
+import { SiteActivityTracker } from '@/components/SiteActivityTracker';
 
 const geist = Geist({
   subsets: ['latin'],
@@ -60,6 +61,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="overflow-x-clip font-sans antialiased">
         <PwaRegistration />
+        <SiteActivityTracker />
         <PwaLaunchSplash />
         <div className="page-shell flex min-h-screen flex-col">
           <Header />

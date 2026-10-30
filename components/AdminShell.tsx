@@ -19,6 +19,7 @@ const menuGroups: { label: string; links: AdminLink[] }[] = [
   {
     label: 'Usuarios',
     links: [
+      { href: '/admin/actividad', icon: 'dashboard', label: 'Estadísticas y actividad' },
       { href: '/admin/ranking-resenas', icon: 'star', label: 'Ranking de reseñas' },
       { href: '/admin/cuentas-verificadas', icon: 'users', label: 'Cuentas verificadas' },
       { href: '/admin/cursos-cuentas', icon: 'academic', label: 'Cursos de cuentas' },
@@ -59,7 +60,7 @@ export function AdminShell({ children, isOwner }: { children: React.ReactNode; i
   const current = allLinks.find(link => isActive(pathname, link.href));
   const visibleMenuGroups = menuGroups.map(group => ({
     ...group,
-    links: group.links.filter(link => isOwner || link.href !== '/admin/ranking-resenas'),
+    links: group.links.filter(link => isOwner || !['/admin/ranking-resenas', '/admin/actividad'].includes(link.href)),
   }));
 
   return (

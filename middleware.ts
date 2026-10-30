@@ -7,6 +7,10 @@ const protectedPrefixes = ['/ciclos', '/cursos', '/profesores', '/verificacion',
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  // These endpoints validate the session themselves; avoid duplicate auth calls on every heartbeat.
+  if (pathname === '/api/activity' || pathname === '/api/admin/activity') {
+    return NextResponse.next({ request });
+  }
 
   // 1. SALIDA RÁPIDA: Seguro de vida para evitar que archivos estáticos consulten la BD.
   // Cualquier petición a un archivo con extensión (ej. logo.svg, estilo.css) se deja pasar de inmediato.
