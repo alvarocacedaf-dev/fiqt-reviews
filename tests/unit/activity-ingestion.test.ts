@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
-import { activitySection } from '@/lib/activity';
+import { activitySection, activityResource } from '@/lib/activity';
 const mocks = vi.hoisted(() => ({ rpc:vi.fn(), getUser:vi.fn() }));
 vi.mock('@/lib/supabase/admin',()=>({createAdminClient:()=>({rpc:mocks.rpc})}));
 vi.mock('@/lib/supabase/server',()=>({createClient:async()=>({auth:{getUser:mocks.getUser}})}));
@@ -38,4 +38,10 @@ describe('registro privado de actividad',()=>{
     expect((await POST(request({tab,path:'/ciclos',active:true,events:[]}))).status).toBe(429);
   });
   it('reduce chats a la sección sin guardar identificadores',()=>expect(activitySection('/mis-matches/private-person?message=private')).toBe('Matches y chats'));
+  it('identifica cursos y archivos sin conservar tokens ni otros parámetros',()=>{
+    expect(activityResource('/cursos/' + tab + '?token=private')).toEqual({type:'course',id:tab});
+    expect(activityResource('/api/admin-worksheets/' + tab + '/download?token=private')).toEqual({type:'worksheet',id:tab});
+    expect(activityResource('/api/admin-worksheets/folder-download?courseId=' + tab + '&token=private')).toEqual({type:'course',id:tab});
+    expect(activityResource('/mis-matches/' + tab)).toBeNull();
+  });
 });

@@ -1,7 +1,7 @@
 # Owner activity dashboard
 
 - Route: `/admin/actividad`. Only `owner` may load the page, query the API or read telemetry through RLS/RPC. Delegated `admin` users are denied.
-- Apply migration `059_owner_activity.sql` before deploying. It was applied to the current Supabase project during implementation. No new environment variables are required.
+- Apply migrations `059_owner_activity.sql` and `060_activity_resources.sql` before deploying. Both were applied to the current Supabase project during implementation. No new environment variables are required.
 - The browser submits coarse section names, page views and download clicks every 30 seconds while visible. Server-side session validation supplies the account ID; request bodies cannot impersonate users. Signed HttpOnly cookies identify anonymous browsers; HMAC-derived tab IDs prevent overwriting another session.
 - Presence is active after interaction within 120 seconds and expires after 75 seconds without a signal. This is approximate, not proof of attention. Multiple tabs/devices of a signed-in account are grouped.
 - Real review, verification and contribution inserts produce operational events through database triggers. Download clicks do not prove completed downloads.

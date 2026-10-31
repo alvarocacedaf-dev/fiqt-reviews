@@ -2,9 +2,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { activitySection, type ActivityEventName } from '@/lib/activity';
+import { activitySection, activityResource, type ActivityEventName, type ActivityResource } from '@/lib/activity';
 
-type ActivityRecord = { id: string; event: ActivityEventName; path: string };
+type ActivityRecord = { id: string; event: ActivityEventName; path: string; resource?: ActivityResource | null };
 export function SiteActivityTracker() {
   const path = usePathname();
   const currentPath = useRef(path);
@@ -54,7 +54,7 @@ export function SiteActivityTracker() {
       if (url.origin !== window.location.origin || !activitySection(currentPath.current)) return;
       const kind = url.pathname === '/api/admin-worksheets/folder-download' ? 'zip_click'
         : anchor.hasAttribute('download') || /^\/api\/(admin-worksheets|course-materials)\/.+\/(download|play)$/.test(url.pathname) ? 'download_click' : null;
-      if (kind && queue.current.length < 100) queue.current.push({ id: crypto.randomUUID(), event: kind, path: currentPath.current });
+      if (kind && queue.current.length < 100) queue.current.push({ id: crypto.randomUUID(), event: kind, path: currentPath.current, resource: activityResource(url.pathname + url.search) });
     }
     const visible = () => { if (document.visibilityState === 'visible') touch(); void flush(); };
     const timer = window.setInterval(() => { if (document.visibilityState === 'visible') void flush(); }, 30000);
@@ -82,7 +82,7 @@ export function SiteActivityTracker() {
   useEffect(() => {
     currentPath.current = path;
     if (enabled.current && lastPage.current !== path && activitySection(path) && queue.current.length < 100) {
-      queue.current.push({ id: crypto.randomUUID(), event: 'page_view', path });
+      queue.current.push({ id: crypto.randomUUID(), event: 'page_view', path, resource: activityResource(path) });
       lastInteraction.current = Date.now();
     }
     lastPage.current = path;

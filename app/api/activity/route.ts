@@ -2,7 +2,7 @@ import { createHmac, randomUUID, timingSafeEqual } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { ACTIVITY_EVENTS, activitySection, UUID_PATTERN } from '@/lib/activity';
+import { ACTIVITY_EVENTS, activitySection, UUID_PATTERN, type ActivityResource } from '@/lib/activity';
 
 export const dynamic = 'force-dynamic';
 const COOKIE = 'fiqt-activity';
@@ -29,11 +29,12 @@ export async function POST(request: NextRequest) {
     if (!UUID_PATTERN.test(body.tab ?? '') || !section || typeof body.active !== 'boolean' || !Array.isArray(body.events) || body.events.length > 20) {
       return new NextResponse(null, { status: 400, headers });
     }
-    const events = body.events.map((item: { id?: string; event?: string; path?: string }) => {
+    const events = body.events.map((item: { id?: string; event?: string; path?: string; resource?: ActivityResource | null }) => {
       if (!UUID_PATTERN.test(item.id ?? '') || !ACTIVITY_EVENTS.includes(item.event as typeof ACTIVITY_EVENTS[number]) || typeof item.path !== 'string') throw new Error('Invalid event');
       const eventSection = activitySection(item.path);
       if (!eventSection) throw new Error('Invalid section');
-      return { id: item.id, event: item.event, section: eventSection };
+      const resource = item.resource && ['course','worksheet','professor'].includes(item.resource.type) && UUID_PATTERN.test(item.resource.id) ? item.resource : null;
+      return { id: item.id, event: item.event, section: eventSection, ...(resource ? { resource_type: resource.type, resource_id: resource.id } : {}) };
     });
     const secret = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!secret) return new NextResponse(null, { status: 503, headers });
