@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import Link from 'next/link';
 import { activitySection, activityResource, type ActivityEventName, type ActivityResource } from '@/lib/activity';
 
 type ActivityRecord = { id: string; event: ActivityEventName; path: string; resource?: ActivityResource | null };
@@ -10,14 +9,12 @@ export function SiteActivityTracker() {
   const currentPath = useRef(path);
   const queue = useRef<ActivityRecord[]>([]);
   const lastInteraction = useRef(0);
-  const [notice, setNotice] = useState(false);
   const enabled = useRef(false);
   const lastPage = useRef<string | null>(null);
 
   useEffect(() => {
     try {
       enabled.current = localStorage.getItem('fiqt-activity-optout') !== '1' && navigator.doNotTrack !== '1';
-      setNotice(enabled.current && localStorage.getItem('fiqt-activity-notice') !== '1');
     } catch { enabled.current = false; }
     const tab = crypto.randomUUID();
     lastInteraction.current = Date.now();
@@ -26,7 +23,7 @@ export function SiteActivityTracker() {
     const touch = () => { lastInteraction.current = Date.now(); };
     const preference = () => {
       enabled.current = localStorage.getItem('fiqt-activity-optout') !== '1' && navigator.doNotTrack !== '1';
-      if (!enabled.current) { queue.current = []; setNotice(false); }
+      if (!enabled.current) { queue.current = []; }
     };
     async function flush() {
       if (!enabled.current || busy || !activitySection(currentPath.current)) return;
@@ -88,13 +85,5 @@ export function SiteActivityTracker() {
     lastPage.current = path;
   }, [path]);
 
-  if (!notice || !activitySection(path)) return null;
-  return <aside aria-label="Información sobre estadísticas" className="fixed bottom-4 left-4 right-4 z-40 max-w-lg rounded-2xl border border-blue-200 bg-white p-4 text-sm text-slate-700 shadow-xl">
-    <p>Usamos estadísticas de navegación y actividad para mejorar FIQT. Si inicias sesión, solo el propietario puede asociarlas a tu cuenta.</p>
-    <div className="mt-3 flex flex-wrap items-center gap-4">
-      <Link href="/privacidad" className="font-bold text-royal underline">Detalles y preferencias</Link>
-      <button type="button" className="font-bold text-royal" onClick={() => { localStorage.setItem('fiqt-activity-notice','1'); setNotice(false); }}>Entendido</button>
-      <button type="button" onClick={() => { localStorage.setItem('fiqt-activity-optout','1'); window.dispatchEvent(new Event('fiqt-activity-preference')); }}>No participar</button>
-    </div>
-  </aside>;
+  return null;
 }
