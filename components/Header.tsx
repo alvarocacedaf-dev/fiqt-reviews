@@ -121,7 +121,7 @@ function LoggedInLinks({
           </summary>
           <div className="ml-4 border-l border-white/15 pl-3">
             <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/planchas">
-              Planchas
+              Comunidad de planchas
             </a>
             <a className="block rounded-xl px-3 py-2.5 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
               Mis matches
@@ -168,7 +168,7 @@ function LoggedInLinks({
         </summary>
         <div className="absolute left-1/2 top-[calc(100%+0.75rem)] z-50 min-w-44 -translate-x-1/2 overflow-hidden rounded-2xl border border-white/15 bg-[#071a3d] p-2 text-sm font-bold text-white shadow-2xl">
           <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/planchas">
-            Planchas
+            Comunidad de planchas
           </a>
           <a className="block rounded-xl px-4 py-3 transition hover:bg-white/10 hover:text-gold" href="/mis-matches">
             Mis matches
