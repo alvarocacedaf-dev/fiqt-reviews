@@ -33,6 +33,13 @@ describe('módulo de recompensas académicas', () => {
     expect(screen.getByText('3 reseñas aprobadas · Pendiente')).toBeInTheDocument();
   });
 
+  it('las donaciones suman sin sustituir las tres reseñas de la comunidad', () => {
+    render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 6, total: 8 }} status="approved" contribution={contribution} />);
+    expect(screen.getByText('3 reseñas aprobadas · Pendiente')).toBeInTheDocument();
+    expect(screen.getByText('8 contribuciones en total · Desbloqueado')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
+  });
+
   it('limita la barra a la meta sin ocultar el total real', () => {
     render(<AcademicRewards progress={{ approvedReviews: 20, donatedWorksheets: 4, total: 24 }} status="approved" contribution={contribution} />);
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '10');

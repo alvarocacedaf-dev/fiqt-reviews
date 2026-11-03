@@ -8,6 +8,6 @@ export async function getRewardProgress(userId: string) {
     db.from('worksheet_donations').select('id', { count: 'exact', head: true }).eq('user_id', userId).eq('status', 'approved'),
   ]);
   const approvedReviews = reviewCount ?? 0;
-  const donatedWorksheets = approvedReviews >= REWARD_THRESHOLDS.worksheetsCommunity ? donationCount ?? 0 : 0;
+  const donatedWorksheets = approvedReviews >= REWARD_THRESHOLDS.reviews ? donationCount ?? 0 : 0;
   return { approvedReviews, donatedWorksheets, total: approvedReviews + donatedWorksheets, error: reviewError || donationError };
 }
