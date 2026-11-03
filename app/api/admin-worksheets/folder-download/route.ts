@@ -1,3 +1,4 @@
+import { practiceFolderLabel, practiceFolderNumber } from '@/lib/worksheetPracticeFolders';
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createR2PresignedUrl, isR2Configured } from '@/lib/r2';
@@ -73,16 +74,17 @@ export async function GET(request: Request) {
 
   const sources = await Promise.all(files.map(async file => {
     const name = worksheetDownloadName(file.title, file.file_name);
+    const folder = examType === 'practice' ? practiceFolderLabel(practiceFolderNumber(file)) : undefined;
     if (file.storage_provider === 'public') {
-      return { name, url: new URL(file.file_path, request.url).toString() };
+      return { name, folder, url: new URL(file.file_path, request.url).toString() };
     }
     if (file.storage_provider === 'r2') {
       if (!isR2Configured()) throw new Error('Uno de los archivos no está disponible.');
-      return { name, url: createR2PresignedUrl('GET', file.file_path, 900) };
+      return { name, folder, url: createR2PresignedUrl('GET', file.file_path, 900) };
     }
     const { data, error: signedUrlError } = await adminDb.storage.from('admin-worksheets').createSignedUrl(file.file_path, 900);
     if (signedUrlError || !data?.signedUrl) throw new Error('Uno de los archivos no está disponible.');
-    return { name, url: data.signedUrl };
+    return { name, folder, url: data.signedUrl };
   })).catch(() => null);
   if (!sources) return NextResponse.json({ error: 'No se pudo preparar uno de los archivos.' }, { status: 503 });
 

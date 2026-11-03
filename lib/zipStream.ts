@@ -1,5 +1,6 @@
 type ZipSource = {
   name: string;
+  folder?: string;
   url: string;
 };
 
@@ -53,7 +54,8 @@ export function createStoredZipStream(sources: ZipSource[]) {
 
       try {
         for (const [position, source] of sources.entries()) {
-          const baseName = safeZipName(source.name, position);
+          const folder = source.folder ? safeZipName(source.folder, position).replace(/^\.+$/, 'carpeta') + '/' : '';
+          const baseName = folder + safeZipName(source.name, position);
           const duplicate = usedNames.get(baseName) ?? 0;
           usedNames.set(baseName, duplicate + 1);
           const dot = baseName.lastIndexOf('.');

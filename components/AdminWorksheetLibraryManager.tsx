@@ -1,4 +1,5 @@
 'use client';
+import { groupPracticeFiles } from '@/lib/worksheetPracticeFolders';
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -699,6 +700,9 @@ export function AdminWorksheetLibraryTree({
     )
     : [];
 
+  const practiceFolders = libraryType === 'worksheets' && selectedFolder?.examType === 'practice';
+  const fileGroups = practiceFolders ? groupPracticeFiles(selectedFiles) : [{ label: '', files: selectedFiles }];
+
   return (
     <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
       <section className="surface-card overflow-hidden">
@@ -980,7 +984,8 @@ export function AdminWorksheetLibraryTree({
               {paginated && pageError && (
                 <p className="rounded-xl bg-red-50 p-3 text-sm font-bold text-red-800">{pageError}</p>
               )}
-              {!loadingPage && selectedFiles.map(file => (
+              {!loadingPage && fileGroups.map(group => {
+                const cards = group.files.map(file => (
                 <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4" key={file.id}>
                   <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
                     <h4 className="break-words text-xs font-black leading-4 text-ink">{file.title}</h4>
@@ -1040,7 +1045,16 @@ export function AdminWorksheetLibraryTree({
                     </div>
                   )}
                 </article>
-              ))}
+                ));
+                return practiceFolders ? (
+                  <details key={group.label} className="rounded-2xl border border-slate-200 bg-white">
+                    <summary className="cursor-pointer p-4 text-sm font-black text-ink">
+                      {group.label} <span className="font-normal text-slate-500">({group.files.length} archivos)</span>
+                    </summary>
+                    <div className="space-y-3 px-3 pb-3">{cards}</div>
+                  </details>
+                ) : <div key="files" className="space-y-3">{cards}</div>;
+              })}
 
               {!loadingPage && !pageError && !selectedFiles.length && (
                 <div className="rounded-2xl bg-slate-100 p-6 text-center">
