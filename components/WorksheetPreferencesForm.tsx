@@ -227,7 +227,7 @@ export function WorksheetPreferencesForm({
           <div>
             <p className="font-black text-ink">Desplegables bloqueados</p>
             <p className="mt-1 text-sm leading-6 text-slate-700">
-              Se desbloquean con {requiredReviews} reseñas aprobadas. Actualmente tienes {approvedReviews}.
+              Se desbloquean con {requiredReviews} contribuciones aprobadas. Actualmente tienes {approvedReviews}.
             </p>
           </div>
         )}

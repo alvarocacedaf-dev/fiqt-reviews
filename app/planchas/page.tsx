@@ -1,3 +1,4 @@
+import { getRewardProgress } from '@/lib/rewardProgress';
 import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
 import { ContentHeader } from '@/components/ContentHeader';
@@ -7,7 +8,7 @@ import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
-const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
+const MINIMUM_CONTRIBUTIONS = REWARD_THRESHOLDS.worksheetsCommunity;
 
 type PageProps = {
   searchParams: Promise<{ error?: string; success?: string }>;
@@ -42,30 +43,26 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
 
   const [
     { data: profile, error: profileError },
-    { count, error: countError },
+    { total: count, error: countError },
     sanctionState,
     promotionalFullAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
-    db
-      .from('reviews')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('status', 'approved'),
+    getRewardProgress(user.id),
     getWorksheetSanctionState(db),
     hasRewardCampaignFullAccess(user.id),
   ]);
 
   const approvedReviews = count ?? 0;
   const isAdmin = profile?.role === 'owner';
-  const isUnlocked = isAdmin || promotionalFullAccess || approvedReviews >= MINIMUM_APPROVED_REVIEWS;
+  const isUnlocked = isAdmin || promotionalFullAccess || approvedReviews >= MINIMUM_CONTRIBUTIONS;
 
   if (profileError || (!isAdmin && countError)) {
     return (
       <section className="panel">
         <h1 className="flex items-center gap-2 text-3xl font-black text-ink">Planchas <Icon className="h-7 w-7" name="lock" /></h1>
         <p className="mt-4 rounded-2xl bg-red-50 p-4 font-semibold text-red-800">
-          No pudimos comprobar tus reseñas aprobadas. Inténtalo nuevamente en unos minutos.
+          No pudimos comprobar tus contribuciones aprobadas. Inténtalo nuevamente en unos minutos.
         </p>
       </section>
     );
@@ -139,7 +136,7 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
           initialWant={initialWant}
           isUnlocked={isUnlocked}
           approvedReviews={approvedReviews}
-          requiredReviews={MINIMUM_APPROVED_REVIEWS}
+          requiredReviews={MINIMUM_CONTRIBUTIONS}
         />
       )}
     </div>

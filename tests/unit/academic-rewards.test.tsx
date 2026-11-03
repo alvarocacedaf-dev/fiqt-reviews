@@ -30,14 +30,14 @@ describe('módulo de recompensas académicas', () => {
     render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 0, total: 2 }} status="approved" contribution={contribution} />);
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '3');
     expect(screen.getByText('2 reseñas aprobadas · Desbloqueado')).toBeInTheDocument();
-    expect(screen.getByText('3 reseñas aprobadas · Pendiente')).toBeInTheDocument();
+    expect(screen.getByText('3 contribuciones en total · Pendiente')).toBeInTheDocument();
   });
 
-  it('las donaciones suman sin sustituir las tres reseñas de la comunidad', () => {
-    render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 6, total: 8 }} status="approved" contribution={contribution} />);
-    expect(screen.getByText('3 reseñas aprobadas · Pendiente')).toBeInTheDocument();
-    expect(screen.getByText('8 contribuciones en total · Desbloqueado')).toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '2');
+  it('dos reseñas y una plancha desbloquean la comunidad', () => {
+    render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 1, total: 3 }} status="approved" contribution={contribution} />);
+    expect(screen.getByText('3 contribuciones en total · Desbloqueado')).toBeInTheDocument();
+    expect(screen.getByText('8 contribuciones en total · Pendiente')).toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
   });
 
   it('limita la barra a la meta sin ocultar el total real', () => {

@@ -1,4 +1,5 @@
 'use server';
+import { getRewardProgress } from '@/lib/rewardProgress';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
@@ -7,7 +8,7 @@ import { getWorksheetSanctionState } from '@/lib/worksheetSanctions';
 import { REWARD_THRESHOLDS } from '@/lib/rewardThresholds';
 import { hasRewardCampaignFullAccess } from '@/lib/rewardCampaignAccess';
 
-const MINIMUM_APPROVED_REVIEWS = REWARD_THRESHOLDS.worksheetsCommunity;
+const MINIMUM_CONTRIBUTIONS = REWARD_THRESHOLDS.worksheetsCommunity;
 
 function redirectWithMessage(type: 'error' | 'success', message: string): never {
   redirect(`/planchas?${type}=${encodeURIComponent(message)}`);
@@ -23,16 +24,12 @@ export async function saveWorksheetPreferences(form: FormData) {
 
   const [
     { data: profile, error: profileError },
-    { count, error: countError },
+    { total: count, error: countError },
     sanctionState,
     promotionalFullAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
-    db
-      .from('reviews')
-      .select('id', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .eq('status', 'approved'),
+    getRewardProgress(user.id),
     getWorksheetSanctionState(db),
     hasRewardCampaignFullAccess(user.id),
   ]);
@@ -43,9 +40,9 @@ export async function saveWorksheetPreferences(form: FormData) {
   if (!isAdmin && sanctionState.isPermanentlyBlocked) {
     redirect('/ciclos');
   }
-  if (!isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de reseñas aprobadas.');
-  if (!isAdmin && !promotionalFullAccess && (count ?? 0) < MINIMUM_APPROVED_REVIEWS) {
-    redirectWithMessage('error', `Necesitas ${MINIMUM_APPROVED_REVIEWS} reseñas aprobadas para usar Planchas.`);
+  if (!isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de contribuciones aprobadas.');
+  if (!isAdmin && !promotionalFullAccess && (count ?? 0) < MINIMUM_CONTRIBUTIONS) {
+    redirectWithMessage('error', `Necesitas ${MINIMUM_CONTRIBUTIONS} contribuciones aprobadas para usar Planchas.`);
   }
 
   const haveCourseIds = [...new Set(form.getAll('have_course_ids').map(String).filter(Boolean))];
