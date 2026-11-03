@@ -98,9 +98,7 @@ export default async function PublicAdminWorksheetsPage() {
     ? courses.length
     : reviewCount >= REWARD_THRESHOLDS.twoAdminCourses
       ? 2
-      : reviewCount >= REWARD_THRESHOLDS.oneAdminCourse
-        ? 1
-        : 0;
+      : 0;
   const selectedCourseIds = (rawUnlocks ?? []).map(item => item.course_id as string);
 
   return (

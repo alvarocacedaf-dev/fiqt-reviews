@@ -14,7 +14,9 @@ describe('módulo de recompensas académicas', () => {
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '8');
     expect(screen.getByText('Te falta 1 contribución aprobada.')).toBeInTheDocument();
-    expect(screen.getByText('6 contribuciones en total · Desbloqueado')).toBeInTheDocument();
+    expect(screen.queryByText('Planchas de 1 curso de la administración')).not.toBeInTheDocument();
+    expect(screen.getByText('8 contribuciones en total · Pendiente')).toBeInTheDocument();
+    expect(screen.getAllByRole('listitem')).toHaveLength(5);
   });
 
   it.each([null, 'pending', 'rejected'] as const)('no desbloquea beneficios sin aporte aprobado (%s)', status => {

@@ -17,7 +17,6 @@ export type ContributionStatus = 'pending' | 'approved' | 'rejected' | null;
 const rewards = [
   { goal: REWARD_THRESHOLDS.reviews, title: 'Acceso a las reseñas' },
   { goal: REWARD_THRESHOLDS.worksheetsCommunity, title: 'Comunidad de planchas' },
-  { goal: REWARD_THRESHOLDS.oneAdminCourse, title: 'Planchas de 1 curso de la administración' },
   { goal: REWARD_THRESHOLDS.twoAdminCourses, title: 'Planchas de 2 cursos de la administración' },
   { goal: REWARD_THRESHOLDS.allAdminCourses, title: 'Planchas de todos los cursos de la administración' },
 ];
@@ -119,7 +118,7 @@ export function AcademicRewards({ progress, status, contribution, unavailable = 
           </details>
 
           <p className={styles.rewardHelp}>
-            Tras completar el paso 3 con {REWARD_THRESHOLDS.worksheetsCommunity} reseñas aprobadas, también suman tus planchas aprobadas. Por ejemplo: <strong>{REWARD_THRESHOLDS.worksheetsCommunity} reseñas + {REWARD_THRESHOLDS.oneAdminCourse - REWARD_THRESHOLDS.worksheetsCommunity} planchas = {REWARD_THRESHOLDS.oneAdminCourse}</strong>, suficiente para el paso 4 con el aporte aprobado.
+            Tras completar el paso 3 con {REWARD_THRESHOLDS.worksheetsCommunity} reseñas aprobadas, también suman tus planchas aprobadas. Por ejemplo: <strong>{REWARD_THRESHOLDS.worksheetsCommunity} reseñas + {REWARD_THRESHOLDS.twoAdminCourses - REWARD_THRESHOLDS.worksheetsCommunity} planchas = {REWARD_THRESHOLDS.twoAdminCourses}</strong>, suficiente para el paso 4 con el aporte aprobado.
           </p>
         </>
       )}

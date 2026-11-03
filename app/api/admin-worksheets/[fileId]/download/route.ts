@@ -67,7 +67,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const approvedReviews = rewardProgress.total;
   let canDownload = profile?.role === 'owner' || promotionalFullAccess || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
 
-  if (!canDownload && approvedReviews >= REWARD_THRESHOLDS.oneAdminCourse) {
+  if (!canDownload) {
     const { data: unlock } = await adminDb
       .from('admin_worksheet_course_unlocks')
       .select('course_id')
