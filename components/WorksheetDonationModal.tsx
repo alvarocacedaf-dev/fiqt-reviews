@@ -51,7 +51,7 @@ export function WorksheetDonationModal({ courses }: { courses: CourseOption[] })
                 <p className="text-xs font-black uppercase tracking-[0.22em] text-royal">FIQT Reviews</p>
                 <h2 className="mt-1 text-2xl font-black text-ink sm:text-3xl" id="worksheet-donation-title">Donar mis planchas</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                  Aquí puedes donar todas las planchas que desees. Tras completar el paso 2 con dos reseñas aprobadas, cada plancha aprobada también suma en Tu ruta de recompensas: dos reseñas más seis planchas aprobadas suman ocho, suficientes para el paso 4 con el aporte aprobado.
+                  Aquí puedes donar todas las planchas que desees. Tras completar el paso 2 con dos reseñas aprobadas, cada plancha aprobada también suma en Tu ruta de recompensas: dos reseñas más tres planchas aprobadas suman cinco, suficientes para el paso 4 con el aporte aprobado.
                 </p>
               </div>
               <button

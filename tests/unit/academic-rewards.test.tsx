@@ -3,19 +3,19 @@ import { describe, expect, it } from 'vitest';
 import { AcademicRewards } from '@/components/academic/AcademicRewards';
 
 const contribution = <button>Aporte a la página</button>;
-const approved = { approvedReviews: 5, donatedWorksheets: 2, total: 7 };
+const approved = { approvedReviews: 2, donatedWorksheets: 3, total: 5 };
 
 describe('módulo de recompensas académicas', () => {
-  it('distingue cinco reseñas y dos planchas sin presentarlas como siete reseñas', () => {
+  it('distingue dos reseñas y tres planchas al desbloquear dos cursos', () => {
     render(<AcademicRewards progress={approved} status="approved" contribution={contribution} />);
-    expect(screen.getByText('5 reseñas')).toBeInTheDocument();
-    expect(screen.getByText('2 planchas')).toBeInTheDocument();
-    expect(screen.queryByText('7 reseñas')).not.toBeInTheDocument();
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '7');
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '8');
+    expect(screen.getByText('2 reseñas')).toBeInTheDocument();
+    expect(screen.getByText('3 planchas')).toBeInTheDocument();
+    expect(screen.queryByText('5 reseñas')).not.toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '5');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuemax', '6');
     expect(screen.getByText('Te falta 1 contribución aprobada.')).toBeInTheDocument();
     expect(screen.queryByText('Planchas de 1 curso de la administración')).not.toBeInTheDocument();
-    expect(screen.getByText('8 contribuciones en total · Pendiente')).toBeInTheDocument();
+    expect(screen.getByText('5 contribuciones en total · Desbloqueado')).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(5);
   });
 
@@ -36,13 +36,13 @@ describe('módulo de recompensas académicas', () => {
   it('dos reseñas y una plancha desbloquean la comunidad', () => {
     render(<AcademicRewards progress={{ approvedReviews: 2, donatedWorksheets: 1, total: 3 }} status="approved" contribution={contribution} />);
     expect(screen.getByText('3 contribuciones en total · Desbloqueado')).toBeInTheDocument();
-    expect(screen.getByText('8 contribuciones en total · Pendiente')).toBeInTheDocument();
+    expect(screen.getByText('5 contribuciones en total · Pendiente')).toBeInTheDocument();
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
   });
 
   it('limita la barra a la meta sin ocultar el total real', () => {
     render(<AcademicRewards progress={{ approvedReviews: 20, donatedWorksheets: 4, total: 24 }} status="approved" contribution={contribution} />);
-    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '10');
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '6');
     expect(screen.getByText('24')).toBeInTheDocument();
     expect(screen.getByText('¡Ruta completada!')).toBeInTheDocument();
   });

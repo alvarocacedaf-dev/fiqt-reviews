@@ -6,8 +6,8 @@ describe('ruta de recompensas', () => {
     expect(REWARD_THRESHOLDS).toEqual({
       reviews: 2,
       worksheetsCommunity: 3,
-      twoAdminCourses: 8,
-      allAdminCourses: 10,
+      twoAdminCourses: 5,
+      allAdminCourses: 6,
     });
     expect(REWARD_THRESHOLDS.worksheetsCommunity).toBeLessThan(REWARD_THRESHOLDS.twoAdminCourses);
   });
