@@ -21,6 +21,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const courseId = searchParams.get('courseId')?.trim();
   const examType = searchParams.get('examType')?.trim();
+  const practiceNumber = searchParams.get('practiceNumber');
+  if (practiceNumber !== null && (examType !== 'practice' || !/^(?:[1-7]|unknown)$/.test(practiceNumber))) {
+    return NextResponse.json({ error: 'La subcarpeta solicitada no es válida.' }, { status: 400 });
+  }
   if (!courseId || !examType || !EXAM_TYPES.has(examType)) {
     return NextResponse.json({ error: 'La carpeta solicitada no es válida.' }, { status: 400 });
   }
@@ -65,7 +69,7 @@ export async function GET(request: Request) {
     ...resolveBundledAdminWorksheets([course])
       .filter(file => file.exam_type === examType)
       .map(file => ({ ...file, file_path: file.signed_url })),
-  ].sort(
+  ].filter(file => practiceNumber === null || practiceFolderNumber(file) === (practiceNumber === 'unknown' ? null : Number(practiceNumber))).sort(
     ['practice', 'midterm', 'final', 'substitute'].includes(examType)
       ? compareAssessmentWorksheetFiles
       : compareWorksheetTitles,
@@ -88,7 +92,9 @@ export async function GET(request: Request) {
   })).catch(() => null);
   if (!sources) return NextResponse.json({ error: 'No se pudo preparar uno de los archivos.' }, { status: 503 });
 
-  const archiveName = worksheetArchiveName(examType, course.name);
+  const archiveName = practiceNumber === null
+    ? worksheetArchiveName(examType, course.name)
+    : worksheetArchiveName(examType, course.name).replace('Prácticas calificadas', practiceFolderLabel(practiceNumber === 'unknown' ? null : Number(practiceNumber)));
   return new Response(createStoredZipStream(sources), {
     headers: {
       'Cache-Control': 'private, no-store',

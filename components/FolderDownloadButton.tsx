@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { InlineSpinner } from '@/components/ui/InlineSpinner';
 
-export function FolderDownloadButton({ url }: { url: string }) {
+export function FolderDownloadButton({ url, compact = false }: { url: string; compact?: boolean }) {
   const [phase, setPhase] = useState<'idle' | 'preparing' | 'started'>('idle');
   const timers = useRef<number[]>([]);
 
@@ -19,6 +19,7 @@ export function FolderDownloadButton({ url }: { url: string }) {
   }, [url]);
 
   function beginDownload(event: React.MouseEvent<HTMLAnchorElement>) {
+    event.stopPropagation();
     if (phase !== 'idle') {
       event.preventDefault();
       return;
@@ -30,7 +31,7 @@ export function FolderDownloadButton({ url }: { url: string }) {
   }
 
   return (
-    <div className="mt-4" aria-live="polite">
+    <span className={compact ? "block shrink-0" : "mt-4 block"} aria-live="polite">
       <a
         aria-disabled={phase !== 'idle'}
         className={`btn-primary inline-flex min-w-[190px] items-center justify-center gap-2 px-4 py-2.5 text-sm ${phase !== 'idle' ? 'cursor-wait opacity-80' : ''}`}
@@ -42,12 +43,12 @@ export function FolderDownloadButton({ url }: { url: string }) {
         {phase === 'idle' ? 'Descargar carpeta ZIP' : phase === 'preparing' ? 'Preparando ZIP…' : 'Descarga iniciada ✓'}
       </a>
       {phase !== 'idle' && (
-        <p className="mt-2 text-xs font-semibold text-slate-600" role="status">
+        <span className="mt-2 block text-xs font-semibold text-slate-600" role="status">
           {phase === 'preparing'
             ? 'Estamos reuniendo y ordenando los archivos. No necesitas volver a presionar el botón.'
             : 'La descarga continúa en tu navegador.'}
-        </p>
+        </span>
       )}
-    </div>
+    </span>
   );
 }

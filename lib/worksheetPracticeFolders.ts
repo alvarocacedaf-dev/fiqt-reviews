@@ -22,5 +22,5 @@ export function groupPracticeFiles<T extends PracticeFile>(files: T[]) {
     groups.set(number, [...(groups.get(number) ?? []), file]);
   }
   return [...groups.entries()].sort(([a], [b]) => (a ?? 99) - (b ?? 99))
-    .map(([number, files]) => ({ label: practiceFolderLabel(number), files }));
+    .map(([number, files]) => ({ number, label: practiceFolderLabel(number), files }));
 }

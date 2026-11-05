@@ -701,7 +701,7 @@ export function AdminWorksheetLibraryTree({
     : [];
 
   const practiceFolders = libraryType === 'worksheets' && selectedFolder?.examType === 'practice';
-  const fileGroups = practiceFolders ? groupPracticeFiles(selectedFiles) : [{ label: '', files: selectedFiles }];
+  const fileGroups = practiceFolders ? groupPracticeFiles(selectedFiles) : [{ number: null, label: '', files: selectedFiles }];
 
   return (
     <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)]">
@@ -1049,7 +1049,15 @@ export function AdminWorksheetLibraryTree({
                 return practiceFolders ? (
                   <details key={group.label} className="rounded-2xl border border-slate-200 bg-white">
                     <summary className="cursor-pointer p-4 text-sm font-black text-ink">
-                      {group.label} <span className="font-normal text-slate-500">({group.files.length} archivos)</span>
+                      <span className="inline-flex w-full flex-wrap items-center justify-between gap-3">
+                        <span>{group.label} <span className="font-normal text-slate-500">({group.files.length} archivos)</span></span>
+                        {readOnly && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
+                          <FolderDownloadButton
+                            compact
+                            url={`/api/admin-worksheets/folder-download?courseId=${encodeURIComponent(selectedFolder.courseId)}&examType=practice&practiceNumber=${group.number ?? 'unknown'}`}
+                          />
+                        )}
+                      </span>
                     </summary>
                     <div className="space-y-3 px-3 pb-3">{cards}</div>
                   </details>
