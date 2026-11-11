@@ -39,20 +39,20 @@ export function PracticeExamGenerator({ available }: { available: number }) {
         </select>
       </label>
       <button className="btn-primary flex items-center gap-2 disabled:opacity-60" disabled={!!busy} onClick={() => run('generate')}>{busy === 'generate' && <InlineSpinner />}{busy === 'generate' ? 'Generando…' : questions.length ? 'Generar otro examen' : 'Generar examen'}</button>
-      {!!questions.length && <button className="btn-primary flex items-center gap-2 disabled:opacity-60" disabled={!!busy} onClick={() => run('pdf')}>{busy === 'pdf' && <InlineSpinner />}{busy === 'pdf' ? 'Preparando PDF…' : 'Descargar este examen en PDF'}</button>}
     </div>
     {restarted && <p role="status" className="mt-4 text-sm text-royal">Ya completaste todas las combinaciones de esta cantidad de preguntas. Comenzó una nueva ronda.</p>}
     {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 p-3 text-red-800">{error}</p>}
-    {!!questions.length && <>
-      <p role="status" className="mt-5 text-sm text-slate-600">{questions.length} preguntas sin repetir. Resuelve en una hoja aparte. Los recortes conservan su numeración original; usa el orden de los encabezados. Usa g = 9,8 m/s² cuando haga falta y no se indique otro valor.</p>
-      <div className="mt-5 space-y-6">{questions.map((q, i) => <article key={q.id} className="rounded-xl border p-4">
-        <h2 className="mb-3 font-black text-ink">Pregunta {i + 1}</h2>
-        {/* Original crops keep equations and figures intact. Private endpoint checks course access. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="mx-auto h-auto max-w-full" src={'/api/practice-exams/physics-pc1/question?id=' + encodeURIComponent(q.id)} alt={'Enunciado de la pregunta ' + (i + 1) + ', original ' + q.originalNumber} onError={() => setError('Una pregunta no pudo cargarse. Recarga la página antes de resolver el examen.')} />
-      </article>)}</div>
-      <details className="mt-6 rounded-xl bg-slate-50 p-4"><summary className="cursor-pointer font-bold">Procedencia de las preguntas</summary><ol className="mt-3 list-decimal space-y-2 pl-5 text-sm">{questions.map(q => <li key={q.id}>{q.sourceTitle} · Pregunta original {q.originalNumber}, página {q.page}.</li>)}</ol></details>
-      <p className="mt-4 text-xs text-slate-500">Material de práctica, no es un examen oficial. Este piloto no incluye respuestas ni calificación automática.</p>
-    </>}
+    {!!questions.length && <section className="mt-5" aria-label="Examen generado">
+      <article className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <h2 className="text-sm font-black text-ink">Práctica calificada 1 generada</h2>
+        <p role="status" className="mt-1 text-xs text-slate-500">Física I · PDF · {questions.length} {questions.length === 1 ? 'pregunta' : 'preguntas'}</p>
+        <button className="btn-primary mt-3 inline-flex items-center gap-2 disabled:opacity-60" disabled={!!busy} onClick={() => run('pdf')}>
+          {busy === 'pdf' && <InlineSpinner />}
+          {busy === 'pdf' ? 'Preparando PDF…' : 'Descargar'}
+        </button>
+      </article>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600">Esta práctica calificada se generó seleccionando al azar {questions.length} {questions.length === 1 ? 'pregunta' : 'preguntas'} de un banco de ejercicios de las prácticas calificadas 1 de Física I de distintos ciclos académicos, según la cantidad que elegiste. El banco fue preparado con apoyo de IA y revisión de los documentos originales; por ahora incluye {available} preguntas revisadas, no todas las PC1 del curso.</p>
+      <p className="mt-2 text-xs text-slate-500">El PDF incluye la procedencia de las preguntas. Es material de práctica, no un examen oficial.</p>
+    </section>}
   </main>;
 }
