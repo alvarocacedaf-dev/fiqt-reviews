@@ -23,6 +23,8 @@ describe('generador privado', () => {
     expect(data.questions).toHaveLength(5);
     expect(data.questions[0]).not.toHaveProperty('assetPath');
     expect((await generate(request({ count: '5' }))).status).toBe(400);
+    expect((await generate(request({ count: 7 }))).status).toBe(400);
+    expect((await pdf(request({ ids: physicsPC1Bank.questions.slice(0, 7).map(q => q.id) }))).status).toBe(400);
   });
   it('no genera sin guardar el historial', async () => {
     mocks.rpc.mockResolvedValue({ error: { message: 'offline' }, data: null });

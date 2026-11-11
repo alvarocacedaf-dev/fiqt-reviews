@@ -19,7 +19,7 @@ El script `node scripts/question-bank/upload-physics-pc1.mjs` requiere `.env.loc
 Todos los endpoints comprueban sesión y el mismo acceso al curso de la biblioteca (owner, promoción conservada, seis contribuciones o curso desbloqueado). No se colocan imágenes en `public`. El cliente nunca recibe una clave de servicio.
 
 ## Generación
-Selecciona 1–10 preguntas revisadas; alterna ciclos en orden aleatorio y elimina duplicados editoriales. Conserva los IDs al descargar PDF: el PDF contiene exactamente el examen visto, no un nuevo sorteo. Una pregunta por página conserva las figuras completas. La última sección lista las fuentes. No incluye soluciones, calificación automática ni equilibrio por dificultad.
+Selecciona 1–6 preguntas revisadas; alterna ciclos en orden aleatorio y elimina duplicados editoriales. Conserva los IDs al descargar PDF: el PDF contiene exactamente el examen visto, no un nuevo sorteo. Una pregunta por página conserva las figuras completas. La última sección lista las fuentes. No incluye soluciones, calificación automática ni equilibrio por dificultad.
 
 No requiere migración SQL. Requiere commit/push y despliegue para habilitar la pantalla. Los activos privados ya están cargados. Ejemplo revisado: `output/pdf/Fisica-I-PC1-ejemplo.pdf`.
 

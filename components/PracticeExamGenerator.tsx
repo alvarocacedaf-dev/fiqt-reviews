@@ -35,7 +35,7 @@ export function PracticeExamGenerator({ available }: { available: number }) {
     <div className="mt-5 flex flex-wrap items-end gap-3">
       <label className="grid gap-2 text-sm font-bold">Cantidad de preguntas
         <select className="rounded-lg border p-2 text-ink" value={count} disabled={!!busy} onChange={e => setCount(Number(e.target.value))}>
-          {Array.from({ length: Math.min(10, available) }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
+          {Array.from({ length: Math.min(6, available) }, (_, i) => <option key={i + 1} value={i + 1}>{i + 1}</option>)}
         </select>
       </label>
       <button className="btn-primary flex items-center gap-2 disabled:opacity-60" disabled={!!busy} onClick={() => run('generate')}>{busy === 'generate' && <InlineSpinner />}{busy === 'generate' ? 'Generando…' : questions.length ? 'Generar otro examen' : 'Generar examen'}</button>

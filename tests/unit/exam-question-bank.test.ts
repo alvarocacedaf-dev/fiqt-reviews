@@ -16,8 +16,8 @@ describe('banco piloto de Física I', () => {
   });
   it('rechaza cantidades inválidas y conserva el banco', () => {
     const original = JSON.stringify(physicsPC1Bank);
-    for (const n of [0, -1, 11, 2.5, NaN]) expect(() => selectExamQuestions(physicsPC1Bank.questions, n)).toThrow();
-    expect(selectExamQuestions(physicsPC1Bank.questions, 10)).toHaveLength(10);
+    for (const n of [0, -1, 7, 10, 11, 2.5, NaN]) expect(() => selectExamQuestions(physicsPC1Bank.questions, n)).toThrow();
+    expect(selectExamQuestions(physicsPC1Bank.questions, 6)).toHaveLength(6);
     expect(JSON.stringify(physicsPC1Bank)).toBe(original);
   });
 });

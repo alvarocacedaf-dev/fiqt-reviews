@@ -3,7 +3,7 @@ export const physicsPC1Bank = bank;
 export type BankQuestion = typeof bank.questions[number];
 export function selectExamQuestions(questions: BankQuestion[], count: number, random: () => number = Math.random) {
   const eligible = [...new Map(questions.filter(q => q.status === 'reviewed').map(q => [q.duplicateKey, q])).values()];
-  if (!Number.isInteger(count) || count < 1 || count > Math.min(10, eligible.length)) throw new Error('Elige entre 1 y 10 preguntas disponibles.');
+  if (!Number.isInteger(count) || count < 1 || count > Math.min(6, eligible.length)) throw new Error('Elige entre 1 y 6 preguntas disponibles.');
   const shuffle = <T,>(items: T[]) => {
     const result = [...items];
     for (let i = result.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [result[i], result[j]] = [result[j], result[i]]; }

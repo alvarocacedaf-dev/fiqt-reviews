@@ -9,7 +9,7 @@ export function combinationCount(n: number, k: number) {
 export function examCombinationPool(questions: BankQuestion[], count: number) {
   const pool = [...new Map(questions.filter(q => q.status === 'reviewed').map(q => [q.duplicateKey, q])).values()]
     .sort((a, b) => a.duplicateKey.localeCompare(b.duplicateKey, 'en'));
-  if (!Number.isInteger(count) || count < 1 || count > Math.min(10, pool.length)) throw new Error('Cantidad inválida');
+  if (!Number.isInteger(count) || count < 1 || count > Math.min(6, pool.length)) throw new Error('Cantidad inválida');
   const total = combinationCount(pool.length, count);
   if (!Number.isSafeInteger(total) || total >= 2 ** 31) throw new Error('Banco demasiado grande');
   const fingerprint = createHash('sha256').update(JSON.stringify(pool.map(q => q.duplicateKey))).digest('hex');

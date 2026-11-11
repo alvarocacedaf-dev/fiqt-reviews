@@ -13,7 +13,7 @@ export async function POST(request: Request) {
   try { count = (await request.json()).count; } catch { return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 }); }
   let selection;
   try { selection = examCombinationPool(physicsPC1Bank.questions, count); }
-  catch { return NextResponse.json({ error: 'Elige entre 1 y 10 preguntas.' }, { status: 400 }); }
+  catch { return NextResponse.json({ error: 'Elige entre 1 y 6 preguntas.' }, { status: 400 }); }
   const { data: { user } } = await (await createClient()).auth.getUser();
   if (!user) return NextResponse.json({ error: 'Inicia sesión nuevamente.' }, { status: 401 });
   const { offset, step } = permutationParameters(selection.total);

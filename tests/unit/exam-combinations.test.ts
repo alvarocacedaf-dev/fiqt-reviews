@@ -25,5 +25,7 @@ describe('combinaciones sin repetición', () => {
   it('valida los límites', () => {
     expect(() => questionsAtRank([1,2], 1, 2)).toThrow();
     expect(() => examCombinationPool(physicsPC1Bank.questions, 0)).toThrow();
+    expect(() => examCombinationPool(physicsPC1Bank.questions, 7)).toThrow();
+    expect(examCombinationPool(physicsPC1Bank.questions, 6).total).toBe(38760);
   });
 });
