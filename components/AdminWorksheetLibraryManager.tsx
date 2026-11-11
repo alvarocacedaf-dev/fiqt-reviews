@@ -1059,7 +1059,13 @@ export function AdminWorksheetLibraryTree({
                         )}
                       </span>
                     </summary>
-                    <div className="space-y-3 px-3 pb-3">{cards}</div>
+                    <div className="space-y-3 px-3 pb-3">
+                      {readOnly && selectedCourse.code === 'BFI01' && group.number === 1
+                        && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
+                        <a className="btn-primary inline-flex" href="/planchas-administracion/generar-examen">Generar examen</a>
+                      )}
+                      {cards}
+                    </div>
                   </details>
                 ) : <div key="files" className="space-y-3">{cards}</div>;
               })}
