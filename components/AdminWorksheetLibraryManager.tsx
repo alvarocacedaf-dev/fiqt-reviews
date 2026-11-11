@@ -1062,7 +1062,10 @@ export function AdminWorksheetLibraryTree({
                     <div className="space-y-3 px-3 pb-3">
                       {readOnly && selectedCourse.code === 'BFI01' && group.number === 1
                         && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
-                        <a className="btn-primary inline-flex" href="/planchas-administracion/generar-examen">Generar examen de pc1 para practicar</a>
+                        <div>
+                          <a className="btn-primary inline-flex" href="/planchas-administracion/generar-examen">Generar examen de pc1 para practicar</a>
+                          <p className="mt-2 text-sm leading-relaxed text-slate-600">con IA examinaremos todas las pc1 pasadas y generaremos una pc que contenga algunos de los problemas que ya han venido antes</p>
+                        </div>
                       )}
                       {cards}
                     </div>
