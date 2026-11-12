@@ -31,7 +31,7 @@ export function PracticeExamGenerator({ available }: { available: number }) {
     <a className="text-sm font-bold text-royal underline" href="/planchas-administracion">Volver a las planchas</a>
     <p className="mt-5 text-xs font-black uppercase tracking-widest text-royal">Generador de exámenes · Piloto</p>
     <h1 className="mt-2 text-2xl font-black text-ink">Física I — Práctica calificada 1</h1>
-    <p className="mt-3 text-slate-600">Combina preguntas reales de distintos ciclos académicos. Banco inicial de {available} preguntas revisadas; todavía no incluye todos los archivos de PC1.</p>
+    <p className="mt-3 text-slate-600">Combina preguntas reales de distintos ciclos académicos. Banco de {available} preguntas de los 17 exámenes de PC1 recopilados para Física I.</p>
     <div className="mt-5 flex flex-wrap items-end gap-3">
       <label className="grid gap-2 text-sm font-bold">Cantidad de preguntas
         <select className="rounded-lg border p-2 text-ink" value={count} disabled={!!busy} onChange={e => setCount(Number(e.target.value))}>
@@ -51,7 +51,8 @@ export function PracticeExamGenerator({ available }: { available: number }) {
           {busy === 'pdf' ? 'Preparando PDF…' : 'Descargar'}
         </button>
       </article>
-      <p className="mt-3 text-sm leading-relaxed text-slate-600">Esta práctica calificada se generó seleccionando al azar {questions.length} {questions.length === 1 ? 'pregunta' : 'preguntas'} de un banco de ejercicios de las prácticas calificadas 1 de Física I de distintos ciclos académicos, según la cantidad que elegiste. El banco fue preparado con apoyo de IA y revisión de los documentos originales; por ahora incluye {available} preguntas revisadas, no todas las PC1 del curso.</p>
+      <p className="mt-3 text-sm leading-relaxed text-slate-600">Esta práctica calificada se generó seleccionando al azar {questions.length} {questions.length === 1 ? 'pregunta' : 'preguntas'} de un banco de {available} ejercicios de las prácticas calificadas 1 de Física I de distintos ciclos académicos, según la cantidad que elegiste. El banco fue preparado con apoyo de IA y revisión de los documentos originales de los 17 exámenes recopilados. Los solucionarios no se cuentan como exámenes adicionales.</p>
+      <p className="mt-2 text-xs text-slate-500">Algunos recortes conservan anotaciones manuscritas de los documentos originales.</p>
       <p className="mt-2 text-xs text-slate-500">El PDF incluye la procedencia de las preguntas. Es material de práctica, no un examen oficial.</p>
     </section>}
   </main>;

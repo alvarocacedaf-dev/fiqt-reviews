@@ -1,6 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { physicsPC1Bank, selectExamQuestions } from '@/lib/examQuestionBank';
 describe('banco piloto de Física I', () => {
+  it('cubre los 18 archivos de enunciados sin volver a sortear los dos solucionarios', () => {
+    expect(physicsPC1Bank.questions).toHaveLength(74);
+    expect(physicsPC1Bank.sources).toHaveLength(20);
+    const included = physicsPC1Bank.sources.filter(s => s.status === 'included');
+    expect(included).toHaveLength(18);
+    expect(physicsPC1Bank.sources.filter(s => s.status === 'solution-only')).toHaveLength(2);
+    for (const source of included) expect(physicsPC1Bank.questions.some(q => q.sourceId === source.id)).toBe(true);
+    expect(new Set(physicsPC1Bank.questions.map(q => q.duplicateKey)).size).toBe(74);
+    for (const q of physicsPC1Bank.questions) expect(included.some(s => s.id === q.sourceId)).toBe(true);
+  });
   it('mezcla cinco ciclos sin repetir preguntas', () => {
     for (let i = 0; i < 30; i++) {
       const result = selectExamQuestions(physicsPC1Bank.questions, 5);

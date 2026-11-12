@@ -19,13 +19,14 @@ describe('combinaciones sin repetición', () => {
   });
   it('mantiene la identidad aunque cambie el orden del banco', () => {
     const first = examCombinationPool(physicsPC1Bank.questions, 5);
-    expect(first.total).toBe(15504);
+    expect(first.total).toBe(combinationCount(74, 5));
     expect(examCombinationPool([...physicsPC1Bank.questions].reverse(), 5).fingerprint).toBe(first.fingerprint);
   });
   it('valida los límites', () => {
     expect(() => questionsAtRank([1,2], 1, 2)).toThrow();
     expect(() => examCombinationPool(physicsPC1Bank.questions, 0)).toThrow();
     expect(() => examCombinationPool(physicsPC1Bank.questions, 7)).toThrow();
-    expect(examCombinationPool(physicsPC1Bank.questions, 6).total).toBe(38760);
+    expect(examCombinationPool(physicsPC1Bank.questions, 6).total).toBe(combinationCount(74, 6));
+    expect(examCombinationPool(physicsPC1Bank.questions, 6).total).toBeLessThan(2 ** 31);
   });
 });
