@@ -1,4 +1,8 @@
 import bank from '@/data/question-banks/bfi01-pc1.json';
+import pc2 from '@/data/question-banks/bfi01-pc2.json';
+export function physicsPracticeBank(request: Request) {
+  return new URL(request.url).searchParams.get('practice') === '2' ? pc2 : bank;
+}
 export const physicsPC1Bank = bank;
 export type BankQuestion = typeof bank.questions[number];
 export function selectExamQuestions(questions: BankQuestion[], count: number, random: () => number = Math.random) {

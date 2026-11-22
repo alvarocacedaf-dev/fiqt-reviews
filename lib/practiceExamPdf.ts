@@ -1,14 +1,14 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
 import type { BankQuestion } from '@/lib/examQuestionBank';
-export async function buildPracticeExamPdf(questions: BankQuestion[], loadImage: (question: BankQuestion) => Promise<Uint8Array>) {
+export async function buildPracticeExamPdf(questions: BankQuestion[], loadImage: (question: BankQuestion) => Promise<Uint8Array>, practice = 1) {
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  pdf.setTitle('Física I - PC1 - Examen de práctica');
+  pdf.setTitle('Física I - PC' + practice + ' - Examen de práctica');
   for (const [index, question] of questions.entries()) {
     const image = await pdf.embedJpg(Uint8Array.from(await loadImage(question)));
     const page = pdf.addPage([595.28, 841.89]);
-    page.drawText('FIQT REVIEWS | FÍSICA I - PC1', { x: 40, y: 800, size: 15, font: bold, color: rgb(0.05, 0.15, 0.35) });
+    page.drawText('FIQT REVIEWS | FÍSICA I - PC' + practice, { x: 40, y: 800, size: 15, font: bold, color: rgb(0.05, 0.15, 0.35) });
     page.drawText('Examen de práctica · Pregunta ' + (index + 1) + ' de ' + questions.length, { x: 40, y: 777, size: 11, font });
     page.drawText('Resuelve en una hoja aparte. Se conserva la numeración original del recorte.', { x: 40, y: 756, size: 9, font });
     page.drawText('Usa g = ' + String(question.gravity).replace('.', ',') + ' m/s² cuando sea necesario y el enunciado no indique otro valor.', { x: 40, y: 741, size: 9, font });

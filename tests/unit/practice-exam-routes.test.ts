@@ -37,3 +37,18 @@ describe('generador privado', () => {
     expect(mocks.download).not.toHaveBeenCalled();
   });
 });
+
+it('reserva seis preguntas de PC2 con historial propio y rechaza IDs de PC1 en su PDF', async () => {
+  const pc2Request = (body: unknown) => new Request('https://example.test/api?practice=2', {
+    method: 'POST', body: JSON.stringify(body),
+  });
+  const response = await generate(pc2Request({ count: 6 }));
+  expect(response.status).toBe(200);
+  const { questions } = await response.json();
+  expect(questions).toHaveLength(6);
+  for (const question of questions) expect(question.id).toMatch(/^bfi01-pc2-/);
+  expect(mocks.rpc).toHaveBeenCalledWith('reserve_practice_exam_combination',
+    expect.objectContaining({ p_bank_key: expect.stringMatching(/^bfi01-pc2:/), p_count: 6 }));
+  expect((await pdf(pc2Request({ ids: [physicsPC1Bank.questions[0].id] }))).status).toBe(400);
+  expect((await pdf(request({ ids: [questions[0].id] }))).status).toBe(400);
+});

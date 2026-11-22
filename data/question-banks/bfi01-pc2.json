@@ -1,0 +1,2016 @@
+{
+  "examCount": 17,
+  "practiceNumber": 2,
+  "questions": [
+    {
+      "id": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q1",
+      "duplicateKey": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q1",
+      "originalNumber": 1,
+      "sourceId": "9dccc44c-fc44-4505-9920-2778d711b523",
+      "sourceTitle": "Práctica calificada 2 de Física I 2018-2 — SECCION A",
+      "term": "2018-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q1.jpg",
+      "status": "reviewed",
+      "sha256": "16a0ea40e40a4978eabcd012c8bc3d4855bd0cba2a7802de9da03f07d81dc490",
+      "width": 1176,
+      "height": 548,
+      "gravity": 9.81,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2018-2 SECCION A.jpg",
+      "rectangles": [
+        [
+          30,
+          194,
+          320,
+          219
+        ],
+        [
+          18,
+          330,
+          130,
+          434
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q2",
+      "duplicateKey": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q2",
+      "originalNumber": 2,
+      "sourceId": "9dccc44c-fc44-4505-9920-2778d711b523",
+      "sourceTitle": "Práctica calificada 2 de Física I 2018-2 — SECCION A",
+      "term": "2018-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q2.jpg",
+      "status": "reviewed",
+      "sha256": "d19ab6fc51c41acfb4aff9e70ebe492e0c5264f28692e28c4a7042d27a925275",
+      "width": 1176,
+      "height": 604,
+      "gravity": 9.81,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2018-2 SECCION A.jpg",
+      "rectangles": [
+        [
+          30,
+          220,
+          320,
+          253
+        ],
+        [
+          135,
+          330,
+          318,
+          440
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q3",
+      "duplicateKey": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q3",
+      "originalNumber": 3,
+      "sourceId": "9dccc44c-fc44-4505-9920-2778d711b523",
+      "sourceTitle": "Práctica calificada 2 de Física I 2018-2 — SECCION A",
+      "term": "2018-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q3.jpg",
+      "status": "reviewed",
+      "sha256": "47de3cfc58da3764446838af025675a9f36569d1b2f76804780584ab31d2f0e4",
+      "width": 1176,
+      "height": 489,
+      "gravity": 9.81,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2018-2 SECCION A.jpg",
+      "rectangles": [
+        [
+          30,
+          255,
+          320,
+          290
+        ],
+        [
+          10,
+          446,
+          145,
+          525
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q4",
+      "duplicateKey": "bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q4",
+      "originalNumber": 4,
+      "sourceId": "9dccc44c-fc44-4505-9920-2778d711b523",
+      "sourceTitle": "Práctica calificada 2 de Física I 2018-2 — SECCION A",
+      "term": "2018-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-9dccc44c-fc44-4505-9920-2778d711b523-q4.jpg",
+      "status": "reviewed",
+      "sha256": "95f60c4d1f3f737d97d5d2092500f8300fd50034d9583e8942e6acaa625be015",
+      "width": 1176,
+      "height": 600,
+      "gravity": 9.81,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2018-2 SECCION A.jpg",
+      "rectangles": [
+        [
+          30,
+          291,
+          320,
+          318
+        ],
+        [
+          157,
+          429,
+          274,
+          544
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q1",
+      "duplicateKey": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q1",
+      "originalNumber": 1,
+      "sourceId": "84b9df83-37ec-41a6-9dae-39087493b6a3",
+      "sourceTitle": "Práctica calificada 2 de Física I 2019-1 — SECCIONES A Y B",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q1.jpg",
+      "status": "reviewed",
+      "sha256": "506ec29fb5d4f700f07febb8cd1f03ad19c207be03b4f4c5e2c4aeca8ef1a304",
+      "width": 651,
+      "height": 421,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2019-1 SECCIONES A Y B.jpg",
+      "rectangles": [
+        [
+          14,
+          212,
+          172,
+          312
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q2",
+      "duplicateKey": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q2",
+      "originalNumber": 2,
+      "sourceId": "84b9df83-37ec-41a6-9dae-39087493b6a3",
+      "sourceTitle": "Práctica calificada 2 de Física I 2019-1 — SECCIONES A Y B",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q2.jpg",
+      "status": "reviewed",
+      "sha256": "6a6bfc865c94c0c6eb6a863aa1d8c8140eee0bf2b998ce2078e3d0842f0bd45c",
+      "width": 647,
+      "height": 310,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2019-1 SECCIONES A Y B.jpg",
+      "rectangles": [
+        [
+          14,
+          311,
+          171,
+          383
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q3",
+      "duplicateKey": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q3",
+      "originalNumber": 3,
+      "sourceId": "84b9df83-37ec-41a6-9dae-39087493b6a3",
+      "sourceTitle": "Práctica calificada 2 de Física I 2019-1 — SECCIONES A Y B",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q3.jpg",
+      "status": "reviewed",
+      "sha256": "0dcc4b3fc164b09a8c5e278e6433e874892d2e936a20fca21d1ed9ed47f8d5e4",
+      "width": 663,
+      "height": 529,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2019-1 SECCIONES A Y B.jpg",
+      "rectangles": [
+        [
+          12,
+          383,
+          173,
+          510
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q4",
+      "duplicateKey": "bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q4",
+      "originalNumber": 4,
+      "sourceId": "84b9df83-37ec-41a6-9dae-39087493b6a3",
+      "sourceTitle": "Práctica calificada 2 de Física I 2019-1 — SECCIONES A Y B",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-84b9df83-37ec-41a6-9dae-39087493b6a3-q4.jpg",
+      "status": "reviewed",
+      "sha256": "88ef0e250e9a7d478f1ddfa2cc678b4a086694e5bcb99fb51a8963aeb230b2a1",
+      "width": 699,
+      "height": 548,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2019-1 SECCIONES A Y B.jpg",
+      "rectangles": [
+        [
+          12,
+          512,
+          182,
+          547
+        ],
+        [
+          184,
+          212,
+          335,
+          306
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q1",
+      "duplicateKey": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q1",
+      "originalNumber": 1,
+      "sourceId": "c91442cf-5f44-493f-81d7-f3b6b14169da",
+      "sourceTitle": "Práctica calificada 2 de Física I 2020-1 — SECCIÓN B",
+      "term": "2020-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q1.jpg",
+      "status": "reviewed",
+      "sha256": "318e64ea5abca9e20a29d121292fc4091f712a7e9194acbbd211bf5b3a938173",
+      "width": 811,
+      "height": 411,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2020-1 SECCIÓN B.pdf",
+      "rectangles": [
+        [
+          26,
+          150,
+          236,
+          186
+        ],
+        [
+          242,
+          140,
+          322,
+          204
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q2",
+      "duplicateKey": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q2",
+      "originalNumber": 2,
+      "sourceId": "c91442cf-5f44-493f-81d7-f3b6b14169da",
+      "sourceTitle": "Práctica calificada 2 de Física I 2020-1 — SECCIÓN B",
+      "term": "2020-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q2.jpg",
+      "status": "reviewed",
+      "sha256": "3d3ec34e13aeabf5526dc18a636b85dbeacd07c336ec4dbd359bef7a95f36fdf",
+      "width": 769,
+      "height": 365,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2020-1 SECCIÓN B.pdf",
+      "rectangles": [
+        [
+          26,
+          205,
+          225,
+          239
+        ],
+        [
+          225,
+          208,
+          325,
+          262
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q3",
+      "duplicateKey": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q3",
+      "originalNumber": 3,
+      "sourceId": "c91442cf-5f44-493f-81d7-f3b6b14169da",
+      "sourceTitle": "Práctica calificada 2 de Física I 2020-1 — SECCIÓN B",
+      "term": "2020-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q3.jpg",
+      "status": "reviewed",
+      "sha256": "2b9b6150fb87264fb3c84cd81d86061b2ff84c07c0d54f5898b81d62a8c13027",
+      "width": 705,
+      "height": 475,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2020-1 SECCIÓN B.pdf",
+      "rectangles": [
+        [
+          25,
+          246,
+          138,
+          315
+        ],
+        [
+          137,
+          265,
+          319,
+          313
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q4",
+      "duplicateKey": "bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q4",
+      "originalNumber": 4,
+      "sourceId": "c91442cf-5f44-493f-81d7-f3b6b14169da",
+      "sourceTitle": "Práctica calificada 2 de Física I 2020-1 — SECCIÓN B",
+      "term": "2020-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-c91442cf-5f44-493f-81d7-f3b6b14169da-q4.jpg",
+      "status": "reviewed",
+      "sha256": "843eac40b4b1dc252ff642162b2b11d9a159a52ea9db9f125c3c34dddb8924d7",
+      "width": 1136,
+      "height": 403,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2020-1 SECCIÓN B.pdf",
+      "rectangles": [
+        [
+          25,
+          335,
+          322,
+          436
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q1",
+      "duplicateKey": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q1",
+      "originalNumber": 1,
+      "sourceId": "f0a0a342-f185-4e54-b9a7-2f3b793e3863",
+      "sourceTitle": "Práctica calificada 2 de Física I 2021-1 — SECCIÓN B (Altuna y Pozo)",
+      "term": "2021-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q1.jpg",
+      "status": "reviewed",
+      "sha256": "1d94a145efda1537164afd634ba55e928dc0488707c3b87b1d83d443e112f9b6",
+      "width": 1128,
+      "height": 146,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2021-1 SECCIÓN B (Altuna y Pozo).pdf",
+      "rectangles": [
+        [
+          41,
+          71,
+          311,
+          101
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q2",
+      "duplicateKey": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q2",
+      "originalNumber": 2,
+      "sourceId": "f0a0a342-f185-4e54-b9a7-2f3b793e3863",
+      "sourceTitle": "Práctica calificada 2 de Física I 2021-1 — SECCIÓN B (Altuna y Pozo)",
+      "term": "2021-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q2.jpg",
+      "status": "reviewed",
+      "sha256": "b957bb7d8cb75c47cfb1e1be3b6b4abcad6989d7563e5dc92caee02d55357711",
+      "width": 1128,
+      "height": 327,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2021-1 SECCIÓN B (Altuna y Pozo).pdf",
+      "rectangles": [
+        [
+          40,
+          107,
+          310,
+          181
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q3",
+      "duplicateKey": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q3",
+      "originalNumber": 3,
+      "sourceId": "f0a0a342-f185-4e54-b9a7-2f3b793e3863",
+      "sourceTitle": "Práctica calificada 2 de Física I 2021-1 — SECCIÓN B (Altuna y Pozo)",
+      "term": "2021-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q3.jpg",
+      "status": "reviewed",
+      "sha256": "3d3f9ce62ec56ae66e133daf8e8e1fa8654cf9db0ad1d0752144f89004fef6f2",
+      "width": 1132,
+      "height": 384,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2021-1 SECCIÓN B (Altuna y Pozo).pdf",
+      "rectangles": [
+        [
+          40,
+          185,
+          311,
+          273
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q4",
+      "duplicateKey": "bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q4",
+      "originalNumber": 4,
+      "sourceId": "f0a0a342-f185-4e54-b9a7-2f3b793e3863",
+      "sourceTitle": "Práctica calificada 2 de Física I 2021-1 — SECCIÓN B (Altuna y Pozo)",
+      "term": "2021-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f0a0a342-f185-4e54-b9a7-2f3b793e3863-q4.jpg",
+      "status": "reviewed",
+      "sha256": "1c791af529e81acd8c56be9cd2a932784b551a7801a63b0ed7f95378c650e75c",
+      "width": 1124,
+      "height": 510,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2021-1 SECCIÓN B (Altuna y Pozo).pdf",
+      "rectangles": [
+        [
+          41,
+          278,
+          310,
+          397
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q1",
+      "duplicateKey": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q1",
+      "originalNumber": 1,
+      "sourceId": "fd9ff679-89cb-43c7-9ab9-2e59c10faab1",
+      "sourceTitle": "Práctica calificada 2 de Física I 2023-2 — SECCION A",
+      "term": "2023-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q1.jpg",
+      "status": "reviewed",
+      "sha256": "1777e9ab0cefc74b51e7637088b313d7f9405f1bede1a5216984e05dbdc75596",
+      "width": 990,
+      "height": 353,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2023-2 SECCION A.pdf",
+      "rectangles": [
+        [
+          44,
+          143,
+          302,
+          231
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q2",
+      "duplicateKey": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q2",
+      "originalNumber": 2,
+      "sourceId": "fd9ff679-89cb-43c7-9ab9-2e59c10faab1",
+      "sourceTitle": "Práctica calificada 2 de Física I 2023-2 — SECCION A",
+      "term": "2023-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q2.jpg",
+      "status": "reviewed",
+      "sha256": "d79804b8ea63f538d2dbe0c00335cbad4fc4b7ef5e71767a1efc3c73d06e9b2d",
+      "width": 990,
+      "height": 803,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2023-2 SECCION A.pdf",
+      "rectangles": [
+        [
+          44,
+          234,
+          302,
+          442
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q3",
+      "duplicateKey": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q3",
+      "originalNumber": 3,
+      "sourceId": "fd9ff679-89cb-43c7-9ab9-2e59c10faab1",
+      "sourceTitle": "Práctica calificada 2 de Física I 2023-2 — SECCION A",
+      "term": "2023-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q3.jpg",
+      "status": "reviewed",
+      "sha256": "f846faa0d19dd0b70643a5ddd97ea06d4874c545a6b24711c768b778ee879101",
+      "width": 1005,
+      "height": 563,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2023-2 SECCION A.pdf",
+      "rectangles": [
+        [
+          43,
+          55,
+          305,
+          199
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q4",
+      "duplicateKey": "bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q4",
+      "originalNumber": 4,
+      "sourceId": "fd9ff679-89cb-43c7-9ab9-2e59c10faab1",
+      "sourceTitle": "Práctica calificada 2 de Física I 2023-2 — SECCION A",
+      "term": "2023-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-fd9ff679-89cb-43c7-9ab9-2e59c10faab1-q4.jpg",
+      "status": "reviewed",
+      "sha256": "f0a238719e8ed972e5b95d7f80ca504d9d17f8658b7bb580e2a7b489d70061ad",
+      "width": 1005,
+      "height": 795,
+      "gravity": 9.8,
+      "containsAnnotations": false,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2023-2 SECCION A.pdf",
+      "rectangles": [
+        [
+          43,
+          205,
+          305,
+          411
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q1",
+      "duplicateKey": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q1",
+      "originalNumber": 1,
+      "sourceId": "25146701-a0bb-4033-a4b0-62e15629c8e5",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-1 — SECCIÓN B",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q1.jpg",
+      "status": "reviewed",
+      "sha256": "015afdc2dfa9c5a3df9519c3ba42af12c609ed7abd1fa99dab1b922d01dc96b2",
+      "width": 715,
+      "height": 225,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-1 SECCIÓN B.jpeg",
+      "rectangles": [
+        [
+          12,
+          183,
+          338,
+          278
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q2",
+      "duplicateKey": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q2",
+      "originalNumber": 2,
+      "sourceId": "25146701-a0bb-4033-a4b0-62e15629c8e5",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-1 — SECCIÓN B",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q2.jpg",
+      "status": "reviewed",
+      "sha256": "ce7832e337a3870e8a56a010138c7d25039c0dab9303eb2aa44e74a0aec1b13c",
+      "width": 715,
+      "height": 188,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-1 SECCIÓN B.jpeg",
+      "rectangles": [
+        [
+          12,
+          279,
+          338,
+          356
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q3",
+      "duplicateKey": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q3",
+      "originalNumber": 3,
+      "sourceId": "25146701-a0bb-4033-a4b0-62e15629c8e5",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-1 — SECCIÓN B",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q3.jpg",
+      "status": "reviewed",
+      "sha256": "fec4858d76eb75ad3a21f2a9cd54a3a0ab50a5516ab181c025f1e13b0a9eedbb",
+      "width": 723,
+      "height": 223,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-1 SECCIÓN B.jpeg",
+      "rectangles": [
+        [
+          8,
+          357,
+          338,
+          451
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q4",
+      "duplicateKey": "bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q4",
+      "originalNumber": 4,
+      "sourceId": "25146701-a0bb-4033-a4b0-62e15629c8e5",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-1 — SECCIÓN B",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-25146701-a0bb-4033-a4b0-62e15629c8e5-q4.jpg",
+      "status": "reviewed",
+      "sha256": "e424fd5f57a65c00813cbb80b1cffd67cff678259d82bba1f4cbe3460ccda44e",
+      "width": 723,
+      "height": 229,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-1 SECCIÓN B.jpeg",
+      "rectangles": [
+        [
+          8,
+          452,
+          338,
+          549
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q1",
+      "duplicateKey": "bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q1",
+      "originalNumber": 1,
+      "sourceId": "d67c2c80-f224-411f-b4be-985f877070bb",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCION A PARTE 1",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q1.jpg",
+      "status": "reviewed",
+      "sha256": "46f1698ec86a012edca679e959adbbb0cf7298c2ae5c1fd6c06341dba84b541e",
+      "width": 1319,
+      "height": 764,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCION A PARTE 1.png",
+      "rectangles": [
+        [
+          45,
+          124,
+          304,
+          272
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q2",
+      "duplicateKey": "bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q2",
+      "originalNumber": 2,
+      "sourceId": "d67c2c80-f224-411f-b4be-985f877070bb",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCION A PARTE 1",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-d67c2c80-f224-411f-b4be-985f877070bb-q2.jpg",
+      "status": "reviewed",
+      "sha256": "e1a717555b2cf35cbdeacc9b10737256f70f60765333e786d9675fba88ef7135",
+      "width": 1314,
+      "height": 859,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCION A PARTE 1.png",
+      "rectangles": [
+        [
+          46,
+          272,
+          304,
+          439
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q3",
+      "duplicateKey": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q3",
+      "originalNumber": 3,
+      "sourceId": "78e5a081-4d01-4f4d-bf5c-5ce5d8164708",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCION A PARTE 2",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q3.jpg",
+      "status": "reviewed",
+      "sha256": "cce429482e63327685d28dea8c9e9e0238b50e203fc05c46cc12f75e02d73c21",
+      "width": 1339,
+      "height": 734,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCION A PARTE 2.png",
+      "rectangles": [
+        [
+          43,
+          70,
+          306,
+          212
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q4",
+      "duplicateKey": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q4",
+      "originalNumber": 4,
+      "sourceId": "78e5a081-4d01-4f4d-bf5c-5ce5d8164708",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCION A PARTE 2",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q4.jpg",
+      "status": "reviewed",
+      "sha256": "bf52bccfd91cfa1092c7681f7b654f08036ce3a58bc7bae1cdeff5752e8be0e9",
+      "width": 1334,
+      "height": 544,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCION A PARTE 2.png",
+      "rectangles": [
+        [
+          44,
+          212,
+          306,
+          316
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q5",
+      "duplicateKey": "bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q5",
+      "originalNumber": 5,
+      "sourceId": "78e5a081-4d01-4f4d-bf5c-5ce5d8164708",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCION A PARTE 2",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-78e5a081-4d01-4f4d-bf5c-5ce5d8164708-q5.jpg",
+      "status": "reviewed",
+      "sha256": "c2662f347f5ea2e5d62054ecff206ebf6d0b2c97bf8a3f36bfac2944b78f5810",
+      "width": 1339,
+      "height": 474,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCION A PARTE 2.png",
+      "rectangles": [
+        [
+          43,
+          316,
+          306,
+          406
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q1",
+      "duplicateKey": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q1",
+      "originalNumber": 1,
+      "sourceId": "0a68983c-3fb0-4c0b-85ac-b7a2925f4a86",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCIÓN B",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q1.jpg",
+      "status": "reviewed",
+      "sha256": "3ba73eba1ed118409f1235cc7c16d697137b7592fb113d8ae38cf50855ce06e8",
+      "width": 917,
+      "height": 259,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCIÓN B.jpg",
+      "rectangles": [
+        [
+          8,
+          124,
+          339,
+          211
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q2",
+      "duplicateKey": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q2",
+      "originalNumber": 2,
+      "sourceId": "0a68983c-3fb0-4c0b-85ac-b7a2925f4a86",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCIÓN B",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q2.jpg",
+      "status": "reviewed",
+      "sha256": "732a57043754cd0632fe68cd95f73319c13523718a0891901a9151c3c94c3830",
+      "width": 917,
+      "height": 315,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCIÓN B.jpg",
+      "rectangles": [
+        [
+          8,
+          211,
+          339,
+          319
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q3",
+      "duplicateKey": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q3",
+      "originalNumber": 3,
+      "sourceId": "0a68983c-3fb0-4c0b-85ac-b7a2925f4a86",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCIÓN B",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q3.jpg",
+      "status": "reviewed",
+      "sha256": "ea08ce3487d6233bf629f1f9ba9786ca24a9ad8d52078bc04c9e21a3d5b14400",
+      "width": 917,
+      "height": 248,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCIÓN B.jpg",
+      "rectangles": [
+        [
+          8,
+          319,
+          339,
+          402
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q4",
+      "duplicateKey": "bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q4",
+      "originalNumber": 4,
+      "sourceId": "0a68983c-3fb0-4c0b-85ac-b7a2925f4a86",
+      "sourceTitle": "Práctica calificada 2 de Física I 2024-2 — SECCIÓN B",
+      "term": "2024-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-0a68983c-3fb0-4c0b-85ac-b7a2925f4a86-q4.jpg",
+      "status": "reviewed",
+      "sha256": "1d7edc02444abbe88ab5e02c15345083205863e173c73c083889a2bf440391f6",
+      "width": 917,
+      "height": 267,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2024-2 SECCIÓN B.jpg",
+      "rectangles": [
+        [
+          8,
+          407,
+          339,
+          497
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q1",
+      "duplicateKey": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q1",
+      "originalNumber": 1,
+      "sourceId": "6c0145ae-18d6-4adb-9bf4-280cce54011a",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN A (Paria)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q1.jpg",
+      "status": "reviewed",
+      "sha256": "20554849210a688fc2141b609d9ece25dfd55956901fd079579d6f022cf3c584",
+      "width": 1032,
+      "height": 455,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          60,
+          116,
+          306,
+          221
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q2",
+      "duplicateKey": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q2",
+      "originalNumber": 2,
+      "sourceId": "6c0145ae-18d6-4adb-9bf4-280cce54011a",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN A (Paria)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q2.jpg",
+      "status": "reviewed",
+      "sha256": "eb147b63cfc7fd2f728bc312b1084a7cc984e05f8e291a2c1d6db072919e0930",
+      "width": 1032,
+      "height": 274,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          60,
+          222,
+          306,
+          283
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q3",
+      "duplicateKey": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q3",
+      "originalNumber": 3,
+      "sourceId": "6c0145ae-18d6-4adb-9bf4-280cce54011a",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN A (Paria)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q3.jpg",
+      "status": "reviewed",
+      "sha256": "537466810a227bf2925be4f372e3d3a9a862b3810c3a6febcc039cd37f4f7be0",
+      "width": 1032,
+      "height": 683,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          60,
+          284,
+          306,
+          445
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q4",
+      "duplicateKey": "bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q4",
+      "originalNumber": 4,
+      "sourceId": "6c0145ae-18d6-4adb-9bf4-280cce54011a",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN A (Paria)",
+      "term": "2025-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-6c0145ae-18d6-4adb-9bf4-280cce54011a-q4.jpg",
+      "status": "reviewed",
+      "sha256": "199fc652d5a8da1d1aa55d7c88d26f71fa7db60fb9af66a8bd090155d2cad476",
+      "width": 1068,
+      "height": 675,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          42,
+          47,
+          307,
+          212
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q1",
+      "duplicateKey": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q1",
+      "originalNumber": 1,
+      "sourceId": "5284a1e8-acba-46b2-9228-05068131e5a8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN C DICE PC1 PERO ES PC2 (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q1.jpg",
+      "status": "reviewed",
+      "sha256": "19091dc6b9ab3a7e574c40780b1bfdea63153ef09e7f44934ae23b47a24ffacc",
+      "width": 1017,
+      "height": 237,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN C DICE PC1 PERO ES PC2 (Apaza).jpeg",
+      "rectangles": [
+        [
+          15,
+          143,
+          337,
+          212
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q2",
+      "duplicateKey": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q2",
+      "originalNumber": 2,
+      "sourceId": "5284a1e8-acba-46b2-9228-05068131e5a8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN C DICE PC1 PERO ES PC2 (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q2.jpg",
+      "status": "reviewed",
+      "sha256": "afff660e581fa6cff7f4639a02d274e6b283f848515d67e9d9a3aa82aa8f7a02",
+      "width": 1017,
+      "height": 354,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN C DICE PC1 PERO ES PC2 (Apaza).jpeg",
+      "rectangles": [
+        [
+          15,
+          212,
+          337,
+          319
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q3",
+      "duplicateKey": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q3",
+      "originalNumber": 3,
+      "sourceId": "5284a1e8-acba-46b2-9228-05068131e5a8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN C DICE PC1 PERO ES PC2 (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q3.jpg",
+      "status": "reviewed",
+      "sha256": "1e455c4b3c881199d37763091b5101cecae279b0d333e4267650732b9ad026b4",
+      "width": 659,
+      "height": 326,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN C DICE PC1 PERO ES PC2 (Apaza).jpeg",
+      "rectangles": [
+        [
+          13,
+          321,
+          219,
+          419
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q4",
+      "duplicateKey": "bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q4",
+      "originalNumber": 4,
+      "sourceId": "5284a1e8-acba-46b2-9228-05068131e5a8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN C DICE PC1 PERO ES PC2 (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-5284a1e8-acba-46b2-9228-05068131e5a8-q4.jpg",
+      "status": "reviewed",
+      "sha256": "c3f0c32c72d2cc4eaa19d1971e3d1e2c3af2475b3a5b5dabbed516edee87342f",
+      "width": 1011,
+      "height": 452,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN C DICE PC1 PERO ES PC2 (Apaza).jpeg",
+      "rectangles": [
+        [
+          14,
+          423,
+          334,
+          454
+        ],
+        [
+          204,
+          318,
+          319,
+          422
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q1",
+      "duplicateKey": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q1",
+      "originalNumber": 1,
+      "sourceId": "f15f24de-a62d-41e0-bff6-49cd282cd392",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN D (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q1.jpg",
+      "status": "reviewed",
+      "sha256": "8787aef542e7848a231f63c282a6e1bd8e4c973e3b8eacb3e58b41058a78ad1d",
+      "width": 1165,
+      "height": 383,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN D (Apaza).pdf",
+      "rectangles": [
+        [
+          22,
+          160,
+          327,
+          256
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q2",
+      "duplicateKey": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q2",
+      "originalNumber": 2,
+      "sourceId": "f15f24de-a62d-41e0-bff6-49cd282cd392",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN D (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q2.jpg",
+      "status": "reviewed",
+      "sha256": "278d01efa30e62a9a3cbbffe010b74c6f1394d1d77c9c1292cd8ebc88c25d7f0",
+      "width": 1154,
+      "height": 260,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN D (Apaza).pdf",
+      "rectangles": [
+        [
+          23,
+          256,
+          325,
+          319
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q3",
+      "duplicateKey": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q3",
+      "originalNumber": 3,
+      "sourceId": "f15f24de-a62d-41e0-bff6-49cd282cd392",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN D (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q3.jpg",
+      "status": "reviewed",
+      "sha256": "c5467fd5bfd249526ba59f3660c60982810b05359ea49ad039ba93cde728c507",
+      "width": 1154,
+      "height": 451,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN D (Apaza).pdf",
+      "rectangles": [
+        [
+          23,
+          320,
+          325,
+          367
+        ],
+        [
+          34,
+          372,
+          165,
+          436
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q4",
+      "duplicateKey": "bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q4",
+      "originalNumber": 4,
+      "sourceId": "f15f24de-a62d-41e0-bff6-49cd282cd392",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-1 — SECCIÓN D (Apaza)",
+      "term": "2025-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-f15f24de-a62d-41e0-bff6-49cd282cd392-q4.jpg",
+      "status": "reviewed",
+      "sha256": "ac62db7b33a26d8f6e5b5994a35cffe355f7cb20264014c156d4eafd76a2fbc3",
+      "width": 1161,
+      "height": 411,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-1 SECCIÓN D (Apaza).pdf",
+      "rectangles": [
+        [
+          24,
+          437,
+          328,
+          466
+        ],
+        [
+          185,
+          366,
+          319,
+          437
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q1",
+      "duplicateKey": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q1",
+      "originalNumber": 1,
+      "sourceId": "aa68834b-d4d2-4d41-a820-9887182c484b",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN A (Paria)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q1.jpg",
+      "status": "reviewed",
+      "sha256": "87f12e67860b25b192785c0c9290dd404176ed47fce105e6f2243cb1d0eeb3c3",
+      "width": 1064,
+      "height": 354,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          30,
+          169,
+          308,
+          257
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q2",
+      "duplicateKey": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q2",
+      "originalNumber": 2,
+      "sourceId": "aa68834b-d4d2-4d41-a820-9887182c484b",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN A (Paria)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q2.jpg",
+      "status": "reviewed",
+      "sha256": "5f3168537dfcbc6d352416d08192362773f0ec310b6eac85eb707f6888683e34",
+      "width": 1080,
+      "height": 769,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          29,
+          262,
+          311,
+          461
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q3",
+      "duplicateKey": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q3",
+      "originalNumber": 3,
+      "sourceId": "aa68834b-d4d2-4d41-a820-9887182c484b",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN A (Paria)",
+      "term": "2025-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q3.jpg",
+      "status": "reviewed",
+      "sha256": "d3c9eab80992a7cb4f32b899a4a9dd95833a9535052a06a53151ed8ea2e7f86e",
+      "width": 1064,
+      "height": 653,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          25,
+          66,
+          303,
+          234
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q4",
+      "duplicateKey": "bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q4",
+      "originalNumber": 4,
+      "sourceId": "aa68834b-d4d2-4d41-a820-9887182c484b",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN A (Paria)",
+      "term": "2025-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-aa68834b-d4d2-4d41-a820-9887182c484b-q4.jpg",
+      "status": "reviewed",
+      "sha256": "e456fb1ec33e37f32059f310a7f903afe676649ac29e3f10b210a785802b32fa",
+      "width": 1067,
+      "height": 731,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          25,
+          237,
+          304,
+          426
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q1",
+      "duplicateKey": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q1",
+      "originalNumber": 1,
+      "sourceId": "a66a120b-da35-45c6-8a9a-130df91dfbf8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN B (Altuna)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q1.jpg",
+      "status": "reviewed",
+      "sha256": "d754015fd634268a2422f4d76278d6b0cc4cd37ffa2dbfffffaa18d2e0ee1d6c",
+      "width": 1180,
+      "height": 499,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          29,
+          99,
+          319,
+          162
+        ],
+        [
+          40,
+          162,
+          218,
+          215
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q2",
+      "duplicateKey": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q2",
+      "originalNumber": 2,
+      "sourceId": "a66a120b-da35-45c6-8a9a-130df91dfbf8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN B (Altuna)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q2.jpg",
+      "status": "reviewed",
+      "sha256": "e15fffd7b8da6d9413a103416998154b0f3a9cf6ff9cb560194e6db9d439685c",
+      "width": 837,
+      "height": 586,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          27,
+          225,
+          231,
+          268
+        ],
+        [
+          231,
+          174,
+          331,
+          269
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q3",
+      "duplicateKey": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q3",
+      "originalNumber": 3,
+      "sourceId": "a66a120b-da35-45c6-8a9a-130df91dfbf8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN B (Altuna)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q3.jpg",
+      "status": "reviewed",
+      "sha256": "beca7159bde3698baf1243ab0a8fd66ce06498403a758bee93b5bbdea9b020e0",
+      "width": 1276,
+      "height": 343,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          21,
+          272,
+          335,
+          352
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q4",
+      "duplicateKey": "bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q4",
+      "originalNumber": 4,
+      "sourceId": "a66a120b-da35-45c6-8a9a-130df91dfbf8",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN B (Altuna)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-a66a120b-da35-45c6-8a9a-130df91dfbf8-q4.jpg",
+      "status": "reviewed",
+      "sha256": "d4e2ec81c1ea109bab207e6364cba6f731c8bbfcc84396c909e5334439c193ca",
+      "width": 1316,
+      "height": 291,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          12,
+          356,
+          336,
+          423
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q1",
+      "duplicateKey": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q1",
+      "originalNumber": 1,
+      "sourceId": "ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN C (Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q1.jpg",
+      "status": "reviewed",
+      "sha256": "17f316c5d6d79c4a0dea75f664c2d4c7e4e4f79cf98af2d7f3518e6d304784ba",
+      "width": 984,
+      "height": 372,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN C (Chinchay).pdf",
+      "rectangles": [
+        [
+          48,
+          145,
+          313,
+          241
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q2",
+      "duplicateKey": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q2",
+      "originalNumber": 2,
+      "sourceId": "ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN C (Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q2.jpg",
+      "status": "reviewed",
+      "sha256": "9d058005c5ac9ad549bcc17750b7ef11f0d4a93d7a1066b400bfabdbb0a63467",
+      "width": 984,
+      "height": 282,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN C (Chinchay).pdf",
+      "rectangles": [
+        [
+          48,
+          242,
+          313,
+          313
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q3",
+      "duplicateKey": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q3",
+      "originalNumber": 3,
+      "sourceId": "ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN C (Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q3.jpg",
+      "status": "reviewed",
+      "sha256": "18c2b5218e04d3b975bc753baf5c7837cf31b1fe023077bc3ae2339582038fa5",
+      "width": 984,
+      "height": 470,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN C (Chinchay).pdf",
+      "rectangles": [
+        [
+          48,
+          319,
+          313,
+          442
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q4",
+      "duplicateKey": "bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q4",
+      "originalNumber": 4,
+      "sourceId": "ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN C (Chinchay)",
+      "term": "2025-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-ef9eff0b-6a5c-4b12-874f-da3ad5cc9c96-q4.jpg",
+      "status": "reviewed",
+      "sha256": "f4a277324ac57e8f818c464ec72bfa35cde71cb9f6ebe4cdae4a6a7c39280ef9",
+      "width": 973,
+      "height": 613,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN C (Chinchay).pdf",
+      "rectangles": [
+        [
+          48,
+          77,
+          314,
+          242
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q1",
+      "duplicateKey": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q1",
+      "originalNumber": 1,
+      "sourceId": "2b8ac326-7cdb-4184-819b-1827e5f7adce",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN D (Huamán y Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q1.jpg",
+      "status": "reviewed",
+      "sha256": "bffeb76c7856a869d185f85baf756e649a1cc0fce9543c9dd83f2bc261d67a65",
+      "width": 1050,
+      "height": 331,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN D (Huamán y Chinchay).pdf",
+      "rectangles": [
+        [
+          33,
+          85,
+          307,
+          167
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q2",
+      "duplicateKey": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q2",
+      "originalNumber": 2,
+      "sourceId": "2b8ac326-7cdb-4184-819b-1827e5f7adce",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN D (Huamán y Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q2.jpg",
+      "status": "reviewed",
+      "sha256": "ff67598364df6642bdee966baa56f4aba00a96756da84d00dbc838f615fb00bb",
+      "width": 1075,
+      "height": 211,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN D (Huamán y Chinchay).pdf",
+      "rectangles": [
+        [
+          32,
+          168,
+          313,
+          218
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q3",
+      "duplicateKey": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q3",
+      "originalNumber": 3,
+      "sourceId": "2b8ac326-7cdb-4184-819b-1827e5f7adce",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN D (Huamán y Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q3.jpg",
+      "status": "reviewed",
+      "sha256": "76a4d60cedef2a1c9f73702a6a0c060b4ffd520c268481c7f02dab3e1f127958",
+      "width": 1098,
+      "height": 319,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN D (Huamán y Chinchay).pdf",
+      "rectangles": [
+        [
+          29,
+          218,
+          316,
+          297
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q4",
+      "duplicateKey": "bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q4",
+      "originalNumber": 4,
+      "sourceId": "2b8ac326-7cdb-4184-819b-1827e5f7adce",
+      "sourceTitle": "Práctica calificada 2 de Física I 2025-2 — SECCIÓN D (Huamán y Chinchay)",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-2b8ac326-7cdb-4184-819b-1827e5f7adce-q4.jpg",
+      "status": "reviewed",
+      "sha256": "418fe93ccfe89afcd09d0e1b3c7e213bc844bd9bf134dcdf2bc1871fb3810c53",
+      "width": 1082,
+      "height": 649,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2025-2 SECCIÓN D (Huamán y Chinchay).pdf",
+      "rectangles": [
+        [
+          32,
+          297,
+          315,
+          464
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q1",
+      "duplicateKey": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q1",
+      "originalNumber": 1,
+      "sourceId": "412a7e0c-dd49-490a-9127-04d605d16b44",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN A (Paria)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q1.jpg",
+      "status": "reviewed",
+      "sha256": "0aa79229c05a10b45c9984383b25b4b65d8f0f62bbb260897d7fa21abcc7ce4d",
+      "width": 1090,
+      "height": 847,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          34,
+          100,
+          319,
+          320
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q2",
+      "duplicateKey": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q2",
+      "originalNumber": 2,
+      "sourceId": "412a7e0c-dd49-490a-9127-04d605d16b44",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN A (Paria)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q2.jpg",
+      "status": "reviewed",
+      "sha256": "c19676f58e5b3354fa1610fbc4ba8e0c2717e2b958867e8d9263f760059c7348",
+      "width": 1083,
+      "height": 633,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          33,
+          323,
+          316,
+          486
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q3",
+      "duplicateKey": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q3",
+      "originalNumber": 3,
+      "sourceId": "412a7e0c-dd49-490a-9127-04d605d16b44",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN A (Paria)",
+      "term": "2026-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q3.jpg",
+      "status": "reviewed",
+      "sha256": "df668960029edfda106ba68c893cfb67d3405efa4bc6af9f8a56beeef0acfee9",
+      "width": 1154,
+      "height": 716,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          14,
+          28,
+          316,
+          213
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q4",
+      "duplicateKey": "bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q4",
+      "originalNumber": 4,
+      "sourceId": "412a7e0c-dd49-490a-9127-04d605d16b44",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN A (Paria)",
+      "term": "2026-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-412a7e0c-dd49-490a-9127-04d605d16b44-q4.jpg",
+      "status": "reviewed",
+      "sha256": "b538032a460b1851d8441abfc07f60515d51703bf2c95e505d4c5d92edab8487",
+      "width": 1154,
+      "height": 805,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN A (Paria).pdf",
+      "rectangles": [
+        [
+          14,
+          215,
+          316,
+          424
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q1",
+      "duplicateKey": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q1",
+      "originalNumber": 1,
+      "sourceId": "cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN B (Altuna)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q1.jpg",
+      "status": "reviewed",
+      "sha256": "e184f10b01da18ad424a27f34a7dda21cc245de8a39bc9f045adbe6c47746a2f",
+      "width": 1026,
+      "height": 301,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          40,
+          129,
+          308,
+          203
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q2",
+      "duplicateKey": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q2",
+      "originalNumber": 2,
+      "sourceId": "cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN B (Altuna)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q2.jpg",
+      "status": "reviewed",
+      "sha256": "53b5bcc13e2674b0953dbe229631d79346ef0f2ed31c0e90e80fd94b7093b385",
+      "width": 1124,
+      "height": 342,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          39,
+          203,
+          333,
+          288
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q3",
+      "duplicateKey": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q3",
+      "originalNumber": 3,
+      "sourceId": "cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN B (Altuna)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q3.jpg",
+      "status": "reviewed",
+      "sha256": "e8ff995b1006b53b100c9c61cc32f236e94f7ca5004f58ca55f0de6baea6e1c0",
+      "width": 1120,
+      "height": 267,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          38,
+          288,
+          331,
+          353
+        ]
+      ]
+    },
+    {
+      "id": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q4",
+      "duplicateKey": "bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q4",
+      "originalNumber": 4,
+      "sourceId": "cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20",
+      "sourceTitle": "Práctica calificada 2 de Física I 2026-1 — SECCIÓN B (Altuna)",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/bfi01-pc2/v1/bfi01-pc2-cb01b0fe-d7fb-4e06-bfa3-a9fcbc572d20-q4.jpg",
+      "status": "reviewed",
+      "sha256": "e5714b2a3dcc8a47eb815553b3940537ee0ecfe5b71629a94a7995f5635bb82b",
+      "width": 1128,
+      "height": 297,
+      "gravity": 9.8,
+      "containsAnnotations": true,
+      "localSource": "PRÁCTICA CALIFICADA 2 DE FÍSICA I 2026-1 SECCIÓN B (Altuna).pdf",
+      "rectangles": [
+        [
+          37,
+          360,
+          332,
+          433
+        ]
+      ]
+    }
+  ]
+}
