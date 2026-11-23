@@ -1,10 +1,12 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
+import { processUploadedExam } from '@/lib/questionBankWorker';
 import { getAdminApiContext } from '@/lib/adminApi';
 import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
 import { isWorksheetExamTypeAllowed } from '@/lib/worksheetCategoryRules';
 import { canonicalizeWorksheetFileName } from '@/lib/worksheetFileNaming';
 
 export const runtime = 'nodejs';
+export const maxDuration = 300;
 
 type ConfirmBody = {
   courseId?: string;
@@ -80,7 +82,7 @@ export async function POST(request: Request) {
     }
 
     confirmedTitle = namingResult.title ?? body.title.trim().slice(0, 160);
-    const { error } = await context.db.from('admin_worksheets').insert({
+    const { data: registered, error } = await context.db.from('admin_worksheets').insert({
       course_id: courseId,
       title: confirmedTitle,
       exam_type: body.examType,
@@ -91,9 +93,10 @@ export async function POST(request: Request) {
       file_size: fileSize,
       uploaded_by: context.user.id,
       storage_provider: 'r2',
-    });
+    }).select('id').single();
     if (error) throw new Error(error.message);
-
+    key = ''; // Registration succeeded: a later background failure must not delete it.
+    after(() => processUploadedExam(registered.id));
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (key) await deleteR2Object(key).catch(() => undefined);

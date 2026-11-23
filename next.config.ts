@@ -35,6 +35,14 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // The browser viewer bundles pdfjs-dist's worker. Keep its server OCR copy
+  // separate so externalizing the Node implementation does not break that URL.
+  serverExternalPackages: ['pdfjs-server', '@napi-rs/canvas', 'sharp', 'tesseract.js', 'tesseract.js-core'],
+  outputFileTracingIncludes: {
+    '/api/admin/worksheets/*': ['./node_modules/pdfjs-server/**/*', './node_modules/@tesseract.js-data/spa/**/*', './node_modules/tesseract.js/**/*', './node_modules/tesseract.js-core/**/*'],
+    '/api/admin/question-bank': ['./node_modules/pdfjs-server/**/*', './node_modules/@tesseract.js-data/spa/**/*', './node_modules/tesseract.js/**/*', './node_modules/tesseract.js-core/**/*'],
+    '/api/cron/question-bank': ['./node_modules/pdfjs-server/**/*', './node_modules/@tesseract.js-data/spa/**/*', './node_modules/tesseract.js/**/*', './node_modules/tesseract.js-core/**/*'],
+  },
   // Safari 17 must receive PWA metadata in the initial <head> when installing.
   // Disable metadata streaming, not page/content streaming.
   htmlLimitedBots: /.*/,

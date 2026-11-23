@@ -1,8 +1,10 @@
-import { NextResponse } from 'next/server';
+import { after, NextResponse } from 'next/server';
+import { processUploadedExam } from '@/lib/questionBankWorker';
 import { getAdminApiContext } from '@/lib/adminApi';
 import { createR2PresignedUrl, deleteR2Object } from '@/lib/r2';
 
 export const runtime = 'nodejs';
+export const maxDuration = 300;
 
 type ConfirmBody = {
   fileId?: string;
@@ -68,6 +70,7 @@ export async function POST(request: Request) {
       await deleteR2Object(previousKey).catch(() => undefined);
     }
     uploadedKey = '';
+    after(() => processUploadedExam(worksheet.id));
     return NextResponse.json({ ok: true });
   } catch (error) {
     if (uploadedKey) await deleteR2Object(uploadedKey).catch(() => undefined);

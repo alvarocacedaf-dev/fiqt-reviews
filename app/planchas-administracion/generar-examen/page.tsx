@@ -1,13 +1,22 @@
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { physicsExamAccess } from '@/lib/physicsExamAccess';
-import { physicsPC1Bank } from '@/lib/examQuestionBank';
+import { getExamBank } from '@/lib/examQuestionBank';
+import { EXAM_GENERATORS, examGeneratorKey } from '@/lib/examGeneratorConfig';
 import { PracticeExamGenerator } from '@/components/PracticeExamGenerator';
+import { getLiveExamBank } from '@/lib/liveExamBank';
 export const dynamic = 'force-dynamic';
-import pc2 from '@/data/question-banks/bfi01-pc2.json';
-export default async function GeneratePracticeExamPage({ searchParams }: { searchParams: Promise<{ practice?: string }> }) {
-  const bank = (await searchParams).practice === '2' ? pc2 : physicsPC1Bank;
-  const access = await physicsExamAccess();
-  if (access === 401) redirect('/login?next=' + encodeURIComponent('/planchas-administracion/generar-examen?practice=' + bank.practiceNumber));
-  if (access !== 200) return <main className="surface-card mx-auto max-w-3xl p-6"><h1 className="text-xl font-black">Física I todavía no está habilitado</h1><p className="mt-3">Para generar exámenes necesitas acceso a las planchas de este curso.</p><a className="btn-primary mt-4" href="/planchas-administracion">Volver a las planchas</a></main>;
-  return <PracticeExamGenerator available={bank.questions.length} practice={bank.practiceNumber} />;
+
+export default async function GeneratePracticeExamPage({ searchParams }: { searchParams: Promise<{ practice?: string; bank?: string }> }) {
+  const key = examGeneratorKey(await searchParams);
+  if (!key) notFound();
+  const bank = getExamBank(key);
+  const access = await physicsExamAccess(bank.courseId);
+  if (access === 401) redirect('/login?next=' + encodeURIComponent('/planchas-administracion/generar-examen?bank=' + key));
+  if (access !== 200) return <main className="surface-card mx-auto max-w-3xl p-6"><h1 className="text-xl font-black">Necesitas habilitar {bank.courseName}</h1><p className="mt-3">Para generar exámenes necesitas acceso a las planchas de este curso.</p><a className="btn-primary mt-4" href="/planchas-administracion">Volver a las planchas</a></main>;
+  try {
+    const live = await getLiveExamBank(key);
+    return <PracticeExamGenerator available={live.questions.length} examCount={live.examCount} config={EXAM_GENERATORS[key]} />;
+  } catch {
+    return <main className="surface-card p-6">No se pudo cargar el banco de preguntas. Vuelve a intentarlo en unos momentos.</main>;
+  }
 }

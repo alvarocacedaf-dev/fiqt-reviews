@@ -1,10 +1,18 @@
 import bank from '@/data/question-banks/bfi01-pc1.json';
 import pc2 from '@/data/question-banks/bfi01-pc2.json';
-export function physicsPracticeBank(request: Request) {
-  return new URL(request.url).searchParams.get('practice') === '2' ? pc2 : bank;
+import organicFinal from '@/data/question-banks/qu328-final.json';
+import { EXAM_GENERATORS, examGeneratorKey, type ExamGeneratorKey } from '@/lib/examGeneratorConfig';
+export function getExamBank(key: ExamGeneratorKey) {
+  const data = key === 'qu328-final' ? organicFinal : key === 'bfi01-pc2' ? pc2 : bank;
+  return { ...EXAM_GENERATORS[key], questions: data.questions, examCount: data.examCount };
+}
+export function requestExamBank(request: Request) {
+  const params = new URL(request.url).searchParams;
+  const key = examGeneratorKey({ bank: params.get('bank'), practice: params.get('practice') });
+  return key ? getExamBank(key) : null;
 }
 export const physicsPC1Bank = bank;
-export type BankQuestion = typeof bank.questions[number];
+export type BankQuestion = Omit<typeof bank.questions[number], 'gravity'> & { gravity?: number };
 export function selectExamQuestions(questions: BankQuestion[], count: number, random: () => number = Math.random) {
   const eligible = [...new Map(questions.filter(q => q.status === 'reviewed').map(q => [q.duplicateKey, q])).values()];
   if (!Number.isInteger(count) || count < 1 || count > Math.min(6, eligible.length)) throw new Error('Elige entre 1 y 6 preguntas disponibles.');

@@ -1,0 +1,37 @@
+import { beforeEach, expect, it, vi } from 'vitest';
+const mocks = vi.hoisted(() => ({ context: vi.fn(), db: vi.fn(), worker: vi.fn(), result: { data: [] as unknown[], error: null as unknown } }));
+vi.mock('@/lib/adminApi', () => ({ getAdminApiContext: mocks.context }));
+vi.mock('@/lib/questionBankWorker', () => ({ processExamBankQueue: mocks.worker }));
+vi.mock('@/lib/questionBankAssets', () => ({ renderQuestionCrop: vi.fn() }));
+vi.mock('@/lib/supabase/admin', () => ({ createAdminClient: mocks.db }));
+import { GET as jobs, POST as modifyJob } from '@/app/api/admin/question-bank/route';
+import { GET as asset } from '@/app/api/admin/question-bank/asset/route';
+import { POST as publish } from '@/app/api/admin/question-bank/question/route';
+import { getLiveExamBank } from '@/lib/liveExamBank';
+import { getExamBank } from '@/lib/examQuestionBank';
+beforeEach(() => { vi.clearAllMocks(); mocks.result = { data: [], error: null }; });
+it.each([{ error: 'Inicia sesión', status: 401 }, { isOwner: false, role: 'admin' }])('protege borradores, imágenes y publicación: %j', async context => {
+  mocks.context.mockResolvedValue(context);
+  const request = () => new Request('https://test/api', { method: 'POST', body: '{}' });
+  const status = 'status' in context ? context.status : 403;
+  expect((await jobs(new Request('https://test/api'))).status).toBe(status);
+  expect((await modifyJob(request())).status).toBe(status);
+  expect((await publish(request())).status).toBe(status);
+  expect((await asset(new Request('https://test/api'))).status).toBe(status);
+  expect(mocks.db).not.toHaveBeenCalled(); expect(mocks.worker).not.toHaveBeenCalled();
+});
+it('consulta solo aprobadas y las incorpora sin modificar el banco original', async () => {
+  const query: Record<string, ReturnType<typeof vi.fn>> = {};
+  query.select = vi.fn(() => query); query.eq = vi.fn(() => query); query.order = vi.fn(async () => mocks.result);
+  mocks.db.mockReturnValue({ from: vi.fn(() => query) });
+  const base = getExamBank('qu328-final');
+  const question = { ...base.questions[0], id: 'new', duplicateKey: 'new', term: '2018-1' };
+  mocks.result.data = [{ question }];
+  const live = await getLiveExamBank('qu328-final');
+  expect(live.questions).toHaveLength(base.questions.length + 1);
+  expect(live.examCount).toBe(base.examCount + 1);
+  expect(query.eq).toHaveBeenCalledWith('status','approved');
+  expect(query.eq).toHaveBeenCalledWith('bank_key','qu328-final');
+  mocks.result.error = { code: 'offline' };
+  await expect(getLiveExamBank('qu328-final')).rejects.toThrow();
+});

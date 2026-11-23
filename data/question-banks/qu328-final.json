@@ -1,0 +1,1483 @@
+{
+  "version": 1,
+  "courseId": "d0d588a3-9e52-4531-8e9a-75442c6f503e",
+  "courseCode": "QU328",
+  "courseName": "Química Orgánica I",
+  "examType": "final",
+  "examCount": 9,
+  "questions": [
+    {
+      "id": "qu328-final-2018-3-q1",
+      "duplicateKey": "qu328-final-2018-3-q1",
+      "originalNumber": 1,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q1.jpg",
+      "status": "reviewed",
+      "sha256": "de8c979465a6dd392618a8dc53c69816ea7991395a6155db14fe5243662c45e3",
+      "width": 1256,
+      "height": 494,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          150,
+          322,
+          263
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2018-3-q2",
+      "duplicateKey": "qu328-final-2018-3-q2",
+      "originalNumber": 2,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q2.jpg",
+      "status": "reviewed",
+      "sha256": "9405baef7c867d1e07eff7e940377a9feaa2a792c469850b873f08f796b108e9",
+      "width": 1256,
+      "height": 461,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          264,
+          322,
+          369
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2018-3-q3",
+      "duplicateKey": "qu328-final-2018-3-q3",
+      "originalNumber": 3,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q3.jpg",
+      "status": "reviewed",
+      "sha256": "774fa422afa2dfa8f8398ca73c09a8f024aa0df88ce1e596b42efc78fb603ac2",
+      "width": 1256,
+      "height": 132,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          371,
+          322,
+          397
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2018-3-q4",
+      "duplicateKey": "qu328-final-2018-3-q4",
+      "originalNumber": 4,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q4.jpg",
+      "status": "reviewed",
+      "sha256": "ad0c61cd7a19cdbd140e1e73b97ff28c4d5d10284ebe835d34c2446ad588cd9e",
+      "width": 1256,
+      "height": 282,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          398,
+          322,
+          460
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2018-3-q5",
+      "duplicateKey": "qu328-final-2018-3-q5",
+      "originalNumber": 5,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q5.jpg",
+      "status": "reviewed",
+      "sha256": "e105e2924c8ba705da97c6050818d0bfd850ce5ed13894c9feb4979d3388a764",
+      "width": 1256,
+      "height": 898,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          60,
+          322,
+          270
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2018-3-q6",
+      "duplicateKey": "qu328-final-2018-3-q6",
+      "originalNumber": 6,
+      "sourceId": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "sourceTitle": "Examen final de Química Orgánica I 2018-3",
+      "term": "2018-3",
+      "page": 2,
+      "sourcePages": [
+        2,
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2018-3-q6.jpg",
+      "status": "reviewed",
+      "sha256": "8ce0ebfe629c37ec41b46bb5f4a7b8a244c4483df278d9b62fa65e4285a7ce8d",
+      "width": 1256,
+      "height": 1522,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          279,
+          322,
+          420
+        ],
+        [
+          3,
+          26,
+          50,
+          322,
+          266
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2019-1-q1",
+      "duplicateKey": "qu328-final-2019-1-q1",
+      "originalNumber": 1,
+      "sourceId": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "sourceTitle": "Examen final de Química Orgánica I 2019-1",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2019-1-q1.jpg",
+      "status": "reviewed",
+      "sha256": "ee609eec6f641063cd3efecb5b5a5adc49c2af85fa58153787cd240671accea2",
+      "width": 1256,
+      "height": 582,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          150,
+          322,
+          284
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2019-1-q2",
+      "duplicateKey": "qu328-final-2019-1-q2",
+      "originalNumber": 2,
+      "sourceId": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "sourceTitle": "Examen final de Química Orgánica I 2019-1",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2019-1-q2.jpg",
+      "status": "reviewed",
+      "sha256": "4f4f02ddd53255f0819e3336c530f3b56fcedff1abf4aa921f48b4c496e8e5de",
+      "width": 1256,
+      "height": 128,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          285,
+          322,
+          310
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2019-1-q3",
+      "duplicateKey": "qu328-final-2019-1-q3",
+      "originalNumber": 3,
+      "sourceId": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "sourceTitle": "Examen final de Química Orgánica I 2019-1",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2019-1-q3.jpg",
+      "status": "reviewed",
+      "sha256": "230bf48c0127d92327cc00f73e8106edfde128a3746a906c049bd459861eed1b",
+      "width": 1256,
+      "height": 315,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          311,
+          322,
+          381
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2019-1-q4",
+      "duplicateKey": "qu328-final-2019-1-q4",
+      "originalNumber": 4,
+      "sourceId": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "sourceTitle": "Examen final de Química Orgánica I 2019-1",
+      "term": "2019-1",
+      "page": 1,
+      "sourcePages": [
+        1,
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2019-1-q4.jpg",
+      "status": "reviewed",
+      "sha256": "628c5bcd62f970a18977ef6c6caf0ca79bb8207460a4e33e6776699a152660ba",
+      "width": 1256,
+      "height": 876,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          382,
+          322,
+          466
+        ],
+        [
+          2,
+          26,
+          48,
+          322,
+          166
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2019-1-q5",
+      "duplicateKey": "qu328-final-2019-1-q5",
+      "originalNumber": 5,
+      "sourceId": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "sourceTitle": "Examen final de Química Orgánica I 2019-1",
+      "term": "2019-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2019-1-q5.jpg",
+      "status": "reviewed",
+      "sha256": "f9c3259506687de35435bb6b040a1ffaa620e652556f92908ed91d08d722a0e6",
+      "width": 1256,
+      "height": 1135,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          168,
+          322,
+          435
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2022-2-q1",
+      "duplicateKey": "qu328-final-2022-2-q1",
+      "originalNumber": 1,
+      "sourceId": "d758c00a-bc5d-439c-ac97-d90d76d6a734",
+      "sourceTitle": "Examen final de Química Orgánica I 2022-2 — SOLUCIONARIO",
+      "term": "2022-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2022-2-q1.jpg",
+      "status": "reviewed",
+      "sha256": "4905a3bc3025d08dfece1c3dabee57febe1e0f877bf60e530e4a400384eaa1b0",
+      "width": 1406,
+      "height": 301,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2022-2 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          18,
+          64,
+          322,
+          125
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2022-2-q2",
+      "duplicateKey": "qu328-final-2022-2-q2",
+      "originalNumber": 2,
+      "sourceId": "d758c00a-bc5d-439c-ac97-d90d76d6a734",
+      "sourceTitle": "Examen final de Química Orgánica I 2022-2 — SOLUCIONARIO",
+      "term": "2022-2",
+      "page": 1,
+      "sourcePages": [
+        1,
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2022-2-q2.jpg",
+      "status": "reviewed",
+      "sha256": "e1aff6f95091bdc1f05dafe4bc3b2fe36e9f26b621399bc093fc2d38500e87de",
+      "width": 1406,
+      "height": 813,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2022-2 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          18,
+          239,
+          322,
+          276
+        ],
+        [
+          1,
+          26,
+          312,
+          322,
+          326
+        ],
+        [
+          1,
+          26,
+          371,
+          322,
+          385
+        ],
+        [
+          2,
+          26,
+          132,
+          322,
+          148
+        ],
+        [
+          2,
+          43,
+          251,
+          289,
+          333
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2022-2-q7",
+      "duplicateKey": "qu328-final-2022-2-q7",
+      "originalNumber": 7,
+      "sourceId": "d758c00a-bc5d-439c-ac97-d90d76d6a734",
+      "sourceTitle": "Examen final de Química Orgánica I 2022-2 — SOLUCIONARIO",
+      "term": "2022-2",
+      "page": 4,
+      "sourcePages": [
+        4
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2022-2-q7.jpg",
+      "status": "reviewed",
+      "sha256": "27a78cadb91251ca85811798766312e82815f9970006ffa5a0478263b0b6c0b6",
+      "width": 1370,
+      "height": 138,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2022-2 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          4,
+          26,
+          377,
+          322,
+          402
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-1-q1",
+      "duplicateKey": "qu328-final-2023-1-q1",
+      "originalNumber": 1,
+      "sourceId": "294ba21e-30ea-469e-8d07-cf37f0b63f64",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO",
+      "term": "2023-1",
+      "page": 1,
+      "sourcePages": [
+        1,
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-1-q1.jpg",
+      "status": "reviewed",
+      "sha256": "194cd02e7658cf97c9c3255345bf75428c0ff7ca5a97986deb89ee019128c285",
+      "width": 1281,
+      "height": 1692,
+      "containsAnnotations": false,
+      "localSource": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          162,
+          328,
+          445
+        ],
+        [
+          2,
+          26,
+          49,
+          322,
+          164
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-1-q2",
+      "duplicateKey": "qu328-final-2023-1-q2",
+      "originalNumber": 2,
+      "sourceId": "294ba21e-30ea-469e-8d07-cf37f0b63f64",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO",
+      "term": "2023-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-1-q2.jpg",
+      "status": "reviewed",
+      "sha256": "68b9bb353933b54d0521767a26f724a7f83e5d0ec832239a1c59d29a2d218ee0",
+      "width": 1256,
+      "height": 253,
+      "containsAnnotations": false,
+      "localSource": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          170,
+          322,
+          225
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-1-q3",
+      "duplicateKey": "qu328-final-2023-1-q3",
+      "originalNumber": 3,
+      "sourceId": "294ba21e-30ea-469e-8d07-cf37f0b63f64",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO",
+      "term": "2023-1",
+      "page": 2,
+      "sourcePages": [
+        2,
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-1-q3.jpg",
+      "status": "reviewed",
+      "sha256": "4d9507b056bf81e646490b64b9191a67903b3c3f9e6aac7c14ead41166e1b0aa",
+      "width": 1256,
+      "height": 1414,
+      "containsAnnotations": false,
+      "localSource": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          231,
+          322,
+          414
+        ],
+        [
+          3,
+          26,
+          64,
+          322,
+          212
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-1-q5",
+      "duplicateKey": "qu328-final-2023-1-q5",
+      "originalNumber": 5,
+      "sourceId": "294ba21e-30ea-469e-8d07-cf37f0b63f64",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO",
+      "term": "2023-1",
+      "page": 3,
+      "sourcePages": [
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-1-q5.jpg",
+      "status": "reviewed",
+      "sha256": "538e8182495e934085fe33c7f60865b4bbdfa43eac3b71e5ad6e733dce0020ef",
+      "width": 1256,
+      "height": 540,
+      "containsAnnotations": false,
+      "localSource": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          3,
+          26,
+          322,
+          322,
+          446
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-2-q1",
+      "duplicateKey": "qu328-final-2023-2-q1",
+      "originalNumber": 1,
+      "sourceId": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-2",
+      "term": "2023-2",
+      "page": 1,
+      "sourcePages": [
+        1,
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-2-q1.jpg",
+      "status": "reviewed",
+      "sha256": "63f38b8e15f6894a358d300360d948dd4cd3e9dee355f99cd89293105378c059",
+      "width": 1284,
+      "height": 1816,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          170,
+          329,
+          447
+        ],
+        [
+          2,
+          26,
+          49,
+          329,
+          200
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-2-q3",
+      "duplicateKey": "qu328-final-2023-2-q3",
+      "originalNumber": 3,
+      "sourceId": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-2",
+      "term": "2023-2",
+      "page": 3,
+      "sourcePages": [
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-2-q3.jpg",
+      "status": "reviewed",
+      "sha256": "415bbe21adbcfb6d448707cfc61f44a64bb0543be5959b1634b2314c3d610d62",
+      "width": 1284,
+      "height": 381,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "rectangles": [
+        [
+          3,
+          26,
+          49,
+          329,
+          135
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-2-q4",
+      "duplicateKey": "qu328-final-2023-2-q4",
+      "originalNumber": 4,
+      "sourceId": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-2",
+      "term": "2023-2",
+      "page": 3,
+      "sourcePages": [
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-2-q4.jpg",
+      "status": "reviewed",
+      "sha256": "d9afe7c2d33138d7e875eaf88a71ddc5cb7ee411271373d72d35f316171bd299",
+      "width": 1284,
+      "height": 1342,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "rectangles": [
+        [
+          3,
+          26,
+          138,
+          329,
+          455
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-2-q5",
+      "duplicateKey": "qu328-final-2023-2-q5",
+      "originalNumber": 5,
+      "sourceId": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-2",
+      "term": "2023-2",
+      "page": 4,
+      "sourcePages": [
+        4
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-2-q5.jpg",
+      "status": "reviewed",
+      "sha256": "f7ca2ac16a341119563daa0f638b835b47fada662739468ed4d60565bbd99dfb",
+      "width": 1284,
+      "height": 1329,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "rectangles": [
+        [
+          4,
+          26,
+          49,
+          329,
+          363
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2023-2-q6",
+      "duplicateKey": "qu328-final-2023-2-q6",
+      "originalNumber": 6,
+      "sourceId": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "sourceTitle": "Examen final de Química Orgánica I 2023-2",
+      "term": "2023-2",
+      "page": 4,
+      "sourcePages": [
+        4
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2023-2-q6.jpg",
+      "status": "reviewed",
+      "sha256": "7f5b16d7072cecf2f50434c25accc283215aed151ab5f03d098578978cf48d9b",
+      "width": 1284,
+      "height": 436,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "rectangles": [
+        [
+          4,
+          26,
+          365,
+          329,
+          464
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q1",
+      "duplicateKey": "qu328-final-2024-1-q1",
+      "originalNumber": 1,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q1.jpg",
+      "status": "reviewed",
+      "sha256": "c1247bf0d92288ccd945165373e9338a12f8b25cc8156c75365c8ddcc5fffc12",
+      "width": 1285,
+      "height": 286,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          169,
+          329,
+          232
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q2",
+      "duplicateKey": "qu328-final-2024-1-q2",
+      "originalNumber": 2,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q2.jpg",
+      "status": "reviewed",
+      "sha256": "2a6ecbd3cd7a5ede3e3cfd2acd2304ee306f28099996b37da8b05f7799701ec7",
+      "width": 1285,
+      "height": 349,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          232,
+          329,
+          310
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q3",
+      "duplicateKey": "qu328-final-2024-1-q3",
+      "originalNumber": 3,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q3.jpg",
+      "status": "reviewed",
+      "sha256": "8607d9addbb8e8e8cc1dceb50b31f8a29515972087f06123a1f56c1a5377ee58",
+      "width": 1285,
+      "height": 299,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          313,
+          329,
+          379
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q4",
+      "duplicateKey": "qu328-final-2024-1-q4",
+      "originalNumber": 4,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q4.jpg",
+      "status": "reviewed",
+      "sha256": "953f8de183327d1f5cf23a08e437dcab70219d50d4138a87b8cd985db103e2c4",
+      "width": 1285,
+      "height": 332,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          1,
+          26,
+          382,
+          329,
+          456
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q5",
+      "duplicateKey": "qu328-final-2024-1-q5",
+      "originalNumber": 5,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q5.jpg",
+      "status": "reviewed",
+      "sha256": "612eae26cfdc24a08cf07b6b0f28e068fc4ecdc7632e63bc5e6bf0e147d75952",
+      "width": 1285,
+      "height": 515,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          49,
+          329,
+          167
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q6",
+      "duplicateKey": "qu328-final-2024-1-q6",
+      "originalNumber": 6,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q6.jpg",
+      "status": "reviewed",
+      "sha256": "aa316c970ab847cb20430547d968aee7210e9c2a7136b346030b4103f109cc3f",
+      "width": 1285,
+      "height": 373,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          172,
+          329,
+          256
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q7",
+      "duplicateKey": "qu328-final-2024-1-q7",
+      "originalNumber": 7,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q7.jpg",
+      "status": "reviewed",
+      "sha256": "f6ab17c2fa442a822faea43dab8769cb5fbee9786557137587aa11c503851fb4",
+      "width": 1285,
+      "height": 406,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          258,
+          329,
+          350
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2024-1-q8",
+      "duplicateKey": "qu328-final-2024-1-q8",
+      "originalNumber": 8,
+      "sourceId": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "sourceTitle": "Examen final de Química Orgánica I 2024-1",
+      "term": "2024-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2024-1-q8.jpg",
+      "status": "reviewed",
+      "sha256": "2b8e5df81d1dcc9d6b9ab52741fb16333d2cd58617765a37eeae5158e99ef896",
+      "width": 1285,
+      "height": 174,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "rectangles": [
+        [
+          2,
+          26,
+          355,
+          329,
+          391
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-1-q4",
+      "duplicateKey": "qu328-final-2025-1-q4",
+      "originalNumber": 4,
+      "sourceId": "3fe8f6cd-5ae1-4878-a845-6a26b41f971c",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-1 — SOLUCIONARIO",
+      "term": "2025-1",
+      "page": 2,
+      "sourcePages": [
+        2,
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-1-q4.jpg",
+      "status": "reviewed",
+      "sha256": "fb7f53a915786ee15fd3f489c6cd35439aafde7b4b97fcfc09e3081a88243a6d",
+      "width": 1230,
+      "height": 983,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          35,
+          421,
+          325,
+          444
+        ],
+        [
+          3,
+          45,
+          50,
+          285,
+          146
+        ],
+        [
+          3,
+          44,
+          178,
+          285,
+          284
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-1-q6",
+      "duplicateKey": "qu328-final-2025-1-q6",
+      "originalNumber": 6,
+      "sourceId": "3fe8f6cd-5ae1-4878-a845-6a26b41f971c",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-1 — SOLUCIONARIO",
+      "term": "2025-1",
+      "page": 3,
+      "sourcePages": [
+        3
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-1-q6.jpg",
+      "status": "reviewed",
+      "sha256": "ba06862e36a5a170f3dfe60ef4f65e8553e818f126e4453e553e7354a23239cd",
+      "width": 1213,
+      "height": 132,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          3,
+          36,
+          337,
+          322,
+          363
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-1-q8",
+      "duplicateKey": "qu328-final-2025-1-q8",
+      "originalNumber": 8,
+      "sourceId": "3fe8f6cd-5ae1-4878-a845-6a26b41f971c",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-1 — SOLUCIONARIO",
+      "term": "2025-1",
+      "page": 4,
+      "sourcePages": [
+        4
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-1-q8.jpg",
+      "status": "reviewed",
+      "sha256": "5af72715c9305f042802f469bfd336179b480e3c55ad074a764bc5cfb5057e14",
+      "width": 1213,
+      "height": 352,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          4,
+          36,
+          215,
+          322,
+          235
+        ],
+        [
+          4,
+          198,
+          305,
+          285,
+          361
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q1",
+      "duplicateKey": "qu328-final-2025-2-q1",
+      "originalNumber": 1,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q1.jpg",
+      "status": "reviewed",
+      "sha256": "92f4bdd672ec8b0129e033dfd5de6e313e43b185245eb3ca5dd89fdef179dab5",
+      "width": 1285,
+      "height": 323,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          153,
+          329,
+          225
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q2",
+      "duplicateKey": "qu328-final-2025-2-q2",
+      "originalNumber": 2,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q2.jpg",
+      "status": "reviewed",
+      "sha256": "f5558407cd9590ae862833c769d773f7b8585083bea2ee34ec081eefef840896",
+      "width": 1285,
+      "height": 449,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          226,
+          329,
+          328
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q3",
+      "duplicateKey": "qu328-final-2025-2-q3",
+      "originalNumber": 3,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q3.jpg",
+      "status": "reviewed",
+      "sha256": "a449175bd6edb84830c974728f98903325cbcdf8e2abf4cc93a67f9e9915f176",
+      "width": 1285,
+      "height": 361,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          329,
+          329,
+          410
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q4",
+      "duplicateKey": "qu328-final-2025-2-q4",
+      "originalNumber": 4,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 1,
+      "sourcePages": [
+        1,
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q4.jpg",
+      "status": "reviewed",
+      "sha256": "af505b04e4fbe55a2c50e8ffe1b2ab6f89cd17dd0b2ec2ed7f29f851b4e8495c",
+      "width": 1285,
+      "height": 494,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          410,
+          329,
+          464
+        ],
+        [
+          2,
+          26,
+          49,
+          329,
+          105
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q5",
+      "duplicateKey": "qu328-final-2025-2-q5",
+      "originalNumber": 5,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q5.jpg",
+      "status": "reviewed",
+      "sha256": "98fe6ac7d544e54e2bc7f4c8ee8199c1dcfebc2e37c8d4beacb9751799926f0f",
+      "width": 1285,
+      "height": 299,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          106,
+          329,
+          172
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2025-2-q6",
+      "duplicateKey": "qu328-final-2025-2-q6",
+      "originalNumber": 6,
+      "sourceId": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "sourceTitle": "Examen final de Química Orgánica I 2025-2",
+      "term": "2025-2",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2025-2-q6.jpg",
+      "status": "reviewed",
+      "sha256": "99aa1fdb04e2509490a50652881ecd01315345232d947a445b51ab98d4091fe1",
+      "width": 1285,
+      "height": 1231,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          174,
+          329,
+          464
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q1",
+      "duplicateKey": "qu328-final-2026-1-q1",
+      "originalNumber": 1,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q1.jpg",
+      "status": "reviewed",
+      "sha256": "df040b5b00febcb26866c84f607fcac17e478c6ca6f50070948d274f98ec27f3",
+      "width": 1284,
+      "height": 103,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          155,
+          329,
+          174
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q3",
+      "duplicateKey": "qu328-final-2026-1-q3",
+      "originalNumber": 3,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q3.jpg",
+      "status": "reviewed",
+      "sha256": "7f66374e64e4a3214c4c800385bd3cb7f4c1f049b363c9c33a84deb74427ebc6",
+      "width": 1284,
+      "height": 806,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          234,
+          329,
+          422
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q4",
+      "duplicateKey": "qu328-final-2026-1-q4",
+      "originalNumber": 4,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 1,
+      "sourcePages": [
+        1
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q4.jpg",
+      "status": "reviewed",
+      "sha256": "b14754d0de14e60f877043d173413506d03cae4822cbba9b5d6dd33c6c39ecf8",
+      "width": 1284,
+      "height": 198,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          1,
+          26,
+          427,
+          329,
+          469
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q5",
+      "duplicateKey": "qu328-final-2026-1-q5",
+      "originalNumber": 5,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q5.jpg",
+      "status": "reviewed",
+      "sha256": "f9d672e8d97219b5266bfb0a39ba41c6920ab5d6e6c33f33cd461e0ccf86169f",
+      "width": 1284,
+      "height": 693,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          49,
+          329,
+          210
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q6",
+      "duplicateKey": "qu328-final-2026-1-q6",
+      "originalNumber": 6,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q6.jpg",
+      "status": "reviewed",
+      "sha256": "ba4fcc288cfe7afe8ad2331781c495e23e69f890c17cec8d43390d98903ad067",
+      "width": 1284,
+      "height": 419,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          213,
+          329,
+          308
+        ]
+      ]
+    },
+    {
+      "id": "qu328-final-2026-1-q7",
+      "duplicateKey": "qu328-final-2026-1-q7",
+      "originalNumber": 7,
+      "sourceId": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "sourceTitle": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "term": "2026-1",
+      "page": 2,
+      "sourcePages": [
+        2
+      ],
+      "assetPath": "question-bank/qu328-final/v1/qu328-final-2026-1-q7.jpg",
+      "status": "reviewed",
+      "sha256": "59125eb70c3fbcb671ffcacc4b63ed14fae9bc1d144213f83803529f4292af9d",
+      "width": 1284,
+      "height": 586,
+      "containsAnnotations": false,
+      "localSource": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "rectangles": [
+        [
+          2,
+          26,
+          312,
+          329,
+          447
+        ]
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "8a046a60-2d11-4bea-b71a-bfb76c79d9d7",
+      "title": "Examen final de Química Orgánica I 2018-3",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2018-3.docx",
+      "questionCount": 6,
+      "notes": ""
+    },
+    {
+      "id": "fbf8c742-124a-4050-8a83-6b041410f4f7",
+      "title": "Examen final de Química Orgánica I 2019-1",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2019-1.docx",
+      "questionCount": 5,
+      "notes": ""
+    },
+    {
+      "id": "d758c00a-bc5d-439c-ac97-d90d76d6a734",
+      "title": "Examen final de Química Orgánica I 2022-2 — SOLUCIONARIO",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2022-2 SOLUCIONARIO.pdf",
+      "questionCount": 3,
+      "notes": "P3-P6: respuestas integradas sin enunciado íntegro recuperable. P8/P9: mismos ejercicios que 2026-1 P6/P4."
+    },
+    {
+      "id": "294ba21e-30ea-469e-8d07-cf37f0b63f64",
+      "title": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO",
+      "fileName": "Examen final de Química Orgánica I 2023-1 — CON SOLUCIONARIO.pdf",
+      "questionCount": 4,
+      "notes": "P4: mismo ejercicio que 2018-3 P2."
+    },
+    {
+      "id": "f6bb6cc4-02f6-404b-bd44-5efe18a5f75d",
+      "title": "Examen final de Química Orgánica I 2023-2",
+      "fileName": "EXAMEN FINAL DE QUÍMICA ORGÁNICA I 2023-2.pdf",
+      "questionCount": 5,
+      "notes": "P2: mismo ejercicio que 2018-3 P5."
+    },
+    {
+      "id": "6e9b1744-9334-4cf4-8de6-ce34cb01bc85",
+      "title": "Examen final de Química Orgánica I 2023-2 — CON SOLUCIONARIO",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2023-2 CON SOLUCIONARIO.docx",
+      "questionCount": 0,
+      "notes": "Copia del examen 2023-2 con soluciones; se usa el PDF sin soluciones."
+    },
+    {
+      "id": "b307d5a0-bffc-4737-8734-68028d27074d",
+      "title": "Examen final de Química Orgánica I 2024-1",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2024-1.docx",
+      "questionCount": 8,
+      "notes": ""
+    },
+    {
+      "id": "3fe8f6cd-5ae1-4878-a845-6a26b41f971c",
+      "title": "Examen final de Química Orgánica I 2025-1 — SOLUCIONARIO",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-1 SOLUCIONARIO.pdf",
+      "questionCount": 3,
+      "notes": "P1: solo solución, sin enunciado íntegro. P2/P3: no se conserva enunciado completo. P5: orden resuelto. P7: reactivos entremezclados con respuestas. P9: crucigrama resuelto."
+    },
+    {
+      "id": "5a63fa03-af9e-4e11-a90d-77bb56547fb2",
+      "title": "Examen final de Química Orgánica I 2025-2",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2.pdf",
+      "questionCount": 6,
+      "notes": ""
+    },
+    {
+      "id": "8ff3aa2e-9734-4773-9d37-c0af819a98d4",
+      "title": "Examen final de Química Orgánica I 2025-2 — SOLUCIONARIO",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2025-2 SOLUCIONARIO.pdf",
+      "questionCount": 0,
+      "notes": "Solucionario del examen 2025-2; se usa su enunciado original."
+    },
+    {
+      "id": "8ef26426-09df-4663-9089-e3b59f229d1f",
+      "title": "Examen final de Química Orgánica I 2026-1",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1.pdf",
+      "questionCount": 0,
+      "notes": "Fotografía del mismo examen conservado, más legible, en las primeras páginas del solucionario 2026-1."
+    },
+    {
+      "id": "fd6459e6-7eb3-4a4d-a001-d4ea73368324",
+      "title": "Examen final de Química Orgánica I 2026-1 — SOLUCIONARIO",
+      "fileName": "EXAMEN FINAL DE QUIMICA ORGANICA I 2026-1 SOLUCIONARIO.pdf",
+      "questionCount": 6,
+      "notes": "P2: mismo ejercicio que 2018-3 P2. Solo se usan las páginas de enunciados."
+    }
+  ]
+}

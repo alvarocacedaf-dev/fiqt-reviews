@@ -896,6 +896,15 @@ export function AdminWorksheetLibraryTree({
               />
             )}
 
+            {readOnly && libraryType === 'worksheets' && selectedCourse.code === 'QU328'
+              && selectedFolder.examType === 'final' && selectedFiles.length > 0
+              && (unlockAllCourses || unlockedCourses.has(selectedFolder.courseId)) && (
+              <div className="mt-4 rounded-2xl border border-slate-200 p-3">
+                <a className="btn-primary inline-flex text-sm" href="/planchas-administracion/generar-examen?bank=qu328-final">Generar examen final para practicar</a>
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">Genera un examen con preguntas al azar de los finales pasados de Química Orgánica I, recopiladas y revisadas con apoyo de IA.</p>
+              </div>
+            )}
+
             {!readOnly && uploadDraft
               && uploadDraft.courseId === selectedFolder.courseId
               && uploadDraft.examType === selectedFolder.examType && (

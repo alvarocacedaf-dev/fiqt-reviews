@@ -32,6 +32,7 @@ const menuGroups: { label: string; links: AdminLink[] }[] = [
       { href: '/admin/planchas', icon: 'file', label: 'Planchas de usuarios' },
       { href: '/admin/donaciones-planchas', icon: 'attachment', label: 'Donaciones de planchas' },
       { href: '/admin/planchas-administracion', icon: 'library', label: 'Administrar planchas' },
+      { href: '/admin/banco-preguntas', icon: 'file', label: 'Banco de preguntas' },
       { href: '/admin/materiales-cursos', icon: 'folder-open', label: 'Materiales de los cursos' },
       { href: '/admin/matches-planchas', icon: 'exchange', label: 'Matches de planchas' },
     ],
@@ -60,7 +61,7 @@ export function AdminShell({ children, isOwner }: { children: React.ReactNode; i
   const current = allLinks.find(link => isActive(pathname, link.href));
   const visibleMenuGroups = menuGroups.map(group => ({
     ...group,
-    links: group.links.filter(link => isOwner || !['/admin/ranking-resenas', '/admin/actividad'].includes(link.href)),
+    links: group.links.filter(link => isOwner || !['/admin/ranking-resenas', '/admin/actividad', '/admin/banco-preguntas'].includes(link.href)),
   }));
 
   return (
