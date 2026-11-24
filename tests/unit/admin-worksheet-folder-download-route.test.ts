@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-const mocks = vi.hoisted(() => ({ zip: vi.fn(), unlock: vi.fn(), role: 'owner' }));
+const mocks = vi.hoisted(() => ({ openAccess: vi.fn(), zip: vi.fn(), unlock: vi.fn(), role: 'owner' }));
+vi.mock('@/lib/openContentAccess', () => ({ hasOpenContentAccess: mocks.openAccess }));
 vi.mock('@/lib/supabase/server', () => ({ createClient: async () => ({ auth: { getUser: async () => ({ data: { user: { id: 'user' } } }) } }) }));
 vi.mock('@/lib/supabase/admin', () => ({ createAdminClient: () => ({ from: (table: string) => {
   const query = {
@@ -15,7 +16,7 @@ vi.mock('@/lib/bundledAdminWorksheets', () => ({ resolveBundledAdminWorksheets: 
 vi.mock('@/lib/zipStream', () => ({ createStoredZipStream: mocks.zip }));
 import { GET } from '@/app/api/admin-worksheets/folder-download/route';
 const request = (suffix = '') => new Request('https://example.test/api/admin-worksheets/folder-download?courseId=course&examType=practice' + suffix);
-beforeEach(() => { vi.clearAllMocks(); mocks.role = 'owner'; mocks.zip.mockReturnValue('zip'); mocks.unlock.mockResolvedValue({ data: null }); });
+beforeEach(() => { vi.clearAllMocks(); mocks.openAccess.mockResolvedValue(false); mocks.role = 'owner'; mocks.zip.mockReturnValue('zip'); mocks.unlock.mockResolvedValue({ data: null }); });
 describe('ZIP de subcarpetas de prácticas', () => {
   it('incluye solo los archivos del número elegido y lo indica en el nombre', async () => {
     const response = await GET(request('&practiceNumber=1'));
@@ -38,4 +39,10 @@ describe('ZIP de subcarpetas de prácticas', () => {
     expect((await GET(request('&practiceNumber=1'))).status).toBe(403);
     expect(mocks.zip).not.toHaveBeenCalled();
   });
+});
+
+it('abre el ZIP a una cuenta sin contribuciones durante el acceso temporal', async () => {
+  mocks.role = 'student'; mocks.openAccess.mockResolvedValue(true);
+  expect((await GET(request())).status).toBe(200);
+  expect(mocks.unlock).not.toHaveBeenCalled();
 });

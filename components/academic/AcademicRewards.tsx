@@ -21,13 +21,25 @@ const rewards = [
   { goal: REWARD_THRESHOLDS.allAdminCourses, title: 'Planchas de todos los cursos de la administración' },
 ];
 
-export function AcademicRewards({ progress, status, contribution, unavailable = false, promotionalFullAccess = false }: {
+export function AcademicRewards({ progress, status, contribution, unavailable = false, promotionalFullAccess = false, openContentAccess = false }: {
   progress: AcademicProgress | null;
   status: ContributionStatus;
   contribution: ReactNode;
   unavailable?: boolean;
   promotionalFullAccess?: boolean;
+  openContentAccess?: boolean;
 }) {
+  if (openContentAccess) return (
+    <aside className={styles.rewards} aria-labelledby="rewards-heading">
+      <div className={styles.rewardHeading}>
+        <span className={styles.rewardSymbol}><Icon name="unlock" className="h-5 w-5" /></span>
+        <h2 id="rewards-heading">Acceso completo habilitado</h2>
+      </div>
+      <p className={styles.description}>Por ahora, todas las cuentas tienen acceso a las reseñas, la comunidad de planchas, las descargas de todos los cursos y los generadores de exámenes.</p>
+      <p className={styles.notice}>No necesitas realizar un aporte ni completar reseñas o contribuciones para acceder. Tu progreso se conserva.</p>
+      <Link href="/planchas-administracion" className="btn-primary mt-4 block text-center">Explorar las planchas</Link>
+    </aside>
+  );
   const approved = status === 'approved';
   const total = progress?.total ?? 0;
   const countFor = (goal: number) => goal <= REWARD_THRESHOLDS.reviews ? progress?.approvedReviews ?? 0 : total;

@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { AdminWorksheetLibraryTree } from '@/components/AdminWorksheetLibraryManager';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
@@ -75,6 +76,7 @@ export default async function PublicAdminWorksheetsPage() {
     rewardProgress,
     { data: rawUnlocks },
     promotionalFullAccess,
+    openContentAccess,
   ] = await Promise.all([
     db.from('cycles').select('id,number,name').gte('number', 1).lte('number', 12).order('number'),
     db.from('courses').select('id,code,name,cycle_id').order('cycle_id').order('code'),
@@ -83,6 +85,7 @@ export default async function PublicAdminWorksheetsPage() {
     getRewardProgress(user.id),
     db.from('admin_worksheet_course_unlocks').select('course_id').eq('user_id', user.id),
     hasRewardCampaignFullAccess(user.id),
+    hasOpenContentAccess(),
   ]);
 
   const cycles = (rawCycles ?? []) as Cycle[];
@@ -94,7 +97,7 @@ export default async function PublicAdminWorksheetsPage() {
   const loadError = cyclesError || coursesError || filesError;
   const reviewCount = rewardProgress.total;
   const isOwner = profile?.role === 'owner';
-  const selectionLimit = isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
+  const selectionLimit = openContentAccess || isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses
     ? courses.length
     : reviewCount >= REWARD_THRESHOLDS.twoAdminCourses
       ? 2
@@ -133,7 +136,7 @@ export default async function PublicAdminWorksheetsPage() {
             readOnly
             selectableCourseLimit={selectionLimit}
             selectedCourseIds={selectedCourseIds}
-            unlockAllCourses={isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
+            unlockAllCourses={openContentAccess || isOwner || promotionalFullAccess || reviewCount >= REWARD_THRESHOLDS.allAdminCourses}
           />
         </section>
       )}

@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getRewardProgress } from '@/lib/rewardProgress';
@@ -8,6 +9,7 @@ export async function physicsExamAccess(courseId = physicsPC1Bank.courseId) {
   const db = await createClient();
   const { data: { user } } = await db.auth.getUser();
   if (!user) return 401;
+  if (await hasOpenContentAccess()) return 200;
   const admin = createAdminClient();
   const [{ data: profile }, progress, campaign, { data: unlock }] = await Promise.all([
     admin.from('profiles').select('role').eq('id', user.id).single(),

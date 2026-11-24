@@ -46,7 +46,14 @@ const GUIDE_ITEMS: { icon: IconName; title: string; description: string }[] = [
   },
 ];
 
-export function PageGuideModal() {
+const OPEN_GUIDE_ITEMS: typeof GUIDE_ITEMS = [
+  { icon: 'unlock', title: 'Acceso completo habilitado', description: 'Por ahora, todas las cuentas pueden consultar reseñas, descargar planchas de todos los cursos y generar exámenes, sin aporte inicial ni metas de contribuciones. Tu progreso se conserva.' },
+  GUIDE_ITEMS[1], GUIDE_ITEMS[2], GUIDE_ITEMS[4], GUIDE_ITEMS[5],
+  { icon: 'users', title: 'Participa en la comunidad', description: 'Indica qué planchas tienes y cuáles buscas. Cuando exista una coincidencia, encontrarás el chat en Mis matches para coordinar el intercambio.' },
+  GUIDE_ITEMS[7],
+];
+
+export function PageGuideModal({ openContentAccess = false }: { openContentAccess?: boolean }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -112,7 +119,7 @@ export function PageGuideModal() {
 
             <div className="p-5 sm:p-7">
               <div className="grid gap-3 sm:grid-cols-2">
-                {GUIDE_ITEMS.map((item, index) => (
+                {(openContentAccess ? OPEN_GUIDE_ITEMS : GUIDE_ITEMS).map((item, index) => (
                   <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" key={item.title}>
                     <div className="flex items-start gap-3">
                       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-royal">

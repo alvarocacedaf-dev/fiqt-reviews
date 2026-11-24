@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { createClient } from '@/lib/supabase/server';
 import type { Course, Cycle, Professor, Review } from '@/lib/types';
 import { demoCourseProfessors, demoCourses, demoCycles, demoProfessors, isSupabaseConfigured } from '@/lib/demo';
@@ -12,6 +13,7 @@ export async function hasReviewAccess(): Promise<boolean> {
   } = await db.auth.getUser();
 
   if (!user) return false;
+  if (await hasOpenContentAccess()) return true;
 
   const [{ data: profile }, { count, error: countError }] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),

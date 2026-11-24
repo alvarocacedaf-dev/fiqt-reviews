@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mocks = vi.hoisted(() => ({
+const mocks = vi.hoisted(() => ({ openAccess: vi.fn(),
   auth: vi.fn(),
   profile: vi.fn(),
   file: vi.fn(),
@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => ({
   r2Configured: vi.fn(),
 }));
 
+vi.mock('@/lib/openContentAccess', () => ({ hasOpenContentAccess: mocks.openAccess }));
 vi.mock('@/lib/supabase/server', () => ({
   createClient: async () => ({ auth: { getUser: mocks.auth } }),
 }));
@@ -39,7 +40,7 @@ import { GET } from '@/app/api/admin-worksheets/[fileId]/download/route';
 const params = Promise.resolve({ fileId: '11111111-1111-4111-8111-111111111111' });
 
 beforeEach(() => {
-  vi.clearAllMocks();
+  vi.clearAllMocks(); mocks.openAccess.mockResolvedValue(false);
   mocks.auth.mockResolvedValue({ data: { user: { id: 'owner' } } });
   mocks.profile.mockResolvedValue({ data: { role: 'owner' } });
   mocks.reward.mockResolvedValue({ total: 0 });
@@ -167,4 +168,14 @@ describe('descarga individual de planchas', () => {
     expect(response.status).toBe(404);
     expect(await response.json()).toEqual({ error: 'Esta plancha todavía no tiene una vista previa en PDF.' });
   });
+});
+
+it('abre la descarga a una cuenta sin contribuciones durante el acceso temporal', async () => {
+  mocks.profile.mockResolvedValue({ data: { role: 'student' } }); mocks.openAccess.mockResolvedValue(true);
+  expect((await GET(new Request('https://example.test/api/download'), { params })).status).toBe(200);
+});
+it('mantiene el inicio de sesión aunque el acceso temporal esté activo', async () => {
+  mocks.auth.mockResolvedValue({ data: { user: null } }); mocks.openAccess.mockResolvedValue(true);
+  expect((await GET(new Request('https://example.test/api/download'), { params })).status).toBe(307);
+  expect(mocks.file).not.toHaveBeenCalled();
 });

@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { practiceFolderLabel, practiceFolderNumber } from '@/lib/worksheetPracticeFolders';
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
@@ -34,16 +35,17 @@ export async function GET(request: Request) {
   if (!user) return NextResponse.redirect(new URL('/login?next=/planchas-administracion', request.url));
 
   const adminDb = createAdminClient();
-  const [{ data: profile }, rewardProgress, { data: course }, promotionalFullAccess] = await Promise.all([
+  const [{ data: profile }, rewardProgress, { data: course }, promotionalFullAccess, openContentAccess] = await Promise.all([
     adminDb.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
     adminDb.from('courses').select('id,code,name').eq('id', courseId).single(),
     hasRewardCampaignFullAccess(user.id),
+    hasOpenContentAccess(),
   ]);
   if (!course) return NextResponse.json({ error: 'Curso no encontrado.' }, { status: 404 });
 
   const approvedReviews = rewardProgress.total;
-  let canDownload = profile?.role === 'owner' || promotionalFullAccess || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
+  let canDownload = openContentAccess || profile?.role === 'owner' || promotionalFullAccess || approvedReviews >= REWARD_THRESHOLDS.allAdminCourses;
   if (!canDownload) {
     const { data: unlock } = await adminDb
       .from('admin_worksheet_course_unlocks')

@@ -53,3 +53,11 @@ describe('módulo de recompensas académicas', () => {
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 });
+
+it('muestra acceso temporal sin simular metas cumplidas ni pedir aporte', () => {
+  render(<AcademicRewards progress={{ approvedReviews: 0, donatedWorksheets: 0, total: 0 }} status={null} contribution={contribution} openContentAccess />);
+  expect(screen.getByText('Acceso completo habilitado')).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Aporte a la página' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Explorar las planchas' })).toHaveAttribute('href', '/planchas-administracion');
+});

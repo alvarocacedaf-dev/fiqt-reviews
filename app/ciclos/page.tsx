@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import Link from 'next/link';
 import { CycleSelector } from '@/components/CycleSelector';
 import { ContributionModal } from '@/components/ContributionModal';
@@ -256,7 +257,7 @@ function RewardsCard({ approvedReviews, contributionStatus }: { approvedReviews:
 }
 
 export default async function CyclesPage() {
-  const [cycles, rewardProgress, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses, promotionalFullAccess] = await Promise.all([
+  const [cycles, rewardProgress, contributionStatus, worksheetSanctions, worksheetFileCount, donationCourses, promotionalFullAccess, openContentAccess] = await Promise.all([
     getCycles(),
     getCurrentRewardProgress(),
     getContributionStatus(),
@@ -264,6 +265,7 @@ export default async function CyclesPage() {
     getWorksheetFileCount(),
     getDonationCourseOptions(),
     getCurrentRewardCampaignAccess(),
+    hasOpenContentAccess(),
   ]);
 
   return (
@@ -284,8 +286,8 @@ export default async function CyclesPage() {
         )}
       </section>
       <div className="flex w-fit flex-col items-start gap-3">
-        <PageGuideModal />
-        <WorksheetDonationModal courses={donationCourses} />
+        <PageGuideModal openContentAccess={openContentAccess} />
+        <WorksheetDonationModal courses={donationCourses} openContentAccess={openContentAccess} />
       </div>
       <p className="w-fit rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-bold text-white shadow-sm">
         Contador de planchas: <span className="text-gold">{worksheetFileCount.toLocaleString('es-PE')}</span>
@@ -303,7 +305,7 @@ export default async function CyclesPage() {
           </p>
         </div>
       </section>
-      {contributionStatus === 'approved' && (
+      {!openContentAccess && contributionStatus === 'approved' && (
         <p className="rounded-xl border border-emerald-300/40 bg-emerald-400/10 px-4 py-3 text-sm font-semibold text-emerald-100">
           * Tu aporte fue aprobado. Sigue avanzando en la ruta de recompensas para que disfrutes de la página.
         </p>
@@ -317,6 +319,7 @@ export default async function CyclesPage() {
         unavailable={Boolean(rewardProgress.error)}
         contribution={<ContributionModal initialStatus={contributionStatus} compact />}
         promotionalFullAccess={promotionalFullAccess}
+        openContentAccess={openContentAccess}
       />
     )}
     </div>

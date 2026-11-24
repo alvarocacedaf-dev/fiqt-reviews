@@ -1,4 +1,5 @@
 'use server';
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { getRewardProgress } from '@/lib/rewardProgress';
 
 import { revalidatePath } from 'next/cache';
@@ -27,11 +28,13 @@ export async function saveWorksheetPreferences(form: FormData) {
     { total: count, error: countError },
     sanctionState,
     promotionalFullAccess,
+    openContentAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
     getWorksheetSanctionState(db),
     hasRewardCampaignFullAccess(user.id),
+    hasOpenContentAccess(),
   ]);
 
   const isAdmin = profile?.role === 'owner';
@@ -40,8 +43,8 @@ export async function saveWorksheetPreferences(form: FormData) {
   if (!isAdmin && sanctionState.isPermanentlyBlocked) {
     redirect('/ciclos');
   }
-  if (!isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de contribuciones aprobadas.');
-  if (!isAdmin && !promotionalFullAccess && (count ?? 0) < MINIMUM_CONTRIBUTIONS) {
+  if (!openContentAccess && !isAdmin && countError) redirectWithMessage('error', 'No se pudo comprobar tu cantidad de contribuciones aprobadas.');
+  if (!openContentAccess && !isAdmin && !promotionalFullAccess && (count ?? 0) < MINIMUM_CONTRIBUTIONS) {
     redirectWithMessage('error', `Necesitas ${MINIMUM_CONTRIBUTIONS} contribuciones aprobadas para usar Planchas.`);
   }
 

@@ -1,3 +1,4 @@
+import { hasOpenContentAccess } from '@/lib/openContentAccess';
 import { getRewardProgress } from '@/lib/rewardProgress';
 import { redirect } from 'next/navigation';
 import { WorksheetPreferencesForm } from '@/components/WorksheetPreferencesForm';
@@ -46,18 +47,20 @@ export default async function WorksheetsPage({ searchParams }: PageProps) {
     { total: count, error: countError },
     sanctionState,
     promotionalFullAccess,
+    openContentAccess,
   ] = await Promise.all([
     db.from('profiles').select('role').eq('id', user.id).single(),
     getRewardProgress(user.id),
     getWorksheetSanctionState(db),
     hasRewardCampaignFullAccess(user.id),
+    hasOpenContentAccess(),
   ]);
 
   const approvedReviews = count ?? 0;
   const isAdmin = profile?.role === 'owner';
-  const isUnlocked = isAdmin || promotionalFullAccess || approvedReviews >= MINIMUM_CONTRIBUTIONS;
+  const isUnlocked = openContentAccess || isAdmin || promotionalFullAccess || approvedReviews >= MINIMUM_CONTRIBUTIONS;
 
-  if (profileError || (!isAdmin && countError)) {
+  if (profileError || (!openContentAccess && !isAdmin && countError)) {
     return (
       <section className="panel">
         <h1 className="flex items-center gap-2 text-3xl font-black text-ink">Planchas <Icon className="h-7 w-7" name="lock" /></h1>
